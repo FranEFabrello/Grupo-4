@@ -71,7 +71,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
       dispatch(
         bookAppointment({
           doctorId: professional,
-          usuarioId: 3, // 🔒 Cambiar por el ID del usuario logueado
+          usuarioId: 1, // 🔒 Cambiar por el ID del usuario logueado
           fecha: selectedDate,
           horaInicio: selectedTime.horaInicio,
           horaFin: selectedTime.horaFin,

@@ -65,18 +65,24 @@ export default function HomeScreen({ navigation }) {
             Ver todos
           </Text>
         </View>
-        <ScrollView horizontal className="mb-4">
-          {professionalsStatus === 'loading' ? (
-            <Text className="text-sm text-gray-600">Cargando...</Text>
-          ) : professionals.slice(0, 3).map((doctor) => (
-            <DoctorCard
-              key={doctor.id}
-              name={doctor.name}
-              specialty={doctor.specialty}
-              onBook={() => navigation.navigate('BookAppointment', { professionalId: doctor.id })}
-            />
-          ))}
+        <ScrollView horizontal className="mb-4" showsHorizontalScrollIndicator={false}>
+          <View className="flex-row px-2">
+            {professionalsStatus === 'loading' ? (
+              <Text className="text-sm text-gray-600">Cargando...</Text>
+            ) : professionals.slice(0, 3).map((doctor) => (
+              <View key={doctor.id} className="mr-3">
+                <DoctorCard
+                  name={`${doctor.nombre} ${doctor.apellido}`}
+                  specialty={doctor.informacionAdicional}
+                  onBook={() => navigation.navigate('BookAppointment', { professionalId: doctor.id })}
+                  containerClassName="w-64"
+                />
+              </View>
+            ))}
+          </View>
         </ScrollView>
+
+
 
         <View className="bg-white rounded-lg p-4 shadow-md">
           <Text className="text-lg font-semibold text-gray-800 mb-3">Noticias médicas</Text>

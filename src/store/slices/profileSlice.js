@@ -1,13 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../api/api';
 
-export const fetchProfile = createAsyncThunk('profile/fetchProfile', async () => {
-  const response = await api.get('/profile');
+export const fetchProfile = createAsyncThunk('profile/fetchProfile', async (userId) => {
+  const response = await api.get(`/usuario/${userId}`);
   return response.data;
 });
 
-export const updateProfile = createAsyncThunk('profile/updateProfile', async (profileData) => {
-  const response = await api.put('/profile', profileData);
+export const updateProfile = createAsyncThunk('profile/updateProfile', async ({ correo, updates }) => {
+  const response = await api.patch(`/usuario/actualizarPorCorreo?correo=${encodeURIComponent(correo)}`, updates);
   return response.data;
 });
 

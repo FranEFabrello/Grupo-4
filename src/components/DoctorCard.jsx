@@ -4,8 +4,9 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 
 export default function DoctorCard({ name, specialty, onBook }) {
   return (
-    <View className="w-36 bg-white rounded-lg p-3 mr-3 shadow-md items-center">
-      <View className="w-16 h-16 bg-gray-200 rounded-full justify-center items-center mb-2">
+    <View className="bg-white rounded-lg p-3 shadow-md items-center w-full">
+
+    <View className="w-16 h-16 bg-gray-200 rounded-full justify-center items-center mb-2">
         <Icon name="user-md" size={24} color="#4a6fa5" />
       </View>
       <Text className="text-sm font-semibold text-gray-800">{name}</Text>
