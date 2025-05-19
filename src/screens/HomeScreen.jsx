@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAppointments } from '../store/slices/appointmentsSlice';
 import { fetchProfessionals } from '../store/slices/professionalsSlice';
 import AppContainer from '../components/AppContainer';
 import QuickActions from '../components/QuickActions';
@@ -16,7 +15,6 @@ export default function HomeScreen({ navigation }) {
   const { profile } = useSelector((state) => state.profile);
 
   useEffect(() => {
-    dispatch(fetchAppointments());
     dispatch(fetchProfessionals());
   }, [dispatch]);
 
@@ -27,8 +25,8 @@ export default function HomeScreen({ navigation }) {
     { icon: 'hospital-user', label: 'Obra social', screen: 'Insurance' },
   ];
 
-  const nextAppointment = appointments.find((appt) => new Date(appt.date) >= new Date());
-
+  //const nextAppointment = appointments.find((appt) => new Date(appt.date) >= new Date());
+  const nextAppointment = null;
   return (
     <AppContainer navigation={navigation} screenTitle="MediBook">
       <ScrollView className="p-5">

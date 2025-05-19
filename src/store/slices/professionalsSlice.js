@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../api/api';
 
 export const fetchProfessionals = createAsyncThunk('professionals/fetchProfessionals', async () => {
-  const response = await api.get('/professionals');
+  const response = await api.get('/doctor/todos');
   return response.data;
 });
 

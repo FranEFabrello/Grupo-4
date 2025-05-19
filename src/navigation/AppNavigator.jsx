@@ -14,7 +14,6 @@ import HealthTipsScreen from '../screens/HealthTipsScreen';
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
-  console.log('AppNavigator rendering...');
   return (
     <Stack.Navigator initialRouteName="Home">
       <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />

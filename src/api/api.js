@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://api.medibook.com', // Reemplazar con la URL real de la API
+  baseURL: 'http://localhost:4002', // Reemplazar con la URL real de la API
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',

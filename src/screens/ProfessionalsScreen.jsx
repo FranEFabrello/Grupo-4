@@ -1,20 +1,26 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, ScrollView, Text, TextInput } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProfessionals } from '../store/slices/professionalsSlice';
 import AppContainer from '../components/AppContainer';
 import DoctorCard from '../components/DoctorCard';
 import FilterButton from '../components/FilterButton';
-import TimeSlot from '../components/TimeSlot';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 export default function ProfessionalsScreen({ navigation }) {
   const dispatch = useDispatch();
   const { professionals, status } = useSelector((state) => state.professionals);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     dispatch(fetchProfessionals());
   }, [dispatch]);
+
+  const filteredProfessionals = professionals.filter((prof) =>
+    `${prof.nombre} ${prof.apellido} ${prof.informacionAdicional}`
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase())
+  );
 
   return (
     <AppContainer navigation={navigation} screenTitle="Profesionales">
@@ -27,40 +33,23 @@ export default function ProfessionalsScreen({ navigation }) {
               <TextInput
                 className="bg-gray-100 rounded-full pl-10 pr-4 py-2"
                 placeholder="Buscar profesional..."
+                value={searchQuery}
+                onChangeText={setSearchQuery}
               />
             </View>
             <FilterButton onPress={() => alert('Filtrar profesionales')} />
           </View>
           {status === 'loading' ? (
             <Text className="text-sm text-gray-600">Cargando...</Text>
-          ) : professionals.length > 0 ? (
-            professionals.map((prof, index) => (
+          ) : filteredProfessionals.length > 0 ? (
+            filteredProfessionals.map((prof, index) => (
               <View key={index} className="mb-4">
                 <DoctorCard
-                  name={prof.name}
-                  specialty={prof.specialty}
+                  name={`${prof.nombre} ${prof.apellido}`}
+                  specialty={prof.informacionAdicional}
                   onBook={() => navigation.navigate('BookAppointment', { professionalId: prof.id })}
                 />
-                <Text className="text-sm text-gray-600 mt-2">{prof.bio}</Text>
-                <Text className="text-sm font-semibold text-blue-600 mt-2">Próximos turnos disponibles</Text>
-                <View className="flex-row flex-wrap justify-between mt-2">
-                  {prof.times.map((time, idx) => (
-                    <TimeSlot
-                      key={idx}
-                      time={time}
-                      isSelected={false}
-                      onSelect={() =>
-                        navigation.navigate('BookAppointment', { professionalId: prof.id, time })
-                      }
-                    />
-                  ))}
-                </View>
-                <TouchableOpacity
-                  className="bg-blue-600 rounded-lg p-3 mt-3 flex-row justify-center"
-                  onPress={() => navigation.navigate('BookAppointment', { professionalId: prof.id })}
-                >
-                  <Text className="text-white text-sm">Reservar turno</Text>
-                </TouchableOpacity>
+                <Text className="text-sm text-gray-600 mt-2">{prof.informacionAdicional}</Text>
               </View>
             ))
           ) : (
