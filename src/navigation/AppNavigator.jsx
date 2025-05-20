@@ -10,12 +10,20 @@ import MedicalNotesScreen from '../screens/MedicalNotesScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import UserProfileScreen from '../screens/UserProfileScreen';
 import HealthTipsScreen from '../screens/HealthTipsScreen';
+import LoginScreen from "~/screens/LoginScreen";
+import RegisterScreen from "~/screens/RegisterScreen";
+import WelcomeScreen from "~/screens/WelcomeScreen";
+import SplashScreen from "~/screens/SplashScreen";
 
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Home">
+    <Stack.Navigator initialRouteName="Splash">
+      <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Appointments" component={AppointmentsScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Professionals" component={ProfessionalsScreen} options={{ headerShown: false }} />

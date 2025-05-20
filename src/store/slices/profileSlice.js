@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../api/api';
 
 export const fetchProfile = createAsyncThunk('profile/fetchProfile', async (userId) => {
+  console.log("Este debería entrar como fetchProfile");
   const response = await api.get(`/usuario/${userId}`);
   return response.data;
 });

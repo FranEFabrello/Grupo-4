@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProfessionals } from '../store/slices/professionalsSlice';
+import { fetchProfessionals } from "~/store/slices/professionalsSlice";
 import AppContainer from '../components/AppContainer';
 import QuickActions from '../components/QuickActions';
 import AppointmentCard from '../components/AppointmentCard';

@@ -1,19 +1,20 @@
+// App.js
 import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
-import { StyleSheet, Text } from "react-native";
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
-
 import AppNavigator from '~/navigation/AppNavigator';
 import store from '~/store';
-
 import "./global.css";
 
-// Configuración de linking para reflejar las pantallas en la URL
 const linking = {
   prefixes: ['http://localhost:8081'],
   config: {
     screens: {
+      Splash: 'splash',
+      Welcome: 'welcome',
+      Login: 'login',
+      Register: 'register',
       Home: '',
       Appointments: 'appointments',
       Professionals: 'professionals',
@@ -29,13 +30,19 @@ const linking = {
 };
 
 export default function App() {
+  console.log('App: Renderizando, iniciando con Splash');
   return (
     <Provider store={store}>
       <SafeAreaProvider>
-        <NavigationContainer linking={linking} fallback={<Text style={{ color: 'red' }}>Cargando... Error de navegación</Text>}>
+        <NavigationContainer>
           <AppNavigator />
         </NavigationContainer>
       </SafeAreaProvider>
     </Provider>
   );
 }
+
+
+/*linking={linking}
+          fallback={<Text style={{ color: 'red' }}>Cargando... Error de navegación</Text>}
+          onReady={() => console.log('NavigationContainer: Listo, debería mostrar Splash')}*/

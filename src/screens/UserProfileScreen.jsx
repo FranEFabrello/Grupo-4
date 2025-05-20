@@ -23,8 +23,14 @@ export default function UserProfileScreen({ navigation }) {
   const [genero, setGenero] = useState('');
   const [edad, setEdad] = useState('');
 
+  const [editable, setEditable] = useState(false);
+
+
+
   useEffect(() => {
-    dispatch(fetchProfile());
+    const userId = profile?.id || 'defaultUserId'; // Reemplaza con la lógica para obtener el ID del usuario
+    console.log(userId, "<- User id");
+    dispatch(fetchProfile(userId));
   }, [dispatch]);
 
 
@@ -45,7 +51,13 @@ export default function UserProfileScreen({ navigation }) {
     }
   }, [profile]);
 
+
   const handleEdit = () => {
+    if (!editable) {
+      setEditable(true);
+      return;
+    }
+
     if (!profile || !profile.correo) {
       alert("No se pudo identificar al usuario.");
       return;
@@ -66,7 +78,10 @@ export default function UserProfileScreen({ navigation }) {
 
     dispatch(updateProfile({ correo: profile.correo, updates }))
       .unwrap()
-      .then(() => alert("Información actualizada"))
+      .then(() => {
+        alert("Información actualizada");
+        setEditable(false);
+      })
       .catch(() => alert("Error al actualizar la información"));
   };
 
@@ -169,6 +184,7 @@ export default function UserProfileScreen({ navigation }) {
           </View>
         ) : profile ? (
           <>
+
             <View className="items-center mb-4">
               <View className="w-24 h-24 bg-blue-100 rounded-full justify-center items-center mb-2">
                 <Icon name="user" size={40} color="#4a6fa5" />
@@ -177,20 +193,29 @@ export default function UserProfileScreen({ navigation }) {
               <Text className="text-sm text-gray-600">{profile.correo}</Text>
             </View>
 
+            <View className="w-24 h-24 bg-blue-100 rounded-full justify-center items-center mb-2 overflow-hidden">
+              <TouchableOpacity>
+                <Icon name="user" size={40} color="#4a6fa5" />
+                <View style={{ position: 'absolute', bottom: 0, right: 0, backgroundColor: '#fff', borderRadius: 50 }}>
+                  <Icon name="pencil" size={16} color="#4a6fa5" />
+                </View>
+              </TouchableOpacity>
+            </View>
+
             <View className="bg-white rounded-lg p-4 mb-4 shadow-md">
               <Text className="text-base font-semibold text-gray-800 mb-4">Editar Información Personal</Text>
 
               <Text className="text-sm text-gray-800 mt-2">Nombre</Text>
-              <TextInput className="border-b border-gray-300 mb-2" value={nombre} onChangeText={setNombre} />
+              <TextInput className="border-b border-gray-300 mb-2" value={nombre} onChangeText={setNombre} editable={editable} />
 
               <Text className="text-sm text-gray-800">Apellido</Text>
-              <TextInput className="border-b border-gray-300 mb-2" value={apellido} onChangeText={setApellido} />
+              <TextInput className="border-b border-gray-300 mb-2" value={apellido} onChangeText={setApellido} editable={editable}/>
 
               <Text className="text-sm text-gray-800">DNI</Text>
-              <TextInput className="border-b border-gray-300 mb-2" value={dni} onChangeText={setDni} />
+              <TextInput className="border-b border-gray-300 mb-2" value={dni} onChangeText={setDni} editable={editable}/>
 
               <Text className="text-sm text-gray-800">Celular</Text>
-              <TextInput className="border-b border-gray-300 mb-2" value={celular} onChangeText={setCelular} />
+              <TextInput className="border-b border-gray-300 mb-2" value={celular} onChangeText={setCelular} editable={editable}/>
 
               <Text className="text-sm text-gray-800">Género</Text>
               <View className="border-b border-gray-300 mb-2">
@@ -209,7 +234,7 @@ export default function UserProfileScreen({ navigation }) {
                 className="bg-blue-600 rounded-lg p-3 flex-row justify-center mt-4"
                 onPress={handleEdit}
               >
-                <Text className="text-white text-sm">Guardar cambios</Text>
+                <Text className="text-white text-sm">{editable ? "Guardar cambios" : "Editar perfil"}</Text>
               </TouchableOpacity>
             </View>
 
