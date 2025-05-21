@@ -16,6 +16,20 @@ export const fetchUsuarios = createAsyncThunk(
   }
 );
 
+export const fetchUserByToken = createAsyncThunk(
+  'user/fetchUserByToken',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get('/usuario/info'); // No pasás el token manualmente
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Error al obtener el usuario por token');
+    }
+  }
+);
+
+
+
 export const actualizarUsuarioPorCorreo = createAsyncThunk(
   'user/actualizarUsuarioPorCorreo',
   async ({ correo, updates }, { rejectWithValue }) => {
@@ -66,17 +80,6 @@ export const actualizarFcmToken = createAsyncThunk(
   }
 );
 
-export const obtenerUsuarioPorId = createAsyncThunk(
-  'user/obtenerUsuarioPorId',
-  async (id, { rejectWithValue }) => {
-    try {
-      const response = await axios.get(`${API_URL}/usuario/${id}`);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || 'Error al obtener el usuario');
-    }
-  }
-);
 
 export const actualizarConfiguraciones = createAsyncThunk(
   'user/actualizarConfiguraciones',
@@ -162,12 +165,12 @@ const userSlice = createSlice({
       .addCase(actualizarUsuarioPorCorreo.fulfilled, (state, action) => {
         state.usuario = action.payload;
       })
-      .addCase(obtenerUsuarioPorId.fulfilled, (state, action) => {
-        state.usuario = action.payload;
-      })
       .addCase(cerrarSesion.fulfilled, (state) => {
         state.usuario = null;
-      });
+      })
+      .addCase(fetchUserByToken.fulfilled, (state, action) => {
+      state.usuario = action.payload;
+    })
   },
 });
 

@@ -23,6 +23,7 @@ const socialWorksSlice = createSlice({
   name: 'socialWorks',
   initialState: {
     obrasSociales: [],
+    obraSocialEspecifica: null,
     loading: false,
     error: null,
   },

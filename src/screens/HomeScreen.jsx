@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProfessionals } from "~/store/slices/professionalsSlice";
+import { fetchUserByToken } from "~/store/slices/userSlice";
 import AppContainer from '../components/AppContainer';
 import QuickActions from '../components/QuickActions';
 import AppointmentCard from '../components/AppointmentCard';
@@ -13,19 +14,19 @@ export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
   const { appointments, status: appointmentsStatus } = useSelector((state) => state.appointments);
   const { professionals, status: professionalsStatus } = useSelector((state) => state.professionals);
-  const { profile } = useSelector((state) => state.profile);
+  //const { profile } = useSelector((state) => state.profile);
+
 
   const usuario = useSelector((state) => state.user.usuario);
   const usuarioId = usuario?.id;
 
-  useEffect(() => {
-    dispatch(fetchProfessionals());
+    useEffect(() => {
+      if (!professionals || professionals.length === 0) {
+        dispatch(fetchProfessionals());
+      }
 
-    console.log("Id del usuario -> ", usuarioId);
-    if (usuarioId) {
-      dispatch(obtenerUsuarioPorId(usuarioId));
-    }
-  }, [dispatch]);
+      dispatch(fetchUserByToken());
+    }, [dispatch]);
 
   const quickActions = [
     { icon: 'calendar-plus', label: 'Reservar turno', screen: 'BookAppointment' },
@@ -41,7 +42,7 @@ export default function HomeScreen({ navigation }) {
       <ScrollView className="p-5">
         <View className="bg-white rounded-lg p-4 mb-4 shadow-md">
           <Text className="text-lg font-semibold text-gray-800">
-            Hola, {profile?.name || 'Usuario'}
+            Hola, {usuario?.nombre || 'Usuario'}
           </Text>
           <Text className="text-sm text-gray-600 mt-1">¿Qué necesitas hacer hoy?</Text>
           <QuickActions actions={quickActions} navigation={navigation} />

@@ -37,8 +37,8 @@ export default function RegisterScreen({ navigation }) {
   const obrasSociales = useSelector((state) => state.socialWork.obrasSociales);
   const dispatch = useDispatch();
 
-  const [mostrarPopup, setMostrarPopup] = useState(false);
-  const [token, setToken] = useState('');
+  //const [mostrarPopup, setMostrarPopup] = useState(false);
+  //const [token, setToken] = useState('');
 
 
 

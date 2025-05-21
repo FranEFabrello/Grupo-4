@@ -1,6 +1,7 @@
 // src/redux/slices/tokenSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const API_URL = 'http://localhost:4002/Tokens';
 
@@ -9,6 +10,10 @@ export const validarTokenRegistro = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${API_URL}/validarTokenRegistro`, data);
+      // Guarda el token si existe en la respuesta
+      if (response.data && response.data.token) {
+        await AsyncStorage.setItem('access_token', response.data.token);
+      }
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || { mensaje: 'Error al validar token de registro' });
