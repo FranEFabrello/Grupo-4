@@ -9,6 +9,7 @@ import profileReducer from './slices/profileSlice';
 import healthTipsReducer from './slices/healthTipsSlice';
 import socialWorksReducer from "~/store/slices/socialWorksSlice";
 import userSlice from "~/store/slices/userSlice";
+import tokenReducer from './slices/tokenSlice.js';
 
 
 export const store = configureStore({
@@ -22,7 +23,8 @@ export const store = configureStore({
     profile: profileReducer,
     healthTips: healthTipsReducer,
     socialWork: socialWorksReducer,
-    user: userSlice
+    user: userSlice,
+    tokens: tokenReducer,
   },
 });
 

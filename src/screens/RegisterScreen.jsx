@@ -21,7 +21,7 @@ export default function RegisterScreen({ navigation }) {
   const [step, setStep] = useState(1);
   const [nombre, setNombre] = useState('');
   const [apellido, setApellido] = useState('');
-  const [email, setEmail] = useState('');
+  const [correo, setCorreo] = useState('');
   const [contrasenia, setContrasenia] = useState('');
   const [repetirContrasenia, setRepetirContrasenia] = useState('');
   const [dni, setDni] = useState('');
@@ -30,18 +30,24 @@ export default function RegisterScreen({ navigation }) {
   const [edad, setEdad] = useState('');
   const [celular, setCelular] = useState('');
   const [obraSocial, setObraSocial] = useState('');
+  const [idObraSocial, setIdObraSocial] = useState('');
   const [imagenPerfil, setImagenPerfil] = useState(null);
   const [errores, setErrores] = useState({});
 
   const obrasSociales = useSelector((state) => state.socialWork.obrasSociales);
   const dispatch = useDispatch();
 
+  const [mostrarPopup, setMostrarPopup] = useState(false);
+  const [token, setToken] = useState('');
+
+
+
   // Validaciones paso 1
   const validarPaso1 = () => {
     let err = {};
     if (!nombre) err.nombre = 'El nombre es obligatorio';
     if (!apellido) err.apellido = 'El apellido es obligatorio';
-    if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) err.email = 'Email inválido';
+    if (!correo || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(correo)) err.correo = 'Correo inválido';
     if (!contrasenia || contrasenia.length < 6) err.contrasenia = 'Mínimo 6 caracteres';
     if (contrasenia !== repetirContrasenia) err.repetirContrasenia = 'Las contraseñas no coinciden';
     if (!dni) err.dni = 'El DNI es obligatorio';
@@ -71,23 +77,23 @@ export default function RegisterScreen({ navigation }) {
     const userData = {
       nombre,
       apellido,
-      email,
+      correo,
       contrasenia,
       dni,
       genero,
       fechaNacimiento,
       edad,
       celular,
-      obraSocial,
+      idObraSocial,
       imagenPerfil,
+      rol: "PACIENTE"
     };
 
     console.log("Datos del usuario:", userData);
     dispatch(register(userData))
       .unwrap()
       .then(() => {
-        Alert.alert('¡Registro exitoso!', 'Tu cuenta ha sido creada.');
-        navigation.replace('Home');
+        navigation.navigate("ConfirmarToken", { email: correo });
       })
       .catch((error) => {
         console.error("Error en el registro:", error);
@@ -102,7 +108,9 @@ export default function RegisterScreen({ navigation }) {
   };
 
   useEffect(() => {
-    dispatch(fetchObrasSociales())
+    if (!obrasSociales || obrasSociales.length === 0) {
+      dispatch(fetchObrasSociales());
+    }
   }, []);
 
   return (
@@ -116,8 +124,8 @@ export default function RegisterScreen({ navigation }) {
               {errores.nombre && <Text className="text-red-500 text-xs mb-1">{errores.nombre}</Text>}
               <TextInput className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-2 bg-white" placeholder="Apellido" value={apellido} onChangeText={setApellido} />
               {errores.apellido && <Text className="text-red-500 text-xs mb-1">{errores.apellido}</Text>}
-              <TextInput className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-2 bg-white" placeholder="Correo electrónico" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
-              {errores.email && <Text className="text-red-500 text-xs mb-1">{errores.email}</Text>}
+              <TextInput className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-2 bg-white" placeholder="Correo electrónico" value={correo} onChangeText={setCorreo} keyboardType="email-address" autoCapitalize="none" />
+              {errores.correo && <Text className="text-red-500 text-xs mb-1">{errores.correo}</Text>}
               <TextInput className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-2 bg-white" placeholder="Contraseña" value={contrasenia} onChangeText={setContrasenia} secureTextEntry />
               {errores.contrasenia && <Text className="text-red-500 text-xs mb-1">{errores.contrasenia}</Text>}
               <TextInput className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-2 bg-white" placeholder="Repetir contraseña" value={repetirContrasenia} onChangeText={setRepetirContrasenia} secureTextEntry />
@@ -177,7 +185,10 @@ export default function RegisterScreen({ navigation }) {
               <View className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-3 bg-white">
                 <Picker
                   selectedValue={obraSocial}
-                  onValueChange={setObraSocial}
+                  onValueChange={(value) => {
+                    setObraSocial(value);
+                    setIdObraSocial(value);
+                  }}
                 >
                   {obrasSociales.map((obra) => (
                     <Picker.Item

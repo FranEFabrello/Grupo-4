@@ -1,14 +1,25 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Keyboard } from "react-native";
+import { authenticate } from "~/store/slices/autheticationSlice";
+import { useDispatch } from "react-redux";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const dispatch = useDispatch();
+
   const handleLogin = () => {
-    // Lógica para manejar el inicio de sesión
     Keyboard.dismiss();
-    console.log('Iniciando sesión con:', email, password);
+    dispatch(authenticate({ email, password }))
+      .unwrap()
+      .then(() => {
+        navigation.navigate('Home');
+      })
+      .catch((error) => {
+        // Manejar error de autenticación
+        console.log('Error de autenticación:', error);
+      });
   };
 
   const handleRegister = () => {
