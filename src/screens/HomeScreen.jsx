@@ -7,6 +7,7 @@ import QuickActions from '../components/QuickActions';
 import AppointmentCard from '../components/AppointmentCard';
 import DoctorCard from '../components/DoctorCard';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { obtenerUsuarioPorId } from "~/store/slices/userSlice";
 
 export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -14,8 +15,16 @@ export default function HomeScreen({ navigation }) {
   const { professionals, status: professionalsStatus } = useSelector((state) => state.professionals);
   const { profile } = useSelector((state) => state.profile);
 
+  const usuario = useSelector((state) => state.user.usuario);
+  const usuarioId = usuario?.id;
+
   useEffect(() => {
     dispatch(fetchProfessionals());
+
+    console.log("Id del usuario -> ", usuarioId);
+    if (usuarioId) {
+      dispatch(obtenerUsuarioPorId(usuarioId));
+    }
   }, [dispatch]);
 
   const quickActions = [

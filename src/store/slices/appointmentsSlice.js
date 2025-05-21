@@ -28,6 +28,8 @@ export const bookAppointment = createAsyncThunk(
   }
 );
 
+
+
 const appointmentsSlice = createSlice({
   name: 'appointments',
   initialState: {
