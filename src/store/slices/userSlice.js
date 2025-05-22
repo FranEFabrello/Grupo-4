@@ -20,7 +20,8 @@ export const fetchUserByToken = createAsyncThunk(
   'user/fetchUserByToken',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get('/usuario/info'); // No pasás el token manualmente
+      const response = await axios.get('/usuario/info'); // No pasás el token manualmente
+      console.log('Respuesta de /usuario/info:', response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al obtener el usuario por token');
@@ -170,6 +171,7 @@ const userSlice = createSlice({
       })
       .addCase(fetchUserByToken.fulfilled, (state, action) => {
       state.usuario = action.payload;
+      //console.log('action.payload del usuario: ', state.usuario);
     })
   },
 });

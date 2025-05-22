@@ -8,6 +8,8 @@ import AppContainer from '../components/AppContainer';
 import ProfileField from '../components/ProfileField';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Picker } from '@react-native-picker/picker';
+import { fetchUserByToken } from "~/store/slices/userSlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function UserProfileScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -25,13 +27,18 @@ export default function UserProfileScreen({ navigation }) {
 
   const [editable, setEditable] = useState(false);
 
+  const usuario = useSelector((state) => state.user.usuario);
+
 
 
   useEffect(() => {
-    const userId = profile?.id || 'defaultUserId'; // Reemplaza con la lógica para obtener el ID del usuario
-    console.log(userId, "<- User id");
-    dispatch(fetchProfile(userId));
-  }, [dispatch]);
+    if (!usuario) {
+      console.log('No se encontró usuario en el store');
+      return;
+    }
+    console.log('Usuario desde el store:', usuario);
+    // Aquí puedes usar usuario.id o cualquier otra propiedad necesaria
+  }, [usuario]);
 
 
   /*

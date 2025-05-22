@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const API_URL = 'http://localhost:4002/Auth';
 
@@ -21,6 +22,11 @@ export const authenticate = createAsyncThunk(
   async (authData, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${API_URL}/authenticate`, authData);
+      const token = response.data.access_token;
+      if (token) {
+        await AsyncStorage.setItem('bearerToken', token);
+        console.log('token al iniciar sesion: ', token);
+      }
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al autenticar el usuario');
