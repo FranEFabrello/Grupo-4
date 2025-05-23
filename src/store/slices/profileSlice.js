@@ -8,7 +8,7 @@ export const fetchProfile = createAsyncThunk('profile/fetchProfile', async (user
 });
 
 export const updateProfile = createAsyncThunk('profile/updateProfile', async ({ correo, updates }) => {
-  const response = await api.patch(`/usuario/actualizarPorCorreo?correo=${encodeURIComponent(correo)}`, updates);
+  const response = await api.patch(`/Usuario/actualizarPorCorreo?correo=${encodeURIComponent(correo)}`, updates);
   return response.data;
 });
 
