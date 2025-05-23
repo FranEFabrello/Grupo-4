@@ -24,6 +24,7 @@ export default function UserProfileScreen({ navigation }) {
   const [celular, setCelular] = useState('');
   const [genero, setGenero] = useState('');
   const [edad, setEdad] = useState('');
+  const [foto, setFoto] = useState('');
 
   const [editable, setEditable] = useState(false);
 
