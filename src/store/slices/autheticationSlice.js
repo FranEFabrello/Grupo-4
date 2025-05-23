@@ -25,7 +25,7 @@ export const authenticate = createAsyncThunk(
       const token = response.data.access_token;
       if (token) {
         await AsyncStorage.setItem('bearerToken', token);
-        console.log('token al iniciar sesion: ', token);
+        //console.log('token al iniciar sesion: ', token);
       }
       return response.data;
     } catch (error) {

@@ -15,6 +15,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useDispatch, useSelector } from "react-redux";
 import { fetchObrasSociales } from "~/store/slices/socialWorksSlice";
 import { register } from '~/store/slices/autheticationSlice';
+import { uploadImageToFirebase } from "~/api/FirebaseConfig";
 
 export default function RegisterScreen({ navigation }) {
   // Paso y estados de campos
@@ -31,7 +32,7 @@ export default function RegisterScreen({ navigation }) {
   const [celular, setCelular] = useState('');
   const [obraSocial, setObraSocial] = useState('');
   const [idObraSocial, setIdObraSocial] = useState('');
-  const [imagenPerfil, setImagenPerfil] = useState(null);
+  const [urlImagenPerfil, setUrlImagenPerfil] = useState(null);
   const [errores, setErrores] = useState({});
 
   const obrasSociales = useSelector((state) => state.socialWork.obrasSociales);
@@ -39,6 +40,23 @@ export default function RegisterScreen({ navigation }) {
 
   //const [mostrarPopup, setMostrarPopup] = useState(false);
   //const [token, setToken] = useState('');
+
+  const handleImageChange = async (imageResult) => {
+    try {
+      if (!imageResult.canceled) {
+        const imageUri = imageResult.assets[0].uri;
+        // Subir la imagen a Firebase
+        const url = await uploadImageToFirebase(imageUri);
+        // Guardar la URL en el estado
+        setUrlImagenPerfil(url);
+        console.log("URL de la imagen:", url);
+      }
+    } catch (error) {
+      console.error("Error al procesar la imagen:", error);
+      Alert.alert("Error", "No se pudo subir la imagen. Por favor, intenta de nuevo.");
+    }
+  };
+
 
 
 
@@ -85,7 +103,7 @@ export default function RegisterScreen({ navigation }) {
       edad,
       celular,
       idObraSocial,
-      imagenPerfil,
+      urlImagenPerfil,
       rol: "PACIENTE"
     };
 
@@ -103,9 +121,21 @@ export default function RegisterScreen({ navigation }) {
   };
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, allowsEditing: true, aspect: [1, 1], quality: 0.5 });
-    if (!result.canceled) setImagenPerfil(result.assets[0].uri);
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.5
+      });
+
+      await handleImageChange(result);
+    } catch (error) {
+      console.error("Error al seleccionar la imagen:", error);
+      Alert.alert("Error", "No se pudo seleccionar la imagen");
+    }
   };
+
 
   useEffect(() => {
     if (!obrasSociales || obrasSociales.length === 0) {
@@ -200,9 +230,9 @@ export default function RegisterScreen({ navigation }) {
                 </Picker>
               </View>
               <TouchableOpacity className="w-full h-12 border border-gray-300 rounded-lg justify-center items-center mb-2 bg-white" onPress={pickImage}>
-                <Text className="text-gray-700">{imagenPerfil ? 'Cambiar imagen de perfil' : 'Agregar imagen de perfil (opcional)'}</Text>
+                <Text className="text-gray-700">{urlImagenPerfil ? 'Cambiar imagen de perfil' : 'Agregar imagen de perfil (opcional)'}</Text>
               </TouchableOpacity>
-              {imagenPerfil && <Image source={{ uri: imagenPerfil }} style={{ width: 80, height: 80, borderRadius: 40, marginBottom: 10 }} />}
+              {urlImagenPerfil && <Image source={{ uri: urlImagenPerfil }} style={{ width: 80, height: 80, borderRadius: 40, marginBottom: 10 }} onPress={handleImageChange} />}
               <View className="flex-row w-full justify-between">
                 <TouchableOpacity className="h-12 flex-1 bg-gray-300 rounded-lg justify-center items-center mr-2" onPress={handleBack}>
                   <Text className="text-gray-700 font-bold">Atrás</Text>

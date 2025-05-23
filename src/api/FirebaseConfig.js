@@ -4,13 +4,13 @@ import {getDownloadURL, getStorage, ref, uploadBytes} from "firebase/storage";
 
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBi-Gpf4Yvk5Nlqxmoske-u7jq_-HXuQaA",
+    apiKey: "AIzaSyBy30UnctzU_FGwYwUJeqsAtqFooqUlaZ4",
     authDomain: "uade-archivos.firebaseapp.com",
     projectId: "uade-archivos",
     storageBucket: "uade-archivos.appspot.com",
     messagingSenderId: "325779479632",
-    appId: "1:325779479632:web:af6530b47fd170964d4555",
-    measurementId: "G-RXMV9C4P82"
+    appId: "1:325779479632:web:8f41087d497258bb4d4555",
+    measurementId: "G-32LV0G41B1"
 };
 
 // Initialize Firebase

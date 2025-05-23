@@ -29,7 +29,7 @@ export const fetchUserByToken = createAsyncThunk(
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log('Respuesta de /usuario/info:', response.data);
+      //console.log('Respuesta de /usuario/info:', response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al obtener el usuario por token');
