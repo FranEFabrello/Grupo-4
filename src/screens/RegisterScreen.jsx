@@ -15,6 +15,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useDispatch, useSelector } from "react-redux";
 import { fetchObrasSociales } from "~/store/slices/socialWorksSlice";
 import { register } from '~/store/slices/autheticationSlice';
+import { uploadImageToFirebase } from "~/api/FirebaseConfig";
 
 export default function RegisterScreen({ navigation }) {
   // Paso y estados de campos
@@ -31,7 +32,7 @@ export default function RegisterScreen({ navigation }) {
   const [celular, setCelular] = useState('');
   const [obraSocial, setObraSocial] = useState('');
   const [idObraSocial, setIdObraSocial] = useState('');
-  const [imagenPerfil, setImagenPerfil] = useState(null);
+  const [urlimagenperfil, Seturlimagenperfil] = useState(null);
   const [errores, setErrores] = useState({});
 
   const obrasSociales = useSelector((state) => state.socialWork.obrasSociales);
@@ -40,7 +41,20 @@ export default function RegisterScreen({ navigation }) {
   //const [mostrarPopup, setMostrarPopup] = useState(false);
   //const [token, setToken] = useState('');
 
-
+  const handleImageChange = async (imageResult) => {
+    try {
+      if (!imageResult.canceled) {
+        const imageUri = imageResult.assets[0].uri;
+        // Subir la imagen a Firebase y obtener la URL
+        const url = await uploadImageToFirebase(imageUri);
+        Seturlimagenperfil(url);
+        console.log('URL de la imagen subida:', url);
+      }
+    } catch (error) {
+      console.error('Error al procesar la imagen:', error);
+      Alert.alert('Error', 'No se pudo subir la imagen. Por favor, intenta de nuevo.');
+    }
+  };
 
   // Validaciones paso 1
   const validarPaso1 = () => {
@@ -61,8 +75,8 @@ export default function RegisterScreen({ navigation }) {
   // Validaciones paso 2
   const validarPaso2 = () => {
     let err = {};
-    if (!celular) err.celular = 'El celular es obligatorio';
-    if (!obraSocial) err.obraSocial = 'La obra social es obligatoria';
+    if (!celular) err.celular = 'El celular es obligatorio', console.log(err);
+    if (!obraSocial) err.obraSocial = 'La obra social es obligatoria', console.log(err);
     setErrores(err);
     return Object.keys(err).length === 0;
   };
@@ -72,8 +86,14 @@ export default function RegisterScreen({ navigation }) {
   };
   const handleBack = () => setStep(1);
 
+
   const handleRegister = () => {
-    if (!validarPaso2()) return;
+    console.log("handleRegister fue ejecutado"); // <- PRUEBA
+    if (!validarPaso2()) {
+      console.log("validarPaso2 falló");        // <- PRUEBA
+      return;
+    }
+
     const userData = {
       nombre,
       apellido,
@@ -85,7 +105,7 @@ export default function RegisterScreen({ navigation }) {
       edad,
       celular,
       idObraSocial,
-      imagenPerfil,
+      urlimagenperfil,
       rol: "PACIENTE"
     };
 
@@ -97,15 +117,34 @@ export default function RegisterScreen({ navigation }) {
       })
       .catch((error) => {
         console.error("Error en el registro:", error);
-        Alert.alert('Error', 'Hubo un problema al registrar el usuario.');
+        Alert.alert('Error en el registro', JSON.stringify(error));
       });
-    console.log("Registrando usuario:", userData);
   };
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, allowsEditing: true, aspect: [1, 1], quality: 0.5 });
-    if (!result.canceled) setImagenPerfil(result.assets[0].uri);
+    try {
+      // Solicitar permisos para acceder a la galería
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permissionResult.granted) {
+        Alert.alert('Permiso denegado', 'Se necesita permiso para acceder a la galería.');
+        return;
+      }
+
+      // Seleccionar la imagen
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.5,
+      });
+
+      await handleImageChange(result);
+    } catch (error) {
+      console.error('Error al seleccionar la imagen:', error);
+      Alert.alert('Error', 'No se pudo seleccionar la imagen');
+    }
   };
+
 
   useEffect(() => {
     if (!obrasSociales || obrasSociales.length === 0) {
@@ -200,7 +239,7 @@ export default function RegisterScreen({ navigation }) {
                 </Picker>
               </View>
               <TouchableOpacity className="w-full h-12 border border-gray-300 rounded-lg justify-center items-center mb-2 bg-white" onPress={pickImage}>
-                <Text className="text-gray-700">{imagenPerfil ? 'Cambiar imagen de perfil' : 'Agregar imagen de perfil (opcional)'}</Text>
+                <Text className="text-gray-700">{urlimagenperfil ? 'Cambiar imagen de perfil' : 'Agregar imagen de perfil (opcional)'}</Text>
               </TouchableOpacity>
               {imagenPerfil && <Image source={{ uri: imagenPerfil }} style={{ width: 80, height: 80, borderRadius: 40, marginBottom: 10 }} />}
               <View className="flex-row w-full justify-between">
@@ -221,60 +260,3 @@ export default function RegisterScreen({ navigation }) {
     </KeyboardAvoidingView>
   );
 }
-
-
-/*
-
-const obrasSociales = useSelector((state) => state.socialWork.obrasSociales);
-  const dispatch = useDispatch();
-
-  const handleRegister = () => {
-    const userData = {
-      nombre,
-      apellido,
-      dni,
-      genero,
-      fechaNacimiento,
-      celular,
-      obraSocial,
-    };
-    dispatch(register(userData))
-      .unwrap()
-      .then(() => {
-        navigation.replace('Home');
-      })
-      .catch((error) => {
-        console.error("Error en el registro:", error);
-        // Podés mostrar un mensaje al usuario con un Alert, por ejemplo.
-      });
-    console.log("Registrando usuario:", userData);
-  };
-
-useEffect(() => {
-    dispatch(fetchObrasSociales());
-  }, []);
-
-<TextInput
-        className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-3 bg-white"
-        placeholder="Fecha de nacimiento (DD/MM/AAAA)"
-        value={fechaNacimiento}
-        onChangeText={setFechaNacimiento}
-        keyboardType="numeric"
-      />
-
-
-* <View className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-3 bg-white">
-        <Picker
-          selectedValue={obraSocial}
-          onValueChange={setObraSocial}
-        >
-          {obrasSociales.map((obra) => (
-            <Picker.Item
-              key={obra.id}
-              label={`${obra.tipoObraSocial} - ${obra.plan}`}
-              value={obra.id}
-            />
-          ))}
-        </Picker>
-      </View>
-* */
