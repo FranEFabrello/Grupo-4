@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import api from "~/api/api";
 
 const API_URL = 'http://localhost:4002/Usuario';
 
@@ -20,7 +22,13 @@ export const fetchUserByToken = createAsyncThunk(
   'user/fetchUserByToken',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get('/usuario/info'); // No pasás el token manualmente
+      const token = await AsyncStorage.getItem('bearerToken');
+      console.log('Token obtenido de AsyncStorage:', token);
+      const response = await api.get('Usuario/usuario/info', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       console.log('Respuesta de /usuario/info:', response.data);
       return response.data;
     } catch (error) {
