@@ -241,7 +241,7 @@ export default function RegisterScreen({ navigation }) {
               <TouchableOpacity className="w-full h-12 border border-gray-300 rounded-lg justify-center items-center mb-2 bg-white" onPress={pickImage}>
                 <Text className="text-gray-700">{urlimagenperfil ? 'Cambiar imagen de perfil' : 'Agregar imagen de perfil (opcional)'}</Text>
               </TouchableOpacity>
-              {imagenPerfil && <Image source={{ uri: imagenPerfil }} style={{ width: 80, height: 80, borderRadius: 40, marginBottom: 10 }} />}
+              {urlimagenperfil && <Image source={{ uri: urlimagenperfil }} style={{ width: 80, height: 80, borderRadius: 40, marginBottom: 10 }} onPress={handleImageChange} />}
               <View className="flex-row w-full justify-between">
                 <TouchableOpacity className="h-12 flex-1 bg-gray-300 rounded-lg justify-center items-center mr-2" onPress={handleBack}>
                   <Text className="text-gray-700 font-bold">Atrás</Text>
