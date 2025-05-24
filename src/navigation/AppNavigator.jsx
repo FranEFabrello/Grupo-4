@@ -17,6 +17,8 @@ import SplashScreen from "~/screens/SplashScreen";
 import ConfirmTokenRegisterScreen from "~/screens/ConfirmTokenRegisterScreen";
 import ChangePasswordScreen from "~/screens/ChangePasswordScreen";
 import HelpNeeded from "~/screens/HelpNeeded";
+import SecurityPolicyScreen from "~/screens/SecurityPolicyScreen";
+import NotificationsScreen from "~/screens/NotificationsScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -38,6 +40,8 @@ export default function AppNavigator() {
       <Stack.Screen name="UserProfile" component={UserProfileScreen} options={{ headerShown: false }} />
       <Stack.Screen name="HealthTips" component={HealthTipsScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Help" component={HelpNeeded} options={{ headerShown: false }} />
+        <Stack.Screen name="SecurityPolicy" component={SecurityPolicyScreen} options={{ title: 'Política de Seguridad' }} />
+        <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ title: 'Notificaciones' }} />
       <Stack.Screen name="ConfirmarToken" component={ConfirmTokenRegisterScreen} options={{ headerShown: false }} />
       <Stack.Screen name="CambioContrasenia" component={ChangePasswordScreen} options={{ headerShown: false }} />
     </Stack.Navigator>

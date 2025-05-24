@@ -3,8 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { enviarMensajeAyuda } from "~/store/slices/userSlice";
 import { Alert, TextInput, TouchableOpacity, View, Text } from 'react-native';
 import AppContainer from "~/components/AppContainer";
+import { useNavigation } from '@react-navigation/native';
 
 export default function HelpNeeded() {
+  const navigation = useNavigation();
   const [mensaje, setMensaje] = useState('');
   const dispatch = useDispatch();
   const usuario = useSelector(state => state.user.usuario);

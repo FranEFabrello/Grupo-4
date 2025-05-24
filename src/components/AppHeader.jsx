@@ -18,7 +18,7 @@ export default function AppHeader({ navigation, screenTitle }) {
         <Text className="ml-2 text-lg font-semibold text-blue-600">{screenTitle}</Text>
       </View>
       <View className="flex-row">
-        <TouchableOpacity onPress={() => alert('Notificaciones')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
           <Icon name="bell" size={20} color="#6c757d" />
         </TouchableOpacity>
       </View>
