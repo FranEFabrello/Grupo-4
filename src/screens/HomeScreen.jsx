@@ -84,6 +84,8 @@ export default function HomeScreen({ navigation }) {
                 <DoctorCard
                   name={`${doctor.nombre} ${doctor.apellido}`}
                   specialty={doctor.informacionAdicional}
+                  stars={doctor.calificacionPromedio > 0 ? doctor.calificacionPromedio : null}
+                  noRating={doctor.calificacionPromedio === 0}
                   onBook={() => navigation.navigate('BookAppointment', { professionalId: doctor.id })}
                   containerClassName="w-64"
                 />

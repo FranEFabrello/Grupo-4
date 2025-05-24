@@ -118,7 +118,7 @@ export const cerrarSesion = createAsyncThunk(
   'user/cerrarSesion',
   async (usuarioId, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${API_URL}/cerrarSesion`, { usuarioId });
+      const response = await api.post(`/cerrarSesion`, { usuarioId });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al cerrar la sesión');

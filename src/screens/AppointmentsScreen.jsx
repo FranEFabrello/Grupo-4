@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Text, TouchableOpacity } from 'react-native';
+import { View, ScrollView, Text, TouchableOpacity, Modal, Pressable } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAppointments } from "~/store/slices/appointmentsSlice";
+import { fetchAppointments } from '~/store/slices/appointmentsSlice';
 import AppContainer from '../components/AppContainer';
 import AppointmentCard from '../components/AppointmentCard';
 import FilterButton from '../components/FilterButton';
 import TabButton from '../components/TabButton';
+import Calendar from '../components/Calendar';
+import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import AppointmentsCalendar from "~/components/AppointmentsCalendar";
+
 
 export default function AppointmentsScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -14,15 +18,58 @@ export default function AppointmentsScreen({ navigation }) {
   const appointments = useSelector((state) => state.appointments.appointmentsByUser);
   const usuarioId = useSelector((state) => state.user.usuario?.id);
 
+  // Estado para el modal de filtros por fecha
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+
   useEffect(() => {
     if (usuarioId) {
       dispatch(fetchAppointments(usuarioId));
     }
-  }, [dispatch]);
+  }, [dispatch, usuarioId]);
 
-  const upcomingAppointments = (appointments || []).filter((appt) => appt.status === 'PENDIENTE' || (new Date(appt.date) >= new Date() && !appt.status));
-  const pastAppointments = (appointments || []).filter((appt) => appt.status === 'COMPLETADO' || (new Date(appt.date) < new Date() && !appt.status));
-  const cancelledAppointments = (appointments || []).filter((appt) => appt.status === 'CANCELADO');
+  // Filtrado por rango de fechas si hay filtro activo
+  const filterByDateRange = (list) => {
+    if (!startDate && !endDate) return list;
+    return list.filter((appt) => {
+      const apptDate = new Date(appt.date);
+      if (startDate && apptDate < startDate) return false;
+      return !(endDate && apptDate > endDate);
+
+    });
+  };
+
+  const upcomingAppointments = filterByDateRange(
+    (appointments || []).filter(
+      (appt) => appt.status === 'PENDIENTE' || (new Date(appt.date) >= new Date() && !appt.status)
+    )
+  );
+  const pastAppointments = filterByDateRange(
+    (appointments || []).filter(
+      (appt) => appt.status === 'COMPLETADO' || (new Date(appt.date) < new Date() && !appt.status)
+    )
+  );
+  const cancelledAppointments = filterByDateRange(
+    (appointments || []).filter((appt) => appt.status === 'CANCELADO')
+  );
+
+  // Lógica para seleccionar rango en el calendario
+  const handleSelectDate = (date) => {
+    console.log('Fecha seleccionada en el calendario:', date);
+    if (!startDate || (startDate && endDate)) {
+      setStartDate(date);
+      setEndDate(null);
+      console.log('Nuevo rango:', { startDate: date, endDate: null });
+    } else if (date < startDate) {
+      setStartDate(date);
+      setEndDate(null);
+      console.log('Nuevo rango:', { startDate: date, endDate: null });
+    } else {
+      setEndDate(date);
+      console.log('Nuevo rango:', { startDate, endDate: date });
+    }
+  };
 
   return (
     <AppContainer navigation={navigation} screenTitle="Mis Turnos">
@@ -30,8 +77,16 @@ export default function AppointmentsScreen({ navigation }) {
         <View className="bg-white rounded-lg p-4 mb-4 shadow-md">
           <View className="flex-row justify-between items-center mb-4">
             <Text className="text-lg font-semibold text-gray-800">Mis Turnos</Text>
-            <FilterButton onPress={() => alert('Filtrar turnos')} />
+            <FilterButton onPress={() => setShowFilterModal(true)} />
           </View>
+          {/* Mostrar rango de fechas seleccionado debajo del título y botón filtrar */}
+          {(startDate || endDate) && (
+            <View className="mb-2">
+              <Text className="text-blue-600 text-sm">
+                {`Filtrando por: ${startDate ? startDate.toLocaleDateString('es') : '-'}${endDate ? ' al ' + endDate.toLocaleDateString('es') : ''}`}
+              </Text>
+            </View>
+          )}
           <View className="mb-4 flex-row justify-between" style={{ width: '100%' }}>
             <TabButton
               label="Próximos"
@@ -107,6 +162,163 @@ export default function AppointmentsScreen({ navigation }) {
           )}
         </View>
       </ScrollView>
+
+      {/* Modal para filtrar por rango de fechas */}
+      <Modal
+        visible={showFilterModal}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setShowFilterModal(false)}
+      >
+        <Pressable onPress={Keyboard.dismiss} style={{ flex: 1 }}>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: 'rgba(0,0,0,0.2)',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <KeyboardAvoidingView
+              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+              style={{ width: '90%' }}
+            >
+              <View style={{ backgroundColor: '#fff', borderRadius: 16, padding: 20 }}>
+                <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 20 }}>
+                  Filtrar por rango de fechas
+                </Text>
+
+                <View style={{ marginBottom: 20 }}>
+                  <Text style={{ color: '#1F2937', fontWeight: 'bold', marginBottom: 10 }}>
+                    Selecciona el rango de fechas
+                  </Text>
+
+                  <AppointmentsCalendar
+                    selectedDate={startDate}
+                    endDate={endDate}
+                    onSelectDate={handleSelectDate}
+                  />
+
+                  <View
+                    style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}
+                  >
+                    <Text style={{ color: '#2563EB' }}>
+                      {startDate ? `Inicio: ${startDate.toLocaleDateString('es')}` : 'Inicio: -'}
+                    </Text>
+                    <Text style={{ color: '#2563EB' }}>
+                      {endDate ? `Fin: ${endDate.toLocaleDateString('es')}` : 'Fin: -'}
+                    </Text>
+                  </View>
+                </View>
+
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: '#2563EB',
+                    padding: 15,
+                    borderRadius: 10,
+                    alignItems: 'center',
+                  }}
+                  onPress={() => {
+                    console.log('Aplicar filtro presionado', { startDate, endDate });
+                    setShowFilterModal(false);
+                  }}
+                >
+                  <Text style={{ color: '#fff', fontWeight: 'bold' }}>Aplicar filtro</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{ marginTop: 10, alignItems: 'center' }}
+                  onPress={() => {
+                    console.log('Limpiar filtro presionado');
+                    setStartDate(null);
+                    setEndDate(null);
+                    setShowFilterModal(false);
+                  }}
+                >
+                  <Text style={{ color: '#2563EB', fontWeight: 'bold' }}>Limpiar filtro</Text>
+                </TouchableOpacity>
+              </View>
+            </KeyboardAvoidingView>
+          </View>
+        </Pressable>
+      </Modal>
+
     </AppContainer>
   );
 }
+
+/*
+import React, { useState, useEffect } from 'react';
+import { View, ScrollView, Text, TouchableOpacity, Modal } from 'react-native';
+
+export default function AppointmentsScreen({ navigation }) {
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [selectedEspecialidad, setSelectedEspecialidad] = useState(null);
+  const [selectedStars, setSelectedStars] = useState(null);
+
+
+{/!* Modal de filtros *!/}
+<Modal
+  visible={showFilterModal}
+  animationType="slide"
+  transparent
+  onRequestClose={() => setShowFilterModal(false)}
+>
+  <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.2)', justifyContent: 'center', alignItems: 'center' }}>
+    <View style={{ backgroundColor: '#fff', borderRadius: 16, padding: 20, width: '90%' }}>
+      <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 10 }}>Filtrar por especialidad</Text>
+      <ScrollView horizontal showsHorizontalScrollIndicator style={{ marginBottom: 10 }}>
+        {['Clínica', 'Pediatría', 'Cardiología', 'Dermatología', 'Traumatología', 'Oftalmología', 'Ginecología', 'Neurología'].map((esp, idx) => (
+          <TouchableOpacity
+            key={esp}
+            style={{
+              padding: 10,
+              backgroundColor: selectedEspecialidad === esp ? '#2563EB' : '#E5E7EB',
+              borderRadius: 20,
+              marginRight: 10,
+            }}
+            onPress={() => setSelectedEspecialidad(esp)}
+          >
+            <Text style={{ color: selectedEspecialidad === esp ? '#fff' : '#1F2937' }}>{esp}</Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+      <View style={{ height: 2, backgroundColor: '#2563EB', marginBottom: 20 }} />
+
+      <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 10 }}>Filtrar por estrellas</Text>
+      <ScrollView horizontal showsHorizontalScrollIndicator>
+        {[1, 2, 3, 4, 5].map((star) => (
+          <TouchableOpacity
+            key={star}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              padding: 10,
+              backgroundColor: selectedStars === star ? '#2563EB' : '#E5E7EB',
+              borderRadius: 20,
+              marginRight: 10,
+            }}
+            onPress={() => setSelectedStars(star)}
+          >
+            <Text style={{ color: selectedStars === star ? '#fff' : '#1F2937', marginRight: 5 }}>{star}</Text>
+            {/!* Puedes usar tu icono de estrella aquí *!/}
+            <Text style={{ color: selectedStars === star ? '#FFD700' : '#A0AEC0' }}>★</Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+      <View style={{ height: 2, backgroundColor: '#2563EB', marginVertical: 20 }} />
+
+      <TouchableOpacity
+        style={{
+          backgroundColor: '#2563EB',
+          padding: 15,
+          borderRadius: 10,
+          alignItems: 'center',
+        }}
+        onPress={() => setShowFilterModal(false)}
+      >
+        <Text style={{ color: '#fff', fontWeight: 'bold' }}>Aplicar filtros</Text>
+      </TouchableOpacity>
+    </View>
+  </View>
+</Modal>
+</AppContainer>*/

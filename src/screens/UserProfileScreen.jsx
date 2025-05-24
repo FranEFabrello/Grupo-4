@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, ScrollView, Text, TouchableOpacity, Switch, TextInput } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProfile, updateProfile } from "~/store/slices/profileSlice";
-import { logout } from "~/store/slices/authSlice";
+import { cerrarSesion } from "~/store/slices/userSlice";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AppContainer from '../components/AppContainer';
 import ProfileField from '../components/ProfileField';
@@ -74,6 +74,7 @@ export default function UserProfileScreen({ navigation }) {
     if (genero !== usuario.genero) updates.genero = genero;
 
     if (Object.keys(updates).length === 0) {
+      setEditable(false);
       alert("No se hicieron cambios.");
       return;
     }
@@ -91,6 +92,15 @@ export default function UserProfileScreen({ navigation }) {
     dispatch(updateProfile({ notifications, darkMode }));
     alert('Información actualizada');
   };*/
+
+  // Handler para cerrar sesión
+  const handleLogout = () => {
+    if (usuario && usuario.correo) {
+      dispatch(cerrarSesion({ correo: usuario.correo }));
+    } else {
+      dispatch(cerrarSesion());
+    }
+  }
 
   const fallbackProfile = {
     name: 'Usuario de Prueba',
@@ -117,7 +127,6 @@ export default function UserProfileScreen({ navigation }) {
           </View>
         ) : usuario ? (
           <>
-
             <View className="items-center mb-4">
               <View className="w-24 h-24 bg-blue-100 rounded-full justify-center items-center mb-2">
                 <Icon name="user" size={40} color="#4a6fa5" />
@@ -130,23 +139,52 @@ export default function UserProfileScreen({ navigation }) {
               <Text className="text-base font-semibold text-gray-800 mb-4">Editar Información Personal</Text>
 
               <Text className="text-sm text-gray-800 mt-2">Nombre</Text>
-              <TextInput className="border-b border-gray-300 mb-2" value={nombre} onChangeText={setNombre} editable={editable} />
+              <TextInput
+                className="border-b border-gray-300 mb-2"
+                value={nombre}
+                onChangeText={setNombre}
+                editable={editable}
+                style={{ color: editable ? '#1a202c' : '#a0aec0' }}
+              />
 
               <Text className="text-sm text-gray-800">Apellido</Text>
-              <TextInput className="border-b border-gray-300 mb-2" value={apellido} onChangeText={setApellido} editable={editable}/>
+              <TextInput
+                className="border-b border-gray-300 mb-2"
+                value={apellido}
+                onChangeText={setApellido}
+                editable={editable}
+                style={{ color: editable ? '#1a202c' : '#a0aec0' }}
+              />
 
               <Text className="text-sm text-gray-800">DNI</Text>
-              <TextInput className="border-b border-gray-300 mb-2" value={dni} onChangeText={setDni} editable={editable}/>
+              <TextInput
+                className="border-b border-gray-300 mb-2"
+                value={dni}
+                onChangeText={setDni}
+                editable={editable}
+                style={{ color: editable ? '#1a202c' : '#a0aec0' }}
+              />
 
               <Text className="text-sm text-gray-800">Celular</Text>
-              <TextInput className="border-b border-gray-300 mb-2" value={celular} onChangeText={setCelular} editable={editable}/>
+              <TextInput
+                className="border-b border-gray-300 mb-2"
+                value={celular}
+                onChangeText={setCelular}
+                editable={editable}
+                style={{ color: editable ? '#1a202c' : '#a0aec0' }}
+              />
 
               <Text className="text-sm text-gray-800">Género</Text>
               <View className="border-b border-gray-300 mb-2">
                 <Picker
                   selectedValue={genero}
                   onValueChange={setGenero}
-                  style={{ height: 40 }}
+                  style={{
+                    height: 40,
+                    color: editable ? '#1a202c' : '#a0aec0',
+                    backgroundColor: 'transparent'
+                  }}
+                  enabled={editable}
                 >
                   <Picker.Item label="Masculino" value="masculino" />
                   <Picker.Item label="Femenino" value="femenino" />
@@ -165,9 +203,10 @@ export default function UserProfileScreen({ navigation }) {
             <View className="bg-white rounded-lg p-4 shadow-md">
               <TouchableOpacity
                 className="bg-red-500 rounded-lg p-3 flex-row justify-center"
-                onPress={() => dispatch(logout())}
+                onPress={() => {handleLogout()}}
               >
                 <Text className="text-white text-sm">Cerrar sesión</Text>
+
               </TouchableOpacity>
             </View>
           </>

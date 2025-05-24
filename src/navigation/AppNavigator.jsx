@@ -40,8 +40,8 @@ export default function AppNavigator() {
       <Stack.Screen name="UserProfile" component={UserProfileScreen} options={{ headerShown: false }} />
       <Stack.Screen name="HealthTips" component={HealthTipsScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Help" component={HelpNeeded} options={{ headerShown: false }} />
-        <Stack.Screen name="SecurityPolicy" component={SecurityPolicyScreen} options={{ title: 'Política de Seguridad' }} />
-        <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ title: 'Notificaciones' }} />
+        <Stack.Screen name="SecurityPolicy" component={SecurityPolicyScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: false }} />
       <Stack.Screen name="ConfirmarToken" component={ConfirmTokenRegisterScreen} options={{ headerShown: false }} />
       <Stack.Screen name="CambioContrasenia" component={ChangePasswordScreen} options={{ headerShown: false }} />
     </Stack.Navigator>

@@ -10,6 +10,8 @@ import healthTipsReducer from './slices/healthTipsSlice';
 import socialWorksReducer from "~/store/slices/socialWorksSlice";
 import userSlice from "~/store/slices/userSlice";
 import tokenReducer from './slices/tokenSlice.js';
+import medicalSpecialitiesReducer from './slices/medicalSpecialitiesSlice.js';
+import notificationSlice from "~/store/slices/notificationSlice";
 
 
 export const store = configureStore({
@@ -25,6 +27,8 @@ export const store = configureStore({
     socialWork: socialWorksReducer,
     user: userSlice,
     tokens: tokenReducer,
+    medicalSpecialities: medicalSpecialitiesReducer,
+    notifications: notificationSlice,
   },
 });
 
