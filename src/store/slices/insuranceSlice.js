@@ -1,8 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../api/api';
 
-export const fetchInsurance = createAsyncThunk('insurance/fetchInsurance', async () => {
-  const response = await api.get('/insurance');
+export const fetchInsurance = createAsyncThunk('insurance/fetchInsurance', async (id)  => {
+  const response = await api.get(`/obrasSociales/${id}`);
+  console.log('fetchInsurance: Obteniendo información de obra social', response.data);
   return response.data;
 });
 

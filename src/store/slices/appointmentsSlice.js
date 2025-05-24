@@ -1,6 +1,16 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../api/api';
 
+export const fetchAppointments = createAsyncThunk(
+  'appointments/fetchAppointments',
+  async (usuarioId) => {
+    const response = await api.get(`/turnos/usuario/${usuarioId}/todos`);
+    console.log('Response de turnos:', response.data);
+    return response.data;
+  }
+);
+
+
 // Obtener días disponibles para un doctor
 export const fetchAvailableDays = createAsyncThunk(
   'appointments/fetchAvailableDays',
@@ -35,6 +45,7 @@ const appointmentsSlice = createSlice({
   initialState: {
     availableDays: [],
     availableTimeSlots: [],
+    appointmentsByUser: [],
     status: 'idle',
     error: null,
   },
@@ -69,6 +80,10 @@ const appointmentsSlice = createSlice({
       })
       .addCase(bookAppointment.fulfilled, (state, action) => {
         // No hace falta guardar el turno en el store en este caso
+      })
+      .addCase(fetchAppointments.fulfilled, (state,action) => {
+        state.status = 'succeeded';
+        state.appointmentsByUser = action.payload;
       });
   },
 });

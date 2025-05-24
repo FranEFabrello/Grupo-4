@@ -25,7 +25,7 @@ export default function ProfileScreen({ navigation }) {
     { icon: 'user-cog', label: 'Editar perfil', screen: 'UserProfile' },
     { icon: 'hospital-user', label: 'Obra social', screen: 'Insurance' },
     { icon: 'file-medical', label: 'Resultados médicos', screen: 'Results' },
-    { icon: 'question-circle', label: 'Ayuda', screen: '' },
+    { icon: 'question-circle', label: 'Ayuda', screen: 'Help' },
     { icon: 'shield-alt', label: 'Privacidad', screen: '' },
   ];
 

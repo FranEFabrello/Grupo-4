@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Text, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAppointments } from '../store/slices/appointmentsSlice';
+import { fetchAppointments } from "~/store/slices/appointmentsSlice";
 import AppContainer from '../components/AppContainer';
 import AppointmentCard from '../components/AppointmentCard';
 import FilterButton from '../components/FilterButton';
@@ -9,16 +9,20 @@ import TabButton from '../components/TabButton';
 
 export default function AppointmentsScreen({ navigation }) {
   const dispatch = useDispatch();
-  const { appointments, status } = useSelector((state) => state.appointments);
+  const { status } = useSelector((state) => state.appointments);
   const [activeTab, setActiveTab] = useState('upcoming');
+  const appointments = useSelector((state) => state.appointments.appointmentsByUser);
+  const usuarioId = useSelector((state) => state.user.usuario?.id);
 
   useEffect(() => {
-    dispatch(fetchAppointments());
+    if (usuarioId) {
+      dispatch(fetchAppointments(usuarioId));
+    }
   }, [dispatch]);
 
-  const upcomingAppointments = appointments.filter((appt) => appt.status === 'upcoming' || (new Date(appt.date) >= new Date() && !appt.status));
-  const pastAppointments = appointments.filter((appt) => appt.status === 'past' || (new Date(appt.date) < new Date() && !appt.status));
-  const cancelledAppointments = appointments.filter((appt) => appt.status === 'cancelled');
+  const upcomingAppointments = (appointments || []).filter((appt) => appt.status === 'PENDIENTE' || (new Date(appt.date) >= new Date() && !appt.status));
+  const pastAppointments = (appointments || []).filter((appt) => appt.status === 'COMPLETADO' || (new Date(appt.date) < new Date() && !appt.status));
+  const cancelledAppointments = (appointments || []).filter((appt) => appt.status === 'CANCELADO');
 
   return (
     <AppContainer navigation={navigation} screenTitle="Mis Turnos">

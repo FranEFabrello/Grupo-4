@@ -1,17 +1,23 @@
 import React, { useEffect } from 'react';
 import { View, ScrollView, Text, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchInsurance } from '../store/slices/insuranceSlice';
+import { fetchInsurance } from "~/store/slices/insuranceSlice";
 import AppContainer from '../components/AppContainer';
 import ProfileField from '../components/ProfileField';
 
 export default function InsuranceScreen({ navigation }) {
   const dispatch = useDispatch();
-  const { insurance, status } = useSelector((state) => state.insurance);
+  const { status } = useSelector((state) => state.insurance);
+  const insurance = useSelector((state) => state.insurance.insurance);
+  const usuario = useSelector((state) => state.user.usuario);
 
   useEffect(() => {
-    dispatch(fetchInsurance());
-  }, [dispatch]);
+    console.log("Id de la obra social: ",usuario.idObraSocial)
+    if (usuario?.obraSocialId) {
+      dispatch(fetchInsurance(usuario.obraSocialId));
+      console.log('InsuranceScreen: Cargando información de obra social', usuario.obraSocialId);
+    }
+  }, [dispatch, usuario?.obraSocialId]);
 
   return (
     <AppContainer navigation={navigation} screenTitle="Obra Social">
@@ -23,28 +29,18 @@ export default function InsuranceScreen({ navigation }) {
           ) : insurance ? (
             <>
               <ProfileField label="Plan" value={insurance.plan} />
-              <ProfileField label="Número de afiliado" value={insurance.affiliateNumber} />
-              <ProfileField label="Titular" value={insurance.holder} />
-              <ProfileField label="Vencimiento" value={insurance.expiration} />
-              <TouchableOpacity
-                className="bg-blue-600 rounded-lg p-3 flex-row justify-center"
-                onPress={() => alert('Mostrando credencial')}
-              >
-                <Text className="text-white text-sm">Mostrar credencial</Text>
-              </TouchableOpacity>
+              <ProfileField label="Tipo de Obra Social" value={insurance.tipoObraSocial} />
             </>
           ) : (
             <Text className="text-sm text-gray-600">No hay información disponible</Text>
           )}
         </View>
-        {insurance?.coverage && (
-          <View className="bg-white rounded-lg p-4 shadow-md">
-            <Text className="text-base font-semibold text-gray-800 mb-4">Cobertura médica</Text>
-            {insurance.coverage.map((item, index) => (
-              <ProfileField key={index} label={item.label} value={item.value} />
-            ))}
-          </View>
-        )}
+        <TouchableOpacity
+          className="bg-blue-600 rounded-lg py-2 px-4 mt-4 flex-row justify-center items-center shadow-md"
+          onPress={() => navigation.navigate('Profile')}
+        >
+          <Text className="text-white text-sm font-semibold">Volver</Text>
+        </TouchableOpacity>
       </ScrollView>
     </AppContainer>
   );
