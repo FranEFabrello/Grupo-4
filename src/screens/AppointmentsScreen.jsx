@@ -18,6 +18,8 @@ export default function AppointmentsScreen({ navigation }) {
   const appointments = useSelector((state) => state.appointments.appointmentsByUser);
   const usuarioId = useSelector((state) => state.user.usuario?.id);
 
+  //console.log("Turnos traido desde la pantalla usuario: ",appointments)
+
   // Estado para el modal de filtros por fecha
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [startDate, setStartDate] = useState(null);
@@ -40,20 +42,6 @@ export default function AppointmentsScreen({ navigation }) {
     });
   };
 
-  const upcomingAppointments = filterByDateRange(
-    (appointments || []).filter(
-      (appt) => appt.status === 'PENDIENTE' || (new Date(appt.date) >= new Date() && !appt.status)
-    )
-  );
-  const pastAppointments = filterByDateRange(
-    (appointments || []).filter(
-      (appt) => appt.status === 'COMPLETADO' || (new Date(appt.date) < new Date() && !appt.status)
-    )
-  );
-  const cancelledAppointments = filterByDateRange(
-    (appointments || []).filter((appt) => appt.status === 'CANCELADO')
-  );
-
   // Lógica para seleccionar rango en el calendario
   const handleSelectDate = (date) => {
     console.log('Fecha seleccionada en el calendario:', date);
@@ -71,6 +59,63 @@ export default function AppointmentsScreen({ navigation }) {
     }
   };
 
+  const upcomingAppointments = (appointments || [])
+    .filter((appt) => {
+      // Filtra por estado y fecha futura
+      if (appt.estado !== 'PENDIENTE' && appt.estado !== 'CONFIRMADO') {
+        return false;
+      }
+      const apptDate = new Date(appt.fecha);
+      const today = new Date();
+      apptDate.setHours(0, 0, 0, 0);
+      today.setHours(0, 0, 0, 0);
+      return !isNaN(apptDate) && apptDate.getTime() >= today.getTime();
+    })
+    .filter((appt) => {
+      // Aplica el filtro de rango de fechas (AND)
+      if (!startDate && !endDate) return true;
+      const apptDate = new Date(appt.fecha);
+      if (startDate && apptDate < startDate) return false;
+      if (endDate && apptDate > endDate) return false;
+      return true;
+    });
+
+  console.log('upcomingAppointments', upcomingAppointments);
+
+  const pastAppointments = (appointments || [])
+    .filter((appt) => {
+      // Filtra por estado confirmado y fecha pasada
+      if (appt.estado !== 'CONFIRMADO') {
+        return false;
+      }
+      const apptDate = new Date(appt.fecha);
+      const today = new Date();
+      apptDate.setHours(0, 0, 0, 0);
+      today.setHours(0, 0, 0, 0);
+      return !isNaN(apptDate) && apptDate.getTime() < today.getTime();
+    })
+    .filter((appt) => {
+      // Aplica el filtro de rango de fechas (AND)
+      if (!startDate && !endDate) return true;
+      const apptDate = new Date(appt.fecha);
+      if (startDate && apptDate < startDate) return false;
+      if (endDate && apptDate > endDate) return false;
+      return true;
+    });
+
+  const cancelledAppointments = (appointments || [])
+    .filter((appt) => appt.estado === 'CANCELADO')
+    .filter((appt) => {
+      // Aplica el filtro de rango de fechas (AND)
+      if (!startDate && !endDate) return true;
+      const apptDate = new Date(appt.fecha);
+      if (startDate && apptDate < startDate) return false;
+      if (endDate && apptDate > endDate) return false;
+      return true;
+    });
+
+
+
   return (
     <AppContainer navigation={navigation} screenTitle="Mis Turnos">
       <ScrollView className="p-5">
@@ -79,7 +124,6 @@ export default function AppointmentsScreen({ navigation }) {
             <Text className="text-lg font-semibold text-gray-800">Mis Turnos</Text>
             <FilterButton onPress={() => setShowFilterModal(true)} />
           </View>
-          {/* Mostrar rango de fechas seleccionado debajo del título y botón filtrar */}
           {(startDate || endDate) && (
             <View className="mb-2">
               <Text className="text-blue-600 text-sm">
@@ -111,11 +155,12 @@ export default function AppointmentsScreen({ navigation }) {
               upcomingAppointments.map((appt, index) => (
                 <AppointmentCard
                   key={index}
-                  day={new Date(appt.date).toLocaleDateString('es', { weekday: 'short' })}
-                  time={appt.time}
-                  doctor={appt.doctor}
-                  specialty={appt.specialty}
-                  location={appt.location}
+                  day={new Date(appt.fecha).toLocaleDateString('es', { weekday: 'short', day: 'numeric', month: 'short' })}
+                  time={`${appt.horaInicio} - ${appt.horaFin}`}
+                  doctor={appt.doctorNombre ? appt.doctorNombre : appt.doctorId ? `Dr. ${appt.doctorId}` : ''}
+                  specialty={appt.especialidad || appt.specialty || ''}
+                  location={appt.ubicacion || appt.location || ''}
+                  status={appt.estado}
                   onCancel={() => alert('Turno cancelado')}
                 />
               ))
@@ -127,11 +172,12 @@ export default function AppointmentsScreen({ navigation }) {
               pastAppointments.map((appt, index) => (
                 <View key={index} className="mb-6">
                   <AppointmentCard
-                    day={new Date(appt.date).toLocaleDateString('es', { day: 'numeric', month: 'short' })}
-                    time={appt.time}
-                    doctor={appt.doctor}
-                    specialty={appt.specialty}
-                    location={appt.location}
+                    day={new Date(appt.fecha).toLocaleDateString('es', { day: 'numeric', month: 'short' })}
+                    time={`${appt.horaInicio} - ${appt.horaFin}`}
+                    doctor={appt.doctorNombre ? appt.doctorNombre : appt.doctorId ? `Dr. ${appt.doctorId}` : ''}
+                    specialty={appt.especialidad || appt.specialty || ''}
+                    location={appt.ubicacion || appt.location || ''}
+                    status={appt.estado}
                   />
                   <TouchableOpacity
                     className="border border-blue-600 rounded-lg p-2 flex-row justify-center"
@@ -148,11 +194,11 @@ export default function AppointmentsScreen({ navigation }) {
             cancelledAppointments.map((appt, index) => (
               <View key={index} className="mb-6">
                 <AppointmentCard
-                  day={new Date(appt.date).toLocaleDateString('es', { day: 'numeric', month: 'short' })}
-                  time={appt.time}
-                  doctor={appt.doctor}
-                  specialty={appt.specialty}
-                  location={appt.location}
+                  day={new Date(appt.fecha).toLocaleDateString('es', { day: 'numeric', month: 'short' })}
+                  time={`${appt.horaInicio} - ${appt.horaFin}`}
+                  doctor={appt.doctorNombre ? appt.doctorNombre : appt.doctorId ? `Dr. ${appt.doctorId}` : ''}
+                  specialty={appt.especialidad || appt.specialty || ''}
+                  location={appt.ubicacion || appt.location || ''}
                   status="cancelled"
                 />
               </View>
@@ -241,7 +287,6 @@ export default function AppointmentsScreen({ navigation }) {
           </View>
         </Pressable>
       </Modal>
-
     </AppContainer>
   );
 }

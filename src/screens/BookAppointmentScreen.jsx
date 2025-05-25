@@ -20,6 +20,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
 
   const { professionals } = useSelector((state) => state.professionals);
   const { availableDays, availableTimeSlots, status } = useSelector((state) => state.appointments);
+  const usuario = useSelector((state) => state.user.usuario);
 
   const [specialty, setSpecialty] = useState('');
   const [professional, setProfessional] = useState(professionalId || '');
@@ -68,30 +69,35 @@ export default function BookAppointmentScreen({ navigation, route }) {
 
   const handleConfirm = () => {
     if (specialty && professional && selectedDate && selectedTime) {
-      dispatch(
-        bookAppointment({
-          doctorId: professional,
-          usuarioId: 1, // 🔒 Cambiar por el ID del usuario logueado
-          fecha: selectedDate,
-          horaInicio: selectedTime.horaInicio,
-          horaFin: selectedTime.horaFin,
-          motivo: 'Consulta general',
-          estado: 'PENDIENTE',
-        })
-      )
+      const payload = {
+        doctorId: professional,
+        usuarioId: usuario?.id, // este dato ahora viene del userSlice
+        fecha: selectedDate,
+        horaInicio: selectedTime.horaInicio.substring(0, 5),
+        horaFin: selectedTime.horaFin.substring(0, 5),
+        nota: 'Consulta general',
+        archivoAdjunto: null,
+        estado: 'PENDIENTE',
+      };
+
+      console.log('Payload que se envía al backend:', payload); // ✅ Acá sí lo ves bien
+
+      dispatch(bookAppointment(payload))
         .unwrap()
         .then(() => {
           alert('Turno confirmado exitosamente');
           navigation.navigate('Appointments');
         })
         .catch((err) => {
-          console.error(err);
+          console.error('Error del backend:', err);
           alert('Error al confirmar el turno');
         });
     } else {
       alert('Por favor, completa todos los campos');
     }
   };
+
+
 
   return (
     <AppContainer navigation={navigation} screenTitle="Reservar Turno">
@@ -157,7 +163,11 @@ export default function BookAppointmentScreen({ navigation, route }) {
                     disabled={!selectedTime}
                   >
                     <Text className="text-white text-base">
-                      {selectedTime ? `Confirmar turno a las ${formatTimeSlot(selectedTime)}` : 'Confirmar turno'}
+                      {selectedTime ? (
+                        <>
+                          {`Confirmar turno a las ${formatTimeSlot(selectedTime)}`}
+                        </>
+                      ) : 'Confirmar turno'}
                     </Text>
                   </TouchableOpacity>
                 </>

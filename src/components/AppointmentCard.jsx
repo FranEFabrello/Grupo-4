@@ -7,7 +7,6 @@ export default function AppointmentCard({
   time,
   doctor,
   specialty,
-  location,
   onCancel,
   icon = 'map-marker-alt',
   iconColor = '#6c757d',
@@ -25,7 +24,6 @@ export default function AppointmentCard({
           <Text className="text-sm text-gray-600">{specialty}</Text>
           <View className="flex-row items-center mt-1">
             <Icon name={icon} size={12} color={iconColor} />
-            <Text className="text-xs text-gray-600 ml-1">{location}</Text>
           </View>
         </View>
       </View>
