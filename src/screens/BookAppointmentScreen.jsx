@@ -13,6 +13,7 @@ import AppContainer from '../components/AppContainer';
 import ProfileField from '../components/ProfileField';
 import Calendar from '../components/Calendar';
 import TimeSlot from '../components/TimeSlot';
+import { fetchSpecialities } from "~/store/slices/medicalSpecialitiesSlice";
 
 export default function BookAppointmentScreen({ navigation, route }) {
   const { professionalId } = route.params || {};
@@ -51,15 +52,17 @@ export default function BookAppointmentScreen({ navigation, route }) {
   }, [professional, dispatch]);
 
   useEffect(() => {
+    dispatch(fetchSpecialities());
+  }, [dispatch]);
+
+  useEffect(() => {
     if (selectedDate && professional) {
       dispatch(fetchAvailableTimeSlots({ professionalId: professional, date: selectedDate }));
     }
   }, [selectedDate, professional, dispatch]);
 
-  const specialties = Array.from(new Set(professionals.map((p) => p.informacionAdicional))).map((s) => ({
-    value: s,
-    label: s.charAt(0).toUpperCase() + s.slice(1),
-  }));
+
+
 
   const formatTimeSlot = (slot) => {
     const start = slot.horaInicio.slice(0, 5);

@@ -25,6 +25,8 @@ export default function ProfessionalsScreen({ navigation }) {
     dispatch(fetchSpecialities());
   }, [dispatch]);
 
+  const [especialidadSearchQuery, setEspecialidadSearchQuery] = useState("");
+
   const filteredProfessionals = professionals
     .filter((prof) =>
       `${prof.nombre} ${prof.apellido} ${prof.informacionAdicional}`
@@ -120,29 +122,56 @@ export default function ProfessionalsScreen({ navigation }) {
         <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.2)', justifyContent: 'center', alignItems: 'center' }}>
           <View style={{ backgroundColor: '#fff', borderRadius: 16, padding: 20, width: '90%' }}>
             <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 10 }}>Filtrar por especialidad</Text>
+            {/* Barra de búsqueda de especialidad */}
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+              <Icon
+                name="search"
+                size={16}
+                color="#6c757d"
+                style={{ marginRight: 8 }}
+              />
+              <TextInput
+                style={{
+                  backgroundColor: '#F3F4F6',
+                  borderRadius: 20,
+                  paddingHorizontal: 12,
+                  paddingVertical: 6,
+                  flex: 1,
+                }}
+                placeholder="Buscar especialidad..."
+                value={especialidadSearchQuery}
+                onChangeText={setEspecialidadSearchQuery}
+              />
+            </View>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 10 }}>
-              {especialidades.map((esp) => (
-                <TouchableOpacity
-                  key={esp.id}
-                  style={{
-                    padding: 10,
-                    backgroundColor: selectedEspecialidades.some(e => e.id === esp.id) ? '#2563EB' : '#E5E7EB',
-                    borderRadius: 20,
-                    marginRight: 10,
-                  }}
-                  onPress={() => {
-                    setSelectedEspecialidades((prev) =>
-                      prev.some(e => e.id === esp.id)
-                        ? prev.filter((e) => e.id !== esp.id)
-                        : [...prev, { id: esp.id, descripcion: esp.descripcion }]
-                    );
-                  }}
-                >
-                  <Text style={{ color: selectedEspecialidades.some(e => e.id === esp.id) ? '#fff' : '#1F2937' }}>
-                    {esp.descripcion}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+              {especialidades
+                .filter((esp) =>
+                  esp.descripcion
+                    .toLowerCase()
+                    .includes((especialidadSearchQuery || '').toLowerCase())
+                )
+                .map((esp) => (
+                  <TouchableOpacity
+                    key={esp.id}
+                    style={{
+                      padding: 10,
+                      backgroundColor: selectedEspecialidades.some(e => e.id === esp.id) ? '#2563EB' : '#E5E7EB',
+                      borderRadius: 20,
+                      marginRight: 10,
+                    }}
+                    onPress={() => {
+                      setSelectedEspecialidades((prev) =>
+                        prev.some(e => e.id === esp.id)
+                          ? prev.filter((e) => e.id !== esp.id)
+                          : [...prev, { id: esp.id, descripcion: esp.descripcion }]
+                      );
+                    }}
+                  >
+                    <Text style={{ color: selectedEspecialidades.some(e => e.id === esp.id) ? '#fff' : '#1F2937' }}>
+                      {esp.descripcion}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
             </ScrollView>
             <View style={{ height: 2, backgroundColor: '#2563EB', marginBottom: 20 }} />
 

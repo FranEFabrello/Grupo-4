@@ -43,13 +43,21 @@ export default function HomeScreen({ navigation }) {
 
   const upcomingAppointments = (appointments)
     .filter(appt => {
-      const apptDate = new Date(appt.fecha || appt.date);
+      const [year, month, day] = (appt.fecha || appt.date).split('-');
+      const [hour, minute] = (appt.horaInicio || '00:00').split(':');
+      const apptDate = new Date(year, month - 1, day, hour, minute);
       console.log('Filtrando turno:', appt, 'Fecha interpretada:', apptDate, '¿En rango?', apptDate >= startOfToday && apptDate < endOfTomorrow);
       return apptDate >= startOfToday && apptDate < endOfTomorrow;
     })
     .sort((a, b) => {
-      const aDate = new Date(a.fecha || a.date);
-      const bDate = new Date(b.fecha || b.date);
+      const [aYear, aMonth, aDay] = (a.fecha || a.date).split('-');
+      const [aHour, aMinute] = (a.horaInicio || '00:00').split(':');
+      const aDate = new Date(aYear, aMonth - 1, aDay, aHour, aMinute);
+
+      const [bYear, bMonth, bDay] = (b.fecha || b.date).split('-');
+      const [bHour, bMinute] = (b.horaInicio || '00:00').split(':');
+      const bDate = new Date(bYear, bMonth - 1, bDay, bHour, bMinute);
+
       console.log('Ordenando:', aDate, bDate);
       return aDate - bDate;
     })
@@ -80,17 +88,22 @@ export default function HomeScreen({ navigation }) {
         ) : upcomingAppointments.length === 0 ? (
           <Text className="text-sm text-gray-600 mb-4">No hay turnos próximos</Text>
         ) : (
-          upcomingAppointments.map((appt, idx) => (
-            <AppointmentCard
-              key={appt.id || idx}
-              day={new Date(appt.fecha).toLocaleDateString('es', { weekday: 'short' })}
-              time={appt.horaInicio}
-              doctor={`ID: ${appt.doctorId}`}
-              specialty={appt.nota}
-              location={''}
-              onCancel={() => alert('Turno cancelado')}
-            />
-          ))
+          <ScrollView horizontal className="mb-4" showsHorizontalScrollIndicator={false}>
+            <View className="flex-row px-2">
+              {upcomingAppointments.map((appt, idx) => (
+                <View key={appt.id || idx} className="mr-3">
+                  <AppointmentCard
+                    day={new Date(appt.fecha).toLocaleDateString('es', { weekday: 'short' })}
+                    time={appt.horaInicio}
+                    doctor={`ID: ${appt.doctorId}`}
+                    specialty={appt.nota}
+                    location={''}
+                    onCancel={() => alert('Turno cancelado')}
+                  />
+                </View>
+              ))}
+            </View>
+          </ScrollView>
         )}
 
         <View className="flex-row justify-between items-center mb-4">
