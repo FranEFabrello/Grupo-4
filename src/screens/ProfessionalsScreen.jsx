@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, ScrollView, Text, TextInput, TouchableOpacity, Modal } from "react-native";
+import { Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchSpecialities } from "~/store/slices/medicalSpecialitiesSlice";
@@ -20,6 +20,7 @@ export default function ProfessionalsScreen({ navigation }) {
 
   const especialidades = useSelector((state) => state.medicalSpecialities.specialities);
 
+
   useEffect(() => {
     dispatch(fetchProfessionals());
     dispatch(fetchSpecialities());
@@ -29,15 +30,16 @@ export default function ProfessionalsScreen({ navigation }) {
 
   const filteredProfessionals = professionals
     .filter((prof) =>
-      `${prof.nombre} ${prof.apellido} ${prof.informacionAdicional}`
+      `${prof.nombre} ${prof.apellido} ${prof.especialidadInfo?.descripcion}`
         .toLowerCase()
         .includes(searchQuery.toLowerCase()),
     )
-    .filter((prof) =>
-      selectedEspecialidades.length > 0
-        ? selectedEspecialidades.includes(prof.informacionAdicional)
-        : true,
-    )
+    .filter((prof) => {
+      if (selectedEspecialidades.length > 0) {
+        return selectedEspecialidades.some(e => e.id === prof.idEspecialidad);
+      }
+      return true;
+    })
     .filter((prof) =>
       selectedStars
         ? Math.round(prof.calificacion || 0) === selectedStars
@@ -92,7 +94,11 @@ export default function ProfessionalsScreen({ navigation }) {
                 <DoctorCard
                   key={prof.id}
                   name={`${prof.nombre} ${prof.apellido}`}
-                  specialty={prof.informacionAdicional}
+                  specialty={
+                    especialidades.find(
+                      (esp) => esp.id === prof.idEspecialidad
+                    )?.descripcion || "Sin especialidad"
+                  }
                   stars={prof.calificacionPromedio > 0 ? prof.calificacionPromedio : null}
                   noRating={prof.calificacionPromedio === 0}
                   onBook={() =>
@@ -188,7 +194,7 @@ export default function ProfessionalsScreen({ navigation }) {
                     borderRadius: 20,
                     marginRight: 10,
                   }}
-                  onPress={() => setSelectedStars(star)}
+                  onPress={() => setSelectedStars(selectedStars === star ? null : star)}
                 >
                   <Text style={{ color: selectedStars === star ? '#fff' : '#1F2937', marginRight: 5 }}>{star}</Text>
                   <Text style={{ color: selectedStars === star ? '#FFD700' : '#A0AEC0' }}>★</Text>

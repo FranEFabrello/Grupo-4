@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../api/api';
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import api from "../../api/api";
 
 export const fetchAppointments = createAsyncThunk(
   'appointments/fetchAppointments',
@@ -38,6 +38,14 @@ export const bookAppointment = createAsyncThunk(
   }
 );
 
+// Confirmar un turno
+export const confirmAppointment = createAsyncThunk(
+  'appointments/confirmAppointment',
+  async (appointmentId) => {
+    const response = await api.patch(`/turnos/confirmar/${appointmentId}`);
+    return response.data;
+  }
+);
 
 
 const appointmentsSlice = createSlice({
@@ -85,7 +93,13 @@ const appointmentsSlice = createSlice({
         state.status = 'succeeded';
         state.appointmentsByUser = action.payload;
         console.log('Turnos por usuario TURNOSSLICE:', action.payload);
-      });
+      })
+      .addCase(confirmAppointment.fulfilled, (state, action) => {
+        state.appointmentsByUser = state.appointmentsByUser.map((appointment) =>
+          appointment.id === action.payload.id ? action.payload : appointment
+        );
+        console.log('Turno confirmado:', action.payload);
+      })
   },
 });
 

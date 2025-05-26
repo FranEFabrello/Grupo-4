@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Text, TouchableOpacity, Modal, Pressable } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAppointments } from '~/store/slices/appointmentsSlice';
+import { confirmAppointment, fetchAppointments } from "~/store/slices/appointmentsSlice";
 import AppContainer from '../components/AppContainer';
 import AppointmentCard from '../components/AppointmentCard';
 import FilterButton from '../components/FilterButton';
@@ -84,7 +84,7 @@ export default function AppointmentsScreen({ navigation }) {
 
   const pastAppointments = (appointments || [])
     .filter((appt) => {
-      // Filtra por estado confirmado y fecha pasada
+      // Filtra por estado confirmado y fecha/hora pasada
       if (appt.estado !== 'CONFIRMADO') {
         return false;
       }
@@ -92,7 +92,22 @@ export default function AppointmentsScreen({ navigation }) {
       const today = new Date();
       apptDate.setHours(0, 0, 0, 0);
       today.setHours(0, 0, 0, 0);
-      return !isNaN(apptDate) && apptDate.getTime() < today.getTime();
+
+      // Si la fecha es anterior a hoy, es pasado
+      if (!isNaN(apptDate) && apptDate.getTime() < today.getTime()) {
+        return true;
+      }
+
+      // Si la fecha es hoy, comparar hora fin
+      if (!isNaN(apptDate) && apptDate.getTime() === today.getTime()) {
+        if (appt.horaFin) {
+          const [finHour, finMin] = appt.horaFin.split(':').map(Number);
+          const finDate = new Date(appt.fecha);
+          finDate.setHours(finHour, finMin, 0, 0);
+          return finDate.getTime() <= Date.now();
+        }
+      }
+      return false;
     })
     .filter((appt) => {
       // Aplica el filtro de rango de fechas (AND)
@@ -157,11 +172,19 @@ export default function AppointmentsScreen({ navigation }) {
                   key={index}
                   day={new Date(appt.fecha).toLocaleDateString('es', { weekday: 'short', day: 'numeric', month: 'short' })}
                   time={`${appt.horaInicio} - ${appt.horaFin}`}
-                  doctor={appt.doctorNombre ? appt.doctorNombre : appt.doctorId ? `Dr. ${appt.doctorId}` : ''}
-                  specialty={appt.especialidad || appt.specialty || ''}
-                  location={appt.ubicacion || appt.location || ''}
+                  doctor={
+                    appt.doctorInfo
+                      ? `${appt.doctorInfo.nombre} ${appt.doctorInfo.apellido}`
+                      : appt.doctorNombre
+                        ? appt.doctorNombre
+                        : appt.doctorId
+                          ? `Dr. ${appt.doctorId}`
+                          : ''
+                  }
+                  specialty={appt.especialidadInfo?.descripcion || ''}
                   status={appt.estado}
                   onCancel={() => alert('Turno cancelado')}
+                  onConfirm={appt.estado === 'PENDIENTE' ? () => dispatch(confirmAppointment(appt.id)) : undefined}
                 />
               ))
             ) : (
@@ -176,7 +199,6 @@ export default function AppointmentsScreen({ navigation }) {
                     time={`${appt.horaInicio} - ${appt.horaFin}`}
                     doctor={appt.doctorNombre ? appt.doctorNombre : appt.doctorId ? `Dr. ${appt.doctorId}` : ''}
                     specialty={appt.especialidad || appt.specialty || ''}
-                    location={appt.ubicacion || appt.location || ''}
                     status={appt.estado}
                   />
                   <TouchableOpacity
@@ -198,7 +220,6 @@ export default function AppointmentsScreen({ navigation }) {
                   time={`${appt.horaInicio} - ${appt.horaFin}`}
                   doctor={appt.doctorNombre ? appt.doctorNombre : appt.doctorId ? `Dr. ${appt.doctorId}` : ''}
                   specialty={appt.especialidad || appt.specialty || ''}
-                  location={appt.ubicacion || appt.location || ''}
                   status="cancelled"
                 />
               </View>

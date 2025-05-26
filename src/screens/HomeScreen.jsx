@@ -97,7 +97,6 @@ export default function HomeScreen({ navigation }) {
                     time={appt.horaInicio}
                     doctor={`ID: ${appt.doctorId}`}
                     specialty={appt.nota}
-                    location={''}
                     onCancel={() => alert('Turno cancelado')}
                   />
                 </View>

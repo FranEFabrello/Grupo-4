@@ -4,17 +4,21 @@ import {
   ScrollView,
   Text,
   Pressable,
-  Animated,
-} from 'react-native';
+  Animated, TouchableOpacity
+} from "react-native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AppContainer from '../components/AppContainer';
 import QuickActions from '../components/QuickActions';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Modal from 'react-native-modal';
 // import { AuthContext } from '../context/AuthContext';
 
 export default function ProfileScreen({ navigation }) {
   const insets = useSafeAreaInsets();
 
+  const [showSettingsModal, setShowSettingsModal] = React.useState(false);
+  const [selectedTheme, setSelectedTheme] = React.useState('light');
+  const [selectedLanguage, setSelectedLanguage] = React.useState('es');
   // const { user } = useContext(AuthContext);
   const user = {
     name: 'Usuario',
@@ -63,6 +67,15 @@ export default function ProfileScreen({ navigation }) {
             style="flex-col"
             itemStyle="w-full"
           />
+          <TouchableOpacity
+            className="w-full bg-white rounded-lg p-4 mb-3 shadow-md items-center"
+            onPress={() => setShowSettingsModal(true)}
+          >
+            <View className="w-10 h-10 bg-blue-100 rounded-full justify-center items-center mb-2">
+              <Icon name="cog" size={18} color="#4a6fa5" />
+            </View>
+            <Text className="text-base font-medium text-gray-800">Configuración</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Acerca de la app */}
@@ -75,6 +88,107 @@ export default function ProfileScreen({ navigation }) {
           </Text>
         </View>
       </ScrollView>
+
+      {/* Modal de configuración como una opción más */}
+      {showSettingsModal && (
+        <Pressable
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0,0,0,0.3)',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 10,
+          }}
+          onPress={() => setShowSettingsModal(false)}
+        >
+          <Animated.View
+            style={{
+              backgroundColor: '#fff',
+              borderRadius: 12,
+              padding: 24,
+              width: '85%',
+              elevation: 5,
+              transform: [
+                {
+                  translateY: showSettingsModal
+                    ? 0
+                    : 400, // Aparece desde abajo
+                },
+              ],
+              opacity: showSettingsModal ? 1 : 0,
+            }}
+            entering={Animated.spring}
+            exiting={Animated.timing}
+            onStartShouldSetResponder={() => true}
+            onResponderStart={e => e.stopPropagation()}
+          >
+            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 16 }}>Configuración</Text>
+            <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>Tema</Text>
+            <View style={{ flexDirection: 'row', marginBottom: 16 }}>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: selectedTheme === 'light' ? '#2563EB' : '#E2E8F0',
+                  padding: 10,
+                  borderRadius: 6,
+                  marginRight: 10,
+                }}
+                onPress={() => setSelectedTheme('light')}
+              >
+                <Text style={{ color: selectedTheme === 'light' ? '#fff' : '#2563EB' }}>Claro</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: selectedTheme === 'dark' ? '#2563EB' : '#E2E8F0',
+                  padding: 10,
+                  borderRadius: 6,
+                }}
+                onPress={() => setSelectedTheme('dark')}
+              >
+                <Text style={{ color: selectedTheme === 'dark' ? '#fff' : '#2563EB' }}>Oscuro</Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>Idioma</Text>
+            <View style={{ flexDirection: 'row', marginBottom: 24 }}>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: selectedLanguage === 'es' ? '#2563EB' : '#E2E8F0',
+                  padding: 10,
+                  borderRadius: 6,
+                  marginRight: 10,
+                }}
+                onPress={() => setSelectedLanguage('es')}
+              >
+                <Text style={{ color: selectedLanguage === 'es' ? '#fff' : '#2563EB' }}>Español</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: selectedLanguage === 'en' ? '#2563EB' : '#E2E8F0',
+                  padding: 10,
+                  borderRadius: 6,
+                }}
+                onPress={() => setSelectedLanguage('en')}
+              >
+                <Text style={{ color: selectedLanguage === 'en' ? '#fff' : '#2563EB' }}>Inglés</Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              style={{
+                backgroundColor: '#2563EB',
+                padding: 12,
+                borderRadius: 8,
+                alignItems: 'center',
+              }}
+              onPress={() => setShowSettingsModal(false)}
+            >
+              <Text style={{ color: '#fff', fontWeight: 'bold' }}>Guardar</Text>
+            </TouchableOpacity>
+          </Animated.View>
+        </Pressable>
+      )}
     </AppContainer>
   );
 }

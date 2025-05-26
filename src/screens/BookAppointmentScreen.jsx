@@ -22,6 +22,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
   const { professionals } = useSelector((state) => state.professionals);
   const { availableDays, availableTimeSlots, status } = useSelector((state) => state.appointments);
   const usuario = useSelector((state) => state.user.usuario);
+  const specialties = useSelector((state) => state.medicalSpecialities.specialities);
 
   const [specialty, setSpecialty] = useState('');
   const [professional, setProfessional] = useState(professionalId || '');
@@ -30,6 +31,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
 
   useEffect(() => {
     dispatch(fetchProfessionals());
+    dispatch(fetchSpecialities());
   }, [dispatch]);
 
   useEffect(() => {
@@ -51,9 +53,6 @@ export default function BookAppointmentScreen({ navigation, route }) {
     }
   }, [professional, dispatch]);
 
-  useEffect(() => {
-    dispatch(fetchSpecialities());
-  }, [dispatch]);
 
   useEffect(() => {
     if (selectedDate && professional) {
@@ -116,7 +115,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
                 type="picker"
                 value={specialty}
                 onChange={setSpecialty}
-                items={specialties}
+                items={specialties.map(e => ({ value: e.id, label: e.descripcion }))}
                 disabled={!!professionalId}
               />
               {specialty && (
