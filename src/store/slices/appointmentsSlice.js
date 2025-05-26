@@ -84,7 +84,7 @@ const appointmentsSlice = createSlice({
       .addCase(fetchAppointments.fulfilled, (state,action) => {
         state.status = 'succeeded';
         state.appointmentsByUser = action.payload;
-        //console.log('Turnos por usuario TURNOSSLICE:', action.payload);
+        console.log('Turnos por usuario TURNOSSLICE:', action.payload);
       });
   },
 });

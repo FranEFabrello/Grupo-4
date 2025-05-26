@@ -1,32 +1,33 @@
 import React, { useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProfessionals } from "~/store/slices/professionalsSlice";
-import { fetchUserByToken } from "~/store/slices/userSlice";
+import { fetchProfessionals } from '~/store/slices/professionalsSlice';
+import { fetchUserByToken } from '~/store/slices/userSlice';
 import AppContainer from '../components/AppContainer';
 import QuickActions from '../components/QuickActions';
 import AppointmentCard from '../components/AppointmentCard';
 import DoctorCard from '../components/DoctorCard';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { obtenerUsuarioPorId } from "~/store/slices/userSlice";
+import { fetchAppointments } from "~/store/slices/appointmentsSlice";
 
 export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
-  const { appointments, status: appointmentsStatus } = useSelector((state) => state.appointments);
+  const { status: appointmentsStatus } = useSelector((state) => state.appointments);
+  const appointments = useSelector((state) => state.appointments.appointmentsByUser);
   const { professionals, status: professionalsStatus } = useSelector((state) => state.professionals);
-  //const { profile } = useSelector((state) => state.profile);
-
-
   const usuario = useSelector((state) => state.user.usuario);
-  const usuarioId = usuario?.id;
 
-    useEffect(() => {
-      if (!professionals || professionals.length === 0) {
-        dispatch(fetchProfessionals());
+  useEffect(() => {
+    if (!professionals || professionals.length === 0) {
+      dispatch(fetchProfessionals());
+    }
+    dispatch(fetchUserByToken()).then((action) => {
+      const usuarioId = action.payload?.id;
+      if (usuarioId) {
+        dispatch(fetchAppointments(usuarioId));
       }
-
-      dispatch(fetchUserByToken());
-    }, [dispatch]);
+    });
+  }, [dispatch]);
 
   const quickActions = [
     { icon: 'calendar-plus', label: 'Reservar turno', screen: 'BookAppointment' },
@@ -35,8 +36,28 @@ export default function HomeScreen({ navigation }) {
     { icon: 'hospital-user', label: 'Obra social', screen: 'Insurance' },
   ];
 
-  //const nextAppointment = appointments.find((appt) => new Date(appt.date) >= new Date());
-  const nextAppointment = null;
+  // Filtrar turnos próximos (menos de 24h) y limitar a 3
+  const now = new Date();
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const endOfTomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 2);
+
+  const upcomingAppointments = (appointments)
+    .filter(appt => {
+      const apptDate = new Date(appt.fecha || appt.date);
+      console.log('Filtrando turno:', appt, 'Fecha interpretada:', apptDate, '¿En rango?', apptDate >= startOfToday && apptDate < endOfTomorrow);
+      return apptDate >= startOfToday && apptDate < endOfTomorrow;
+    })
+    .sort((a, b) => {
+      const aDate = new Date(a.fecha || a.date);
+      const bDate = new Date(b.fecha || b.date);
+      console.log('Ordenando:', aDate, bDate);
+      return aDate - bDate;
+    })
+    .slice(0, 3);
+
+  console.log('Turnos recibidos:', appointments);
+  console.log('Turnos próximos:', upcomingAppointments);
+
   return (
     <AppContainer navigation={navigation} screenTitle="MediBook">
       <ScrollView className="p-5">
@@ -49,24 +70,27 @@ export default function HomeScreen({ navigation }) {
         </View>
 
         <View className="flex-row justify-between items-center mb-4">
-          <Text className="text-lg font-semibold text-gray-800">Tu próximo turno</Text>
+          <Text className="text-lg font-semibold text-gray-800">Tus próximos turnos</Text>
           <Text className="text-sm text-blue-600" onPress={() => navigation.navigate('Appointments')}>
             Ver todos
           </Text>
         </View>
         {appointmentsStatus === 'loading' ? (
           <Text className="text-sm text-gray-600 mb-4">Cargando...</Text>
-        ) : nextAppointment ? (
-          <AppointmentCard
-            day={new Date(nextAppointment.date).toLocaleDateString('es', { weekday: 'short' })}
-            time={nextAppointment.time}
-            doctor={nextAppointment.doctor}
-            specialty={nextAppointment.specialty}
-            location={nextAppointment.location}
-            onCancel={() => alert('Turno cancelado')}
-          />
-        ) : (
+        ) : upcomingAppointments.length === 0 ? (
           <Text className="text-sm text-gray-600 mb-4">No hay turnos próximos</Text>
+        ) : (
+          upcomingAppointments.map((appt, idx) => (
+            <AppointmentCard
+              key={appt.id || idx}
+              day={new Date(appt.fecha).toLocaleDateString('es', { weekday: 'short' })}
+              time={appt.horaInicio}
+              doctor={`ID: ${appt.doctorId}`}
+              specialty={appt.nota}
+              location={''}
+              onCancel={() => alert('Turno cancelado')}
+            />
+          ))
         )}
 
         <View className="flex-row justify-between items-center mb-4">
@@ -93,8 +117,6 @@ export default function HomeScreen({ navigation }) {
             ))}
           </View>
         </ScrollView>
-
-
 
         <View className="bg-white rounded-lg p-4 shadow-md">
           <Text className="text-lg font-semibold text-gray-800 mb-3">Noticias médicas</Text>
