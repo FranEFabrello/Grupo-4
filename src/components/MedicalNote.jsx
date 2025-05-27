@@ -2,8 +2,11 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import ProfileField from './ProfileField';
+import { useTranslation } from 'react-i18next';
 
 export default function MedicalNote({ doctor, date, reason, diagnosis, notes, prescription, onDownload }) {
+  const { t } = useTranslation();
+
   return (
     <View className="bg-white rounded-lg p-4 shadow-md">
       <View className="flex-row items-center mb-4">
@@ -19,7 +22,7 @@ export default function MedicalNote({ doctor, date, reason, diagnosis, notes, pr
       <ProfileField label="Diagnóstico" value={diagnosis} />
       <ProfileField label="Notas médicas" value={notes} />
       <View className="mb-4">
-        <Text className="text-sm font-semibold text-gray-800 mb-1">Receta médica</Text>
+        <Text className="text-sm font-semibold text-gray-800 mb-1">{t('medical_note.prescription')}</Text>
         <View className="flex-row justify-between items-center bg-gray-100 rounded-lg p-3">
           <View className="flex-row items-center">
             <Icon name="file-prescription" size={14} color="#6c757d" />

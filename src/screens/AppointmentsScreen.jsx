@@ -9,9 +9,11 @@ import TabButton from '../components/TabButton';
 import Calendar from '../components/Calendar';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import AppointmentsCalendar from "~/components/AppointmentsCalendar";
+import { useTranslation } from 'react-i18next';
 
 
 export default function AppointmentsScreen({ navigation }) {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { status } = useSelector((state) => state.appointments);
   const [activeTab, setActiveTab] = useState('upcoming');
@@ -132,11 +134,11 @@ export default function AppointmentsScreen({ navigation }) {
 
 
   return (
-    <AppContainer navigation={navigation} screenTitle="Mis Turnos">
+    <AppContainer navigation={navigation} screenTitle={t('appointments.title')}>
       <ScrollView className="p-5">
         <View className="bg-white rounded-lg p-4 mb-4 shadow-md">
           <View className="flex-row justify-between items-center mb-4">
-            <Text className="text-lg font-semibold text-gray-800">Mis Turnos</Text>
+            <Text className="text-lg font-semibold text-gray-800">{t('appointments.title')}</Text>
             <FilterButton onPress={() => setShowFilterModal(true)} />
           </View>
           {(startDate || endDate) && (
@@ -164,7 +166,7 @@ export default function AppointmentsScreen({ navigation }) {
             />
           </View>
           {status === 'loading' ? (
-            <Text className="text-sm text-gray-600">Cargando...</Text>
+            <Text className="text-sm text-gray-600">{t('appointments.loading')}</Text>
           ) : activeTab === 'upcoming' ? (
             upcomingAppointments.length > 0 ? (
               upcomingAppointments.map((appt, index) => (
@@ -183,12 +185,12 @@ export default function AppointmentsScreen({ navigation }) {
                   }
                   specialty={appt.especialidadInfo?.descripcion || ''}
                   status={appt.estado}
-                  onCancel={() => alert('Turno cancelado')}
+                  onCancel={() => alert(t('appointments.cancel_alert'))}
                   onConfirm={appt.estado === 'PENDIENTE' ? () => dispatch(confirmAppointment(appt.id)) : undefined}
                 />
               ))
             ) : (
-              <Text className="text-sm text-gray-600">No hay turnos próximos</Text>
+              <Text className="text-sm text-gray-600">{t('appointments.no_upcoming')}</Text>
             )
           ) : activeTab === 'past' ? (
             pastAppointments.length > 0 ? (
@@ -205,12 +207,12 @@ export default function AppointmentsScreen({ navigation }) {
                     className="border border-blue-600 rounded-lg p-2 flex-row justify-center"
                     onPress={() => navigation.navigate('MedicalNotes', { appointmentId: appt.id })}
                   >
-                    <Text className="text-blue-600 text-sm">Ver notas médicas</Text>
+                    <Text className="text-blue-600 text-sm">{t('appointments.view_medical_notes')}</Text>
                   </TouchableOpacity>
                 </View>
               ))
             ) : (
-              <Text className="text-sm text-gray-600">No hay turnos pasados</Text>
+              <Text className="text-sm text-gray-600">{t('appointments.no_past')}</Text>
             )
           ) : cancelledAppointments.length > 0 ? (
             cancelledAppointments.map((appt, index) => (
@@ -225,7 +227,7 @@ export default function AppointmentsScreen({ navigation }) {
               </View>
             ))
           ) : (
-            <Text className="text-sm text-gray-600">No hay turnos cancelados</Text>
+            <Text className="text-sm text-gray-600">{t('appointments.no_cancelled')}</Text>
           )}
         </View>
       </ScrollView>
@@ -252,12 +254,12 @@ export default function AppointmentsScreen({ navigation }) {
             >
               <View style={{ backgroundColor: '#fff', borderRadius: 16, padding: 20 }}>
                 <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 20 }}>
-                  Filtrar por rango de fechas
+                  {t('appointments.filter_dates.filter_title')}
                 </Text>
 
                 <View style={{ marginBottom: 20 }}>
                   <Text style={{ color: '#1F2937', fontWeight: 'bold', marginBottom: 10 }}>
-                    Selecciona el rango de fechas
+                    {t('appointments.filter_dates.filter_range')}
                   </Text>
 
                   <AppointmentsCalendar
@@ -270,10 +272,10 @@ export default function AppointmentsScreen({ navigation }) {
                     style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}
                   >
                     <Text style={{ color: '#2563EB' }}>
-                      {startDate ? `Inicio: ${startDate.toLocaleDateString('es')}` : 'Inicio: -'}
+                      {startDate ? `${t('appointments.filter_dates.start')}: ${startDate.toLocaleDateString('es')}` : `${t('appointments.filter_dates.start')}: -`}
                     </Text>
                     <Text style={{ color: '#2563EB' }}>
-                      {endDate ? `Fin: ${endDate.toLocaleDateString('es')}` : 'Fin: -'}
+                      {endDate ? `${t('appointments.filter_dates.end')}: ${endDate.toLocaleDateString('es')}` : `${t('appointments.filter_dates.end')}: -`}
                     </Text>
                   </View>
                 </View>
@@ -290,7 +292,7 @@ export default function AppointmentsScreen({ navigation }) {
                     setShowFilterModal(false);
                   }}
                 >
-                  <Text style={{ color: '#fff', fontWeight: 'bold' }}>Aplicar filtro</Text>
+                  <Text style={{ color: '#fff', fontWeight: 'bold' }}>{t('appointments.filter_dates.apply_filter')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{ marginTop: 10, alignItems: 'center' }}
@@ -301,7 +303,7 @@ export default function AppointmentsScreen({ navigation }) {
                     setShowFilterModal(false);
                   }}
                 >
-                  <Text style={{ color: '#2563EB', fontWeight: 'bold' }}>Limpiar filtro</Text>
+                  <Text style={{ color: '#2563EB', fontWeight: 'bold' }}>{t('appointments.filter_dates.clear_filter')}</Text>
                 </TouchableOpacity>
               </View>
             </KeyboardAvoidingView>
