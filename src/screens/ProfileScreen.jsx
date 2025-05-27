@@ -10,6 +10,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AppContainer from '../components/AppContainer';
 import QuickActions from '../components/QuickActions';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { useTranslation } from 'react-i18next';
+
 import Modal from 'react-native-modal';
 // import { AuthContext } from '../context/AuthContext';
 
@@ -20,6 +22,9 @@ export default function ProfileScreen({ navigation }) {
   const [selectedTheme, setSelectedTheme] = React.useState('light');
   const [selectedLanguage, setSelectedLanguage] = React.useState('es');
   // const { user } = useContext(AuthContext);
+
+  const { t } = useTranslation();
+
   const user = {
     name: 'Usuario',
     email: 'correo@ejemplo.com',
@@ -34,7 +39,7 @@ export default function ProfileScreen({ navigation }) {
   ];
 
   return (
-    <AppContainer navigation={navigation} screenTitle="Perfil">
+    <AppContainer navigation={navigation} screenTitle={t('profile.screen_title')}>
       <ScrollView
         className="p-5"
         contentContainerStyle={{ paddingBottom: insets.bottom + 20 }}
@@ -160,7 +165,12 @@ export default function ProfileScreen({ navigation }) {
                   borderRadius: 6,
                   marginRight: 10,
                 }}
-                onPress={() => setSelectedLanguage('es')}
+                onPress={() => {
+                  setSelectedLanguage('es');
+                  import('../i18n').then(({ default: i18n }) => {
+                    i18n.changeLanguage('es');
+                  });
+                }}
               >
                 <Text style={{ color: selectedLanguage === 'es' ? '#fff' : '#2563EB' }}>Español</Text>
               </TouchableOpacity>
@@ -170,7 +180,12 @@ export default function ProfileScreen({ navigation }) {
                   padding: 10,
                   borderRadius: 6,
                 }}
-                onPress={() => setSelectedLanguage('en')}
+                onPress={() => {
+                  setSelectedLanguage('en');
+                  import('../i18n').then(({ default: i18n }) => {
+                    i18n.changeLanguage('en');
+                  });
+                }}
               >
                 <Text style={{ color: selectedLanguage === 'en' ? '#fff' : '#2563EB' }}>Inglés</Text>
               </TouchableOpacity>

@@ -19,10 +19,11 @@ export default function BookAppointmentScreen({ navigation, route }) {
   const { professionalId } = route.params || {};
   const dispatch = useDispatch();
 
-  const { professionals } = useSelector((state) => state.professionals);
+  const professionals = useSelector((state) => state.professionals.professionals);
   const { availableDays, availableTimeSlots, status } = useSelector((state) => state.appointments);
   const usuario = useSelector((state) => state.user.usuario);
   const specialties = useSelector((state) => state.medicalSpecialities.specialities);
+
 
   const [specialty, setSpecialty] = useState('');
   const [professional, setProfessional] = useState(professionalId || '');
@@ -39,7 +40,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
       const selectedProf = professionals.find((p) => p.id === professionalId);
       if (selectedProf) {
         setProfessional(professionalId);
-        setSpecialty(selectedProf.informacionAdicional);
+        setSpecialty(selectedProf.idEspecialidad);
       }
     }
   }, [professionalId, professionals]);
@@ -114,7 +115,10 @@ export default function BookAppointmentScreen({ navigation, route }) {
                 label="Especialidad"
                 type="picker"
                 value={specialty}
-                onChange={setSpecialty}
+                onChange={(value) => {
+                  setSpecialty(value);
+                  setProfessional('');
+                }}
                 items={specialties.map(e => ({ value: e.id, label: e.descripcion }))}
                 disabled={!!professionalId}
               />
@@ -125,9 +129,8 @@ export default function BookAppointmentScreen({ navigation, route }) {
                   value={professional}
                   onChange={setProfessional}
                   items={professionals
-                    .filter((p) => p.informacionAdicional === specialty)
-                    .map((p) => ({ value: p.id, label: `${p.nombre} ${p.apellido}` }))}
-                  disabled={!!professionalId}
+                    .filter((p) => p.idEspecialidad === parseInt(specialty, 10) )
+                      .map((p) => ({ value: p.id, label: `${p.nombre} ${p.apellido}` }))}
                 />
               )}
               {professional && (

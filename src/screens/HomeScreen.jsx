@@ -9,6 +9,7 @@ import AppointmentCard from '../components/AppointmentCard';
 import DoctorCard from '../components/DoctorCard';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { fetchAppointments } from "~/store/slices/appointmentsSlice";
+import { fetchSpecialities } from "~/store/slices/medicalSpecialitiesSlice";
 
 export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -16,6 +17,7 @@ export default function HomeScreen({ navigation }) {
   const appointments = useSelector((state) => state.appointments.appointmentsByUser);
   const { professionals, status: professionalsStatus } = useSelector((state) => state.professionals);
   const usuario = useSelector((state) => state.user.usuario);
+  const specialities = useSelector((state) => state.medicalSpecialities.specialities);
 
   useEffect(() => {
     if (!professionals || professionals.length === 0) {
@@ -27,6 +29,9 @@ export default function HomeScreen({ navigation }) {
         dispatch(fetchAppointments(usuarioId));
       }
     });
+    if(specialities.length === 0) {
+      dispatch(fetchSpecialities());
+    }
   }, [dispatch]);
 
   const quickActions = [
@@ -119,7 +124,7 @@ export default function HomeScreen({ navigation }) {
               <View key={doctor.id} className="mr-3">
                 <DoctorCard
                   name={`${doctor.nombre} ${doctor.apellido}`}
-                  specialty={doctor.informacionAdicional}
+                  specialty={specialities.find(s => s.id === doctor.idEspecialidad)?.descripcion || ''}
                   stars={doctor.calificacionPromedio > 0 ? doctor.calificacionPromedio : null}
                   noRating={doctor.calificacionPromedio === 0}
                   onBook={() => navigation.navigate('BookAppointment', { professionalId: doctor.id })}
