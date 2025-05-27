@@ -59,13 +59,13 @@ export default function ProfileScreen({ navigation }) {
           </View>
           <View className="flex-row items-center gap-x-3">
             <Icon name="eye" size={16} color="#2563EB" />
-            <Text className="text-sm text-blue-700 font-medium">Ver perfil</Text>
+            <Text className="text-sm text-blue-700 font-medium">{t('profile.view_profile')}</Text>
           </View>
         </Pressable>
 
         {/* Acciones rápidas */}
         <View className="bg-white rounded-lg p-4 mb-4 shadow-md">
-          <Text className="text-lg font-semibold text-gray-800 mb-4">Opciones</Text>
+          <Text className="text-lg font-semibold text-gray-800 mb-4">{t('profile.options_title')}</Text>
           <QuickActions
             actions={moreActions}
             navigation={navigation}
@@ -79,18 +79,15 @@ export default function ProfileScreen({ navigation }) {
             <View className="w-10 h-10 bg-blue-100 rounded-full justify-center items-center mb-2">
               <Icon name="cog" size={18} color="#4a6fa5" />
             </View>
-            <Text className="text-base font-medium text-gray-800">Configuración</Text>
+            <Text className="text-base font-medium text-gray-800">{t('profile.menu.settings.title')}</Text>
           </TouchableOpacity>
         </View>
 
         {/* Acerca de la app */}
         <View className="bg-white rounded-lg p-4 shadow-md">
-          <Text className="text-base font-semibold text-gray-800 mb-2">Acerca de MediBook</Text>
-          <Text className="text-sm text-gray-600 mb-2">Versión 1.0.0</Text>
-          <Text className="text-sm text-gray-600">
-            MediBook es una aplicación para la gestión de turnos médicos, diseñada para hacer más fácil el
-            acceso a servicios de salud.
-          </Text>
+          <Text className="text-base font-semibold text-gray-800 mb-2">{t('profile.about_title')}</Text>
+          <Text className="text-sm text-gray-600 mb-2">{t('profile.about_version')} 1.0.0</Text>
+          <Text className="text-sm text-gray-600">{t('profile.about')}</Text>
         </View>
       </ScrollView>
 
@@ -131,8 +128,8 @@ export default function ProfileScreen({ navigation }) {
             onStartShouldSetResponder={() => true}
             onResponderStart={e => e.stopPropagation()}
           >
-            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 16 }}>{t('settings.title')}</Text>
-            <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>{t('settings.theme')}</Text>
+            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 16 }}>{t('profile.menu.settings.title')}</Text>
+            <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>{t('profile.menu.settings.theme')}</Text>
             <View style={{ flexDirection: 'row', marginBottom: 16 }}>
               <TouchableOpacity
                 style={{
@@ -143,7 +140,7 @@ export default function ProfileScreen({ navigation }) {
                 }}
                 onPress={() => setSelectedTheme('light')}
               >
-                <Text style={{ color: selectedTheme === 'light' ? '#fff' : '#2563EB' }}>{t('settings.theme_light')}</Text>
+                <Text style={{ color: selectedTheme === 'light' ? '#fff' : '#2563EB' }}>{t('profile.menu.settings.theme_light')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
@@ -153,10 +150,10 @@ export default function ProfileScreen({ navigation }) {
                 }}
                 onPress={() => setSelectedTheme('dark')}
               >
-                <Text style={{ color: selectedTheme === 'dark' ? '#fff' : '#2563EB' }}>{t('settings.theme_dark')}</Text>
+                <Text style={{ color: selectedTheme === 'dark' ? '#fff' : '#2563EB' }}>{t('profile.menu.settings.theme_dark')}</Text>
               </TouchableOpacity>
             </View>
-            <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>{t('settings.language')}</Text>
+            <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>{t('profile.menu.settings.language')}</Text>
             <View style={{ flexDirection: 'row', marginBottom: 24 }}>
               <TouchableOpacity
                 style={{
@@ -172,7 +169,7 @@ export default function ProfileScreen({ navigation }) {
                   });
                 }}
               >
-                <Text style={{ color: selectedLanguage === 'es' ? '#fff' : '#2563EB' }}>{t('Español')}</Text>
+                <Text style={{ color: selectedLanguage === 'es' ? '#fff' : '#2563EB' }}>{t('profile.menu.settings.language_es')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
@@ -187,7 +184,7 @@ export default function ProfileScreen({ navigation }) {
                   });
                 }}
               >
-                <Text style={{ color: selectedLanguage === 'en' ? '#fff' : '#2563EB' }}>{t('English')}</Text>
+                <Text style={{ color: selectedLanguage === 'en' ? '#fff' : '#2563EB' }}>{t('profile.menu.settings.language_en')}</Text>
               </TouchableOpacity>
             </View>
             <TouchableOpacity
@@ -199,7 +196,7 @@ export default function ProfileScreen({ navigation }) {
               }}
               onPress={() => setShowSettingsModal(false)}
             >
-              <Text style={{ color: '#fff', fontWeight: 'bold' }}>{t('settings.save')}</Text>
+              <Text style={{ color: '#fff', fontWeight: 'bold' }}>{t('profile.menu.settings.save_button')}</Text>
             </TouchableOpacity>
           </Animated.View>
         </Pressable>

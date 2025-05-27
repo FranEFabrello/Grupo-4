@@ -398,38 +398,8 @@
         "en": "Privacy"
       },
       "settings": {
-        "title": {
-          "es": "Configuración",
-          "en": "Settings"
-        },
-        "theme": {
-          "es": "Tema",
-          "en": "Theme"
-        },
-        "theme_light": {
-          "es": "Claro",
-          "en": "Light"
-        },
-        "theme_dark": {
-          "es": "Oscuro",
-          "en": "Dark"
-        },
-        "language": {
-          "es": "Idioma",
-          "en": "Language"
-        },
-        "language_es": {
-          "es": "Español",
-          "en": "Spanish"
-        },
-        "language_en": {
-          "es": "Inglés",
-          "en": "English"
-        },
-        "save_button": {
-          "es": "Guardar",
-          "en": "Save"
-        }
+        "es": "Configuración",
+        "en": "Settings"
       }
     },
     "about": {
@@ -504,21 +474,53 @@
       "privacy": {
         "es": "Privacidad",
         "en": "Privacy"
+      },
+      "settings": {
+        "title": {
+          "es": "Configuración",
+          "en": "Settings"
+        },
+        "theme": {
+          "es": "Tema",
+          "en": "Theme"
+        },
+        "theme_light": {
+          "es": "Claro",
+          "en": "Light"
+        },
+        "theme_dark": {
+          "es": "Oscuro",
+          "en": "Dark"
+        },
+        "language": {
+          "es": "Idioma",
+          "en": "Language"
+        },
+        "language_es": {
+          "es": "Español",
+          "en": "Spanish"
+        },
+        "language_en": {
+          "es": "Inglés",
+          "en": "English"
+        },
+        "save_button": {
+          "es": "Guardar",
+          "en": "Save"
+        }
       }
     },
+    "about_title":{
+      "es": "Acerca de Medibook",
+      "en": "About Medibook"
+    },
+    "about_version": {
+      "es": "Versión",
+      "en": "Version"
+    },
     "about": {
-      "title": {
-        "es": "Acerca de MediBook",
-        "en": "About MediBook"
-      },
-      "version": {
-        "es": "Versión 1.0.0",
-        "en": "Version 1.0.0"
-      },
-      "description": {
-        "es": "MediBook es una aplicación para la gestión de turnos médicos, diseñada para hacer más fácil el acceso a servicios de salud.",
-        "en": "MediBook is an app for managing medical appointments, designed to make access to healthcare services easier."
-      }
+      "es": "MediBook es una aplicación para la gestión de turnos médicos, diseñada para hacer más fácil el acceso a servicios de salud.",
+      "en": "MediBook is an app for managing medical appointments, designed to make access to healthcare services easier."
     }
   },
 
