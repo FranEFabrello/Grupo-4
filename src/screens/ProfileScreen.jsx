@@ -31,11 +31,11 @@ export default function ProfileScreen({ navigation }) {
   };
 
   const moreActions = [
-    { icon: 'user-cog', label: 'Editar perfil', screen: 'UserProfile' },
-    { icon: 'hospital-user', label: 'Obra social', screen: 'Insurance' },
-    { icon: 'file-medical', label: 'Resultados médicos', screen: 'Results' },
-    { icon: 'question-circle', label: 'Ayuda', screen: 'Help' },
-    { icon: 'shield-alt', label: 'Privacidad', screen: 'SecurityPolicy' },
+    { icon: 'user-cog', label: t('profile.menu.edit'), screen: 'UserProfile' },
+    { icon: 'hospital-user', label: t('profile.menu.insurance'), screen: 'Insurance' },
+    { icon: 'file-medical', label: t('profile.menu.results'), screen: 'Results' },
+    { icon: 'question-circle', label: t('profile.menu.help'), screen: 'Help' },
+    { icon: 'shield-alt', label: t('profile.menu.privacy'), screen: 'SecurityPolicy' },
   ];
 
   return (
@@ -131,8 +131,8 @@ export default function ProfileScreen({ navigation }) {
             onStartShouldSetResponder={() => true}
             onResponderStart={e => e.stopPropagation()}
           >
-            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 16 }}>Configuración</Text>
-            <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>Tema</Text>
+            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 16 }}>{t('settings.title')}</Text>
+            <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>{t('settings.theme')}</Text>
             <View style={{ flexDirection: 'row', marginBottom: 16 }}>
               <TouchableOpacity
                 style={{
@@ -143,7 +143,7 @@ export default function ProfileScreen({ navigation }) {
                 }}
                 onPress={() => setSelectedTheme('light')}
               >
-                <Text style={{ color: selectedTheme === 'light' ? '#fff' : '#2563EB' }}>Claro</Text>
+                <Text style={{ color: selectedTheme === 'light' ? '#fff' : '#2563EB' }}>{t('settings.theme_light')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
@@ -153,10 +153,10 @@ export default function ProfileScreen({ navigation }) {
                 }}
                 onPress={() => setSelectedTheme('dark')}
               >
-                <Text style={{ color: selectedTheme === 'dark' ? '#fff' : '#2563EB' }}>Oscuro</Text>
+                <Text style={{ color: selectedTheme === 'dark' ? '#fff' : '#2563EB' }}>{t('settings.theme_dark')}</Text>
               </TouchableOpacity>
             </View>
-            <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>Idioma</Text>
+            <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>{t('settings.language')}</Text>
             <View style={{ flexDirection: 'row', marginBottom: 24 }}>
               <TouchableOpacity
                 style={{
@@ -172,7 +172,7 @@ export default function ProfileScreen({ navigation }) {
                   });
                 }}
               >
-                <Text style={{ color: selectedLanguage === 'es' ? '#fff' : '#2563EB' }}>Español</Text>
+                <Text style={{ color: selectedLanguage === 'es' ? '#fff' : '#2563EB' }}>{t('Español')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
@@ -187,7 +187,7 @@ export default function ProfileScreen({ navigation }) {
                   });
                 }}
               >
-                <Text style={{ color: selectedLanguage === 'en' ? '#fff' : '#2563EB' }}>Inglés</Text>
+                <Text style={{ color: selectedLanguage === 'en' ? '#fff' : '#2563EB' }}>{t('English')}</Text>
               </TouchableOpacity>
             </View>
             <TouchableOpacity
@@ -199,7 +199,7 @@ export default function ProfileScreen({ navigation }) {
               }}
               onPress={() => setShowSettingsModal(false)}
             >
-              <Text style={{ color: '#fff', fontWeight: 'bold' }}>Guardar</Text>
+              <Text style={{ color: '#fff', fontWeight: 'bold' }}>{t('settings.save')}</Text>
             </TouchableOpacity>
           </Animated.View>
         </Pressable>

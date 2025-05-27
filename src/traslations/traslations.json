@@ -1,0 +1,804 @@
+{
+  "login": {
+    "title": {
+      "es": "Iniciar Sesión",
+      "en": "Login"
+    },
+    "email_placeholder": {
+      "es": "Correo electrónico",
+      "en": "Email"
+    },
+    "password_placeholder": {
+      "es": "Contraseña",
+      "en": "Password"
+    },
+    "submit_button": {
+      "es": "Ingresar",
+      "en": "Sign In"
+    },
+    "register_prompt": {
+      "es": "¿No tienes una cuenta? Regístrate",
+      "en": "Don't have an account? Register"
+    }
+  },
+
+  "appointments": {
+    "screen_title": {
+      "es": "Mis Turnos",
+      "en": "My Appointments"
+    },
+    "filter_button": {
+      "es": "Filtrar turnos",
+      "en": "Filter appointments"
+    },
+    "tabs": {
+      "upcoming": {
+        "es": "Próximos",
+        "en": "Upcoming"
+      },
+      "past": {
+        "es": "Pasados",
+        "en": "Past"
+      },
+      "cancelled": {
+        "es": "Cancelados",
+        "en": "Cancelled"
+      }
+    },
+    "loading": {
+      "es": "Cargando...",
+      "en": "Loading..."
+    },
+    "empty": {
+      "upcoming": {
+        "es": "No hay turnos próximos",
+        "en": "No upcoming appointments"
+      },
+      "past": {
+        "es": "No hay turnos pasados",
+        "en": "No past appointments"
+      },
+      "cancelled": {
+        "es": "No hay turnos cancelados",
+        "en": "No cancelled appointments"
+      }
+    },
+    "view_medical_notes": {
+      "es": "Ver notas médicas",
+      "en": "View medical notes"
+    },
+    "cancel_alert": {
+      "es": "Turno cancelado",
+      "en": "Appointment cancelled"
+    }
+  },
+
+  "book_appointment": {
+    "screen_title": {
+      "es": "Reservar Turno",
+      "en": "Book Appointment"
+    },
+    "loading": {
+      "es": "Cargando...",
+      "en": "Loading..."
+    },
+    "fields": {
+      "specialty": {
+        "es": "Especialidad",
+        "en": "Specialty"
+      },
+      "professional": {
+        "es": "Profesional",
+        "en": "Professional"
+      }
+    },
+    "select_date": {
+      "es": "Seleccionar fecha",
+      "en": "Select date"
+    },
+    "available_times": {
+      "es": "Horarios disponibles",
+      "en": "Available time slots"
+    },
+    "no_times": {
+      "es": "No hay horarios disponibles",
+      "en": "No available time slots"
+    },
+    "confirm_button": {
+      "default": {
+        "es": "Confirmar turno",
+        "en": "Confirm appointment"
+      },
+      "with_time": {
+        "es": "Confirmar turno a las {{time}}",
+        "en": "Confirm appointment at {{time}}"
+      }
+    },
+
+    "alerts": {
+      "success": {
+        "es": "Turno confirmado exitosamente",
+        "en": "Appointment successfully booked"
+      },
+      "error": {
+        "es": "Error al confirmar el turno",
+        "en": "Error booking the appointment"
+      },
+      "missing_fields": {
+        "es": "Por favor, completa todos los campos",
+        "en": "Please complete all fields"
+      }
+    }
+  },
+
+  "change_password": {
+    "email_placeholder": {
+      "es": "Correo",
+      "en": "Email"
+    },
+    "new_password_placeholder": {
+      "es": "Nueva contraseña",
+      "en": "New password"
+    },
+    "submit_button": {
+      "es": "Cambiar contraseña",
+      "en": "Change password"
+    },
+    "alerts": {
+      "error_title": {
+        "es": "Error",
+        "en": "Error"
+      },
+      "success_title": {
+        "es": "Éxito",
+        "en": "Success"
+      },
+      "missing_fields": {
+        "es": "Completa todos los campos.",
+        "en": "Please fill in all fields."
+      }
+    }
+  },
+
+  "confirm_token_register": {
+    "token_placeholder": {
+      "es": "Ingresar token",
+      "en": "Enter token"
+    },
+    "submit_button": {
+      "es": "Confirmar token",
+      "en": "Confirm token"
+    },
+    "alerts": {
+      "error_title": {
+        "es": "Error",
+        "en": "Error"
+      },
+      "success_title": {
+        "es": "Éxito",
+        "en": "Success"
+      },
+      "token_length_error": {
+        "es": "El token debe tener 8 caracteres.",
+        "en": "The token must be 8 characters long."
+      },
+      "default_success": {
+        "es": "Token validado correctamente",
+        "en": "Token successfully validated"
+      },
+      "default_error": {
+        "es": "Token inválido",
+        "en": "Invalid token"
+      }
+    }
+  },
+
+  "health_tips": {
+    "screen_title": {
+      "es": "Consejos de Salud",
+      "en": "Health Tips"
+    },
+    "error_prefix": {
+      "es": "Error:",
+      "en": "Error:"
+    },
+    "retry": {
+      "es": "Reintentar",
+      "en": "Retry"
+    },
+    "no_articles": {
+      "es": "No se encontraron artículos.",
+      "en": "No articles found."
+    },
+    "no_description": {
+      "es": "Sin descripción disponible.",
+      "en": "No description available."
+    },
+    "read_more": {
+      "es": "Leer más",
+      "en": "Read more"
+    },
+    "load_more": {
+      "es": "Cargar más",
+      "en": "Load more"
+    },
+    "no_more_articles": {
+      "es": "No hay más artículos para cargar.",
+      "en": "No more articles to load."
+    }
+  },
+
+  "home": {
+    "title": {
+      "es": "MediBook",
+      "en": "MediBook"
+    },
+    "greeting": {
+      "es": "Hola, {{name}}",
+      "en": "Hello, {{name}}"
+    },
+    "question": {
+      "es": "¿Qué necesitas hacer hoy?",
+      "en": "What do you need to do today?"
+    },
+    "quick_actions": {
+      "book": {
+        "es": "Reservar turno",
+        "en": "Book appointment"
+      },
+      "appointments": {
+        "es": "Mis Turnos",
+        "en": "My Appointments"
+      },
+      "results": {
+        "es": "Resultados",
+        "en": "Results"
+      },
+      "insurance": {
+        "es": "Obra social",
+        "en": "Insurance"
+      }
+    },
+    "next_appointment": {
+      "title": {
+        "es": "Tu próximo turno",
+        "en": "Your next appointment"
+      },
+      "view_all": {
+        "es": "Ver todos",
+        "en": "View all"
+      },
+      "none": {
+        "es": "No hay turnos próximos",
+        "en": "No upcoming appointments"
+      },
+      "cancelled_alert": {
+        "es": "Turno cancelado",
+        "en": "Appointment cancelled"
+      },
+      "loading": {
+        "es": "Cargando...",
+        "en": "Loading..."
+      }
+    },
+    "featured_doctors": {
+      "title": {
+        "es": "Profesionales destacados",
+        "en": "Featured professionals"
+      },
+      "view_all": {
+        "es": "Ver todos",
+        "en": "View all"
+      },
+      "loading": {
+        "es": "Cargando...",
+        "en": "Loading..."
+      }
+    },
+    "medical_news": {
+      "title": {
+        "es": "Noticias médicas",
+        "en": "Medical news"
+      },
+      "button": {
+        "es": "Ver noticias médicas",
+        "en": "View medical news"
+      }
+    }
+  },
+
+  "insurance": {
+    "screen_title": {
+      "es": "Obra Social",
+      "en": "Health Insurance"
+    },
+    "section_title": {
+      "es": "Mi Obra Social",
+      "en": "My Health Insurance"
+    },
+    "fields": {
+      "plan": {
+        "es": "Plan",
+        "en": "Plan"
+      },
+      "affiliate_number": {
+        "es": "Número de afiliado",
+        "en": "Affiliate number"
+      },
+      "holder": {
+        "es": "Titular",
+        "en": "Policyholder"
+      },
+      "expiration": {
+        "es": "Vencimiento",
+        "en": "Expiration"
+      }
+    },
+    "credential_button": {
+      "es": "Mostrar credencial",
+      "en": "Show credential"
+    },
+    "no_info": {
+      "es": "No hay información disponible",
+      "en": "No information available"
+    },
+    "coverage_title": {
+      "es": "Cobertura médica",
+      "en": "Medical coverage"
+    },
+    "loading": {
+      "es": "Cargando...",
+      "en": "Loading..."
+    }
+  },
+
+  "medical_notes": {
+    "screen_title": {
+      "es": "Notas Médicas",
+      "en": "Medical Notes"
+    },
+    "loading": {
+      "es": "Cargando...",
+      "en": "Loading..."
+    },
+    "empty": {
+      "es": "No hay notas disponibles",
+      "en": "No notes available"
+    },
+    "download_alert": {
+      "es": "Descargando {{file}}",
+      "en": "Downloading {{file}}"
+    }
+  },
+
+  "more": {
+    "screen_title": {
+      "es": "Más Opciones",
+      "en": "More Options"
+    },
+    "section_title": {
+      "es": "Más opciones",
+      "en": "More options"
+    },
+    "menu": {
+      "insurance": {
+        "es": "Obra social",
+        "en": "Health Insurance"
+      },
+      "results": {
+        "es": "Resultados médicos",
+        "en": "Medical Results"
+      },
+      "help": {
+        "es": "Ayuda",
+        "en": "Help"
+      },
+      "privacy": {
+        "es": "Privacidad",
+        "en": "Privacy"
+      },
+      "settings": {
+        "title": {
+          "es": "Configuración",
+          "en": "Settings"
+        },
+        "theme": {
+          "es": "Tema",
+          "en": "Theme"
+        },
+        "theme_light": {
+          "es": "Claro",
+          "en": "Light"
+        },
+        "theme_dark": {
+          "es": "Oscuro",
+          "en": "Dark"
+        },
+        "language": {
+          "es": "Idioma",
+          "en": "Language"
+        },
+        "language_es": {
+          "es": "Español",
+          "en": "Spanish"
+        },
+        "language_en": {
+          "es": "Inglés",
+          "en": "English"
+        },
+        "save_button": {
+          "es": "Guardar",
+          "en": "Save"
+        }
+      }
+    },
+    "about": {
+      "title": {
+        "es": "Acerca de MediBook",
+        "en": "About MediBook"
+      },
+      "version": {
+        "es": "Versión 1.0.0",
+        "en": "Version 1.0.0"
+      },
+      "description": {
+        "es": "MediBook es una aplicación para la gestión de turnos médicos, diseñada para hacer más fácil el acceso a servicios de salud.",
+        "en": "MediBook is an app for managing medical appointments, designed to make access to healthcare services easier."
+      }
+    }
+  },
+
+  "professionals": {
+    "screen_title": {
+      "es": "Profesionales",
+      "en": "Professionals"
+    },
+    "search_placeholder": {
+      "es": "Buscar profesional...",
+      "en": "Search professional..."
+    },
+    "filter_alert": {
+      "es": "Filtrar profesionales",
+      "en": "Filter professionals"
+    },
+    "loading": {
+      "es": "Cargando...",
+      "en": "Loading..."
+    },
+    "empty": {
+      "es": "No hay profesionales disponibles",
+      "en": "No professionals available"
+    }
+  },
+
+  "profile": {
+    "screen_title": {
+      "es": "Perfil",
+      "en": "Profile"
+    },
+    "view_profile": {
+      "es": "Ver perfil",
+      "en": "View profile"
+    },
+    "options_title": {
+      "es": "Opciones",
+      "en": "Options"
+    },
+    "menu": {
+      "edit": {
+        "es": "Editar perfil",
+        "en": "Edit profile"
+      },
+      "insurance": {
+        "es": "Obra social",
+        "en": "Health Insurance"
+      },
+      "results": {
+        "es": "Resultados médicos",
+        "en": "Medical Results"
+      },
+      "help": {
+        "es": "Ayuda",
+        "en": "Help"
+      },
+      "privacy": {
+        "es": "Privacidad",
+        "en": "Privacy"
+      }
+    },
+    "about": {
+      "title": {
+        "es": "Acerca de MediBook",
+        "en": "About MediBook"
+      },
+      "version": {
+        "es": "Versión 1.0.0",
+        "en": "Version 1.0.0"
+      },
+      "description": {
+        "es": "MediBook es una aplicación para la gestión de turnos médicos, diseñada para hacer más fácil el acceso a servicios de salud.",
+        "en": "MediBook is an app for managing medical appointments, designed to make access to healthcare services easier."
+      }
+    }
+  },
+
+  "register": {
+    "title": {
+      "es": "Crear Cuenta",
+      "en": "Create Account"
+    },
+    "placeholders": {
+      "nombre": {
+        "es": "Nombre",
+        "en": "First Name"
+      },
+      "apellido": {
+        "es": "Apellido",
+        "en": "Last Name"
+      },
+      "correo": {
+        "es": "Correo electrónico",
+        "en": "Email"
+      },
+      "contrasenia": {
+        "es": "Contraseña",
+        "en": "Password"
+      },
+      "repetir_contrasenia": {
+        "es": "Repetir contraseña",
+        "en": "Repeat password"
+      },
+      "dni": {
+        "es": "DNI",
+        "en": "ID Number"
+      },
+      "fecha_nacimiento": {
+        "es": "Fecha de nacimiento (AAAA-MM-DD)",
+        "en": "Birth date (YYYY-MM-DD)"
+      },
+      "edad": {
+        "es": "Edad",
+        "en": "Age"
+      },
+      "celular": {
+        "es": "Celular (11 1234 5678)",
+        "en": "Phone (11 1234 5678)"
+      }
+    },
+    "genero": {
+      "M": {
+        "es": "Masculino",
+        "en": "Male"
+      },
+      "F": {
+        "es": "Femenino",
+        "en": "Female"
+      },
+      "O": {
+        "es": "Otros",
+        "en": "Other"
+      }
+    },
+    "buttons": {
+      "siguiente": {
+        "es": "Siguiente",
+        "en": "Next"
+      },
+      "atras": {
+        "es": "Atrás",
+        "en": "Back"
+      },
+      "registrarme": {
+        "es": "Registrarme",
+        "en": "Register"
+      },
+      "cambiar_imagen": {
+        "es": "Cambiar imagen de perfil",
+        "en": "Change profile image"
+      },
+      "agregar_imagen": {
+        "es": "Agregar imagen de perfil (opcional)",
+        "en": "Add profile image (optional)"
+      }
+    },
+    "footer": {
+      "login_redirect": {
+        "es": "¿Ya tienes cuenta? Inicia sesión",
+        "en": "Already have an account? Sign in"
+      }
+    },
+    "errors": {
+      "nombre": {
+        "es": "El nombre es obligatorio",
+        "en": "First name is required"
+      },
+      "apellido": {
+        "es": "El apellido es obligatorio",
+        "en": "Last name is required"
+      },
+      "correo": {
+        "es": "Correo inválido",
+        "en": "Invalid email"
+      },
+      "contrasenia": {
+        "es": "Mínimo 6 caracteres",
+        "en": "Minimum 6 characters"
+      },
+      "repetir_contrasenia": {
+        "es": "Las contraseñas no coinciden",
+        "en": "Passwords do not match"
+      },
+      "dni": {
+        "es": "El DNI es obligatorio",
+        "en": "ID is required"
+      },
+      "genero": {
+        "es": "Selecciona un género",
+        "en": "Select a gender"
+      },
+      "fecha_nacimiento": {
+        "es": "La fecha es obligatoria",
+        "en": "Birth date is required"
+      },
+      "edad": {
+        "es": "Edad inválida",
+        "en": "Invalid age"
+      },
+      "celular": {
+        "es": "El celular es obligatorio",
+        "en": "Phone number is required"
+      },
+      "obra_social": {
+        "es": "La obra social es obligatoria",
+        "en": "Health insurance is required"
+      },
+      "registro_fallido": {
+        "es": "Hubo un problema al registrar el usuario.",
+        "en": "There was a problem registering the user."
+      }
+    }
+  },
+
+  "results": {
+    "screen_title": {
+      "es": "Resultados",
+      "en": "Results"
+    },
+    "title": {
+      "es": "Resultados Médicos",
+      "en": "Medical Results"
+    },
+    "subtitle": {
+      "es": "Tus estudios y análisis clínicos",
+      "en": "Your medical tests and analyses"
+    },
+    "section_title": {
+      "es": "Estudios recientes",
+      "en": "Recent studies"
+    },
+    "filter_alert": {
+      "es": "Filtrar resultados",
+      "en": "Filter results"
+    },
+    "loading": {
+      "es": "Cargando...",
+      "en": "Loading..."
+    },
+    "empty": {
+      "es": "No hay resultados disponibles",
+      "en": "No results available"
+    },
+    "download": {
+      "button": {
+        "es": "Descargar",
+        "en": "Download"
+      },
+      "alert": {
+        "es": "Descargando {{file}}",
+        "en": "Downloading {{file}}"
+      }
+    }
+  },
+
+  "user_profile": {
+    "screen_title": {
+      "es": "Mi Perfil",
+      "en": "My Profile"
+    },
+    "edit_section_title": {
+      "es": "Editar Información Personal",
+      "en": "Edit Personal Information"
+    },
+    "fields": {
+      "nombre": {
+        "es": "Nombre",
+        "en": "First Name"
+      },
+      "apellido": {
+        "es": "Apellido",
+        "en": "Last Name"
+      },
+      "dni": {
+        "es": "DNI",
+        "en": "ID Number"
+      },
+      "celular": {
+        "es": "Celular",
+        "en": "Phone"
+      },
+      "genero": {
+        "es": "Género",
+        "en": "Gender"
+      },
+      "genero_masculino": {
+        "es": "Masculino",
+        "en": "Male"
+      },
+      "genero_femenino": {
+        "es": "Femenino",
+        "en": "Female"
+      },
+      "genero_otros": {
+        "es": "Otros",
+        "en": "Other"
+      }
+    },
+    "buttons": {
+      "edit": {
+        "es": "Editar perfil",
+        "en": "Edit profile"
+      },
+      "save": {
+        "es": "Guardar cambios",
+        "en": "Save changes"
+      },
+      "logout": {
+        "es": "Cerrar sesión",
+        "en": "Log out"
+      }
+    },
+    "status": {
+      "loading": {
+        "es": "Cargando...",
+        "en": "Loading..."
+      },
+      "load_error": {
+        "es": "Error al cargar el perfil",
+        "en": "Failed to load profile"
+      }
+    },
+    "alerts": {
+      "not_identified": {
+        "es": "No se pudo identificar al usuario.",
+        "en": "User could not be identified."
+      },
+      "no_changes": {
+        "es": "No se hicieron cambios.",
+        "en": "No changes made."
+      },
+      "updated": {
+        "es": "Información actualizada",
+        "en": "Information updated"
+      },
+      "update_error": {
+        "es": "Error al actualizar la información",
+        "en": "Error updating information"
+      }
+    }
+  },
+
+  "welcome": {
+    "title": {
+      "es": "Bienvenido",
+      "en": "Welcome"
+    },
+    "login_button": {
+      "es": "Iniciar Sesión",
+      "en": "Log In"
+    },
+    "register_button": {
+      "es": "Registrarse",
+      "en": "Register"
+    }
+  }
+}
