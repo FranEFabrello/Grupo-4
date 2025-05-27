@@ -22,57 +22,6 @@
     }
   },
 
-  "appointments": {
-    "screen_title": {
-      "es": "Mis Turnos",
-      "en": "My Appointments"
-    },
-    "filter_button": {
-      "es": "Filtrar turnos",
-      "en": "Filter appointments"
-    },
-    "tabs": {
-      "upcoming": {
-        "es": "Próximos",
-        "en": "Upcoming"
-      },
-      "past": {
-        "es": "Pasados",
-        "en": "Past"
-      },
-      "cancelled": {
-        "es": "Cancelados",
-        "en": "Cancelled"
-      }
-    },
-    "loading": {
-      "es": "Cargando...",
-      "en": "Loading..."
-    },
-    "empty": {
-      "upcoming": {
-        "es": "No hay turnos próximos",
-        "en": "No upcoming appointments"
-      },
-      "past": {
-        "es": "No hay turnos pasados",
-        "en": "No past appointments"
-      },
-      "cancelled": {
-        "es": "No hay turnos cancelados",
-        "en": "No cancelled appointments"
-      }
-    },
-    "view_medical_notes": {
-      "es": "Ver notas médicas",
-      "en": "View medical notes"
-    },
-    "cancel_alert": {
-      "es": "Turno cancelado",
-      "en": "Appointment cancelled"
-    }
-  },
-
   "book_appointment": {
     "screen_title": {
       "es": "Reservar Turno",
@@ -802,5 +751,134 @@
       "es": "Registrarse",
       "en": "Register"
     }
+  },
+
+  "Filter": {
+    "es": "Filtrar",
+    "en": "Filter"
+  },
+  "medical_note": {
+    "reason": {
+      "es": "Motivo de consulta",
+      "en": "Reason for consultation"
+    },
+    "diagnosis": {
+      "es": "Diagnóstico",
+      "en": "Diagnosis"
+    },
+    "notes": {
+      "es": "Notas médicas",
+      "en": "Medical notes"
+    },
+    "prescription": {
+      "es": "Receta médica",
+      "en": "Prescription"
+    }
+  },
+
+  "doctor_profile": {
+    "screen_title": {
+      "es": "Perfil del Profesional",
+      "en": "Doctor Profile"
+    },
+    "no_specialty": {
+      "es": "Sin especialidad",
+      "en": "No specialty"
+    },
+    "no_rating": {
+      "es": "Sin calificación",
+      "en": "No rating"
+    },
+    "additional_info": {
+      "es": "Información Adicional",
+      "en": "Additional Information"
+    },
+    "no_additional_info": {
+      "es": "No hay información adicional disponible",
+      "en": "No additional information available"
+    },
+    "book_button": {
+      "es": "Reservar Turno",
+      "en": "Book Appointment"
+    }
+  },
+  "global": {
+    "loading": {
+      "es": "Cargando...",
+      "en": "Loading..."
+    }
+  },
+
+  "appointments": {
+    "title": {
+      "es": "Mis Turnos",
+      "en": "My Appointments"
+    },
+    "tabs": {
+      "upcoming": {
+        "es": "Próximos",
+        "en": "Upcoming"
+      },
+      "past": {
+        "es": "Pasados",
+        "en": "Past"
+      },
+      "cancelled": {
+        "es": "Cancelados",
+        "en": "Cancelled"
+      }
+    },
+    "no_upcoming": {
+      "es": "No hay turnos próximos",
+      "en": "No upcoming appointments"
+    },
+    "no_past": {
+      "es": "No hay turnos pasados",
+      "en": "No past appointments"
+    },
+    "no_cancelled": {
+      "es": "No hay turnos cancelados",
+      "en": "No cancelled appointments"
+    },
+    "view_medical_notes": {
+      "es": "Ver notas médicas",
+      "en": "View medical notes"
+    },
+    "cancel_alert": {
+      "es": "Turno cancelado",
+      "en": "Appointment cancelled"
+    },
+    "filter_dates": {
+      "filter_title": {
+        "es": "Filtrar por rango de fechas",
+        "en": "Filter by date range"
+      },
+      "filter_range": {
+        "es": "Selecciona el rango de fechas",
+        "en": "Select date range"
+      },
+      "start": {
+        "es": "Inicio",
+        "en": "Start"
+      },
+      "end": {
+        "es": "Fin",
+        "en": "End"
+      },
+      "apply_filter": {
+        "es": "Aplicar filtro",
+        "en": "Apply filter"
+      },
+      "clear_filter": {
+        "es": "Limpiar filtro",
+        "en": "Clear filter"
+      }
+    },
+    "loading": {
+      "es": "Cargando...",
+      "en": "Loading..."
+    }
+
+
   }
 }
