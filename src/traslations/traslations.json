@@ -21,7 +21,6 @@
       "en": "Don't have an account? Register"
     }
   },
-
   "book_appointment": {
     "screen_title": {
       "es": "Reservar Turno",
@@ -63,7 +62,6 @@
         "en": "Confirm appointment at {{time}}"
       }
     },
-
     "alerts": {
       "success": {
         "es": "Turno confirmado exitosamente",
@@ -79,7 +77,6 @@
       }
     }
   },
-
   "change_password": {
     "email_placeholder": {
       "es": "Correo",
@@ -108,7 +105,6 @@
       }
     }
   },
-
   "confirm_token_register": {
     "token_placeholder": {
       "es": "Ingresar token",
@@ -141,7 +137,6 @@
       }
     }
   },
-
   "health_tips": {
     "screen_title": {
       "es": "Consejos de Salud",
@@ -176,7 +171,6 @@
       "en": "No more articles to load."
     }
   },
-
   "home": {
     "title": {
       "es": "MediBook",
@@ -255,7 +249,6 @@
       }
     }
   },
-
   "insurance": {
     "screen_title": {
       "es": "Obra Social",
@@ -300,7 +293,6 @@
       "en": "Loading..."
     }
   },
-
   "medical_notes": {
     "screen_title": {
       "es": "Notas Médicas",
@@ -319,7 +311,6 @@
       "en": "Downloading {{file}}"
     }
   },
-
   "more": {
     "screen_title": {
       "es": "Más Opciones",
@@ -366,7 +357,6 @@
       }
     }
   },
-
   "professionals": {
     "screen_title": {
       "es": "Profesionales",
@@ -389,7 +379,6 @@
       "en": "No professionals available"
     }
   },
-
   "profile": {
     "screen_title": {
       "es": "Perfil",
@@ -459,7 +448,7 @@
         }
       }
     },
-    "about_title":{
+    "about_title": {
       "es": "Acerca de Medibook",
       "en": "About Medibook"
     },
@@ -472,7 +461,6 @@
       "en": "MediBook is an app for managing medical appointments, designed to make access to healthcare services easier."
     }
   },
-
   "register": {
     "title": {
       "es": "Crear Cuenta",
@@ -609,7 +597,6 @@
       }
     }
   },
-
   "results": {
     "screen_title": {
       "es": "Resultados",
@@ -650,7 +637,6 @@
       }
     }
   },
-
   "user_profile": {
     "screen_title": {
       "es": "Mi Perfil",
@@ -737,7 +723,6 @@
       }
     }
   },
-
   "welcome": {
     "title": {
       "es": "Bienvenido",
@@ -752,7 +737,6 @@
       "en": "Register"
     }
   },
-
   "Filter": {
     "es": "Filtrar",
     "en": "Filter"
@@ -775,7 +759,6 @@
       "en": "Prescription"
     }
   },
-
   "doctor_profile": {
     "screen_title": {
       "es": "Perfil del Profesional",
@@ -808,7 +791,6 @@
       "en": "Loading..."
     }
   },
-
   "appointments": {
     "title": {
       "es": "Mis Turnos",
@@ -877,8 +859,38 @@
     "loading": {
       "es": "Cargando...",
       "en": "Loading..."
+    },
+    "calendar": {
+      "prev": {
+        "es": "Anterior",
+        "en": "Previous"
+      },
+      "next": {
+        "es": "Siguiente",
+        "en": "Next"
+      },
+      "days": {
+        "mon": { "es": "L", "en": "M" },
+        "tue": { "es": "M", "en": "T" },
+        "wed": { "es": "X", "en": "W" },
+        "thu": { "es": "J", "en": "T" },
+        "fri": { "es": "V", "en": "F" },
+        "sat": { "es": "S", "en": "Sa" },
+        "sun": { "es": "D", "en": "Su" }
+      }
     }
+  },
 
-
+  "doctor_card": {
+    "no_rating": {
+      "es": "Sin calificación",
+      "en": "No rating"
+    },
+    "book": {
+      "es": "Turno",
+      "en": "Book"
+    }
   }
+
 }
+
