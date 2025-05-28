@@ -1,6 +1,6 @@
 // BookAppointmentScreen.jsx
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Text, TouchableOpacity } from 'react-native';
+import { View, ScrollView, Text, TouchableOpacity, useColorScheme } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProfessionals } from "~/store/slices/professionalsSlice";
 import {
@@ -18,6 +18,7 @@ import { fetchSpecialities } from "~/store/slices/medicalSpecialitiesSlice";
 export default function BookAppointmentScreen({ navigation, route }) {
   const { professionalId } = route.params || {};
   const dispatch = useDispatch();
+  const colorScheme = useColorScheme(); // Detecta el tema del sistema
 
   const professionals = useSelector((state) => state.professionals.professionals);
   const { availableDays, availableTimeSlots, status } = useSelector((state) => state.appointments);
@@ -70,6 +71,14 @@ export default function BookAppointmentScreen({ navigation, route }) {
     return `${start}-${end}`;
   };
 
+  // Definir clases condicionales basadas en colorScheme
+   const containerClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-800';
+   const cardClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-700'; // Card background
+   const textClass = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200'; // Main text color
+   const secondaryTextClass = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-400'; // Secondary text color
+   const primaryButtonClass = colorScheme === 'light' ? 'bg-blue-600' : 'bg-blue-700'; // Primary button background
+   const disabledButtonClass = colorScheme === 'light' ? 'bg-gray-300' : 'bg-gray-600'; // Disabled button background
+   const buttonTextClass = colorScheme === 'light' ? 'text-white' : 'text-gray-200'; // Button text color
   const handleConfirm = () => {
     if (specialty && professional && selectedDate && selectedTime) {
       const payload = {
@@ -104,11 +113,11 @@ export default function BookAppointmentScreen({ navigation, route }) {
 
   return (
     <AppContainer navigation={navigation} screenTitle="Reservar Turno">
-      <ScrollView className="p-5">
-        <View className="bg-white rounded-lg p-4 mb-4 shadow-md">
-          <Text className="text-lg font-semibold text-gray-800 mb-4">Reservar Turno</Text>
+      <ScrollView className={`p-5 ${containerClass}`}>
+        <View className={`rounded-lg p-4 mb-4 shadow-md ${cardClass}`}>
+          <Text className={`text-lg font-semibold ${textClass} mb-4`}>Reservar Turno</Text>
           {status === 'loading' ? (
-            <Text className="text-sm text-gray-600">Cargando...</Text>
+            <Text className={`text-sm ${secondaryTextClass}`}>Cargando...</Text>
           ) : (
             <>
               <ProfileField
@@ -122,6 +131,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
                 items={specialties.map(e => ({ value: e.id, label: e.descripcion }))}
                 disabled={!!professionalId}
               />
+
               {specialty && (
                 <ProfileField
                   label="Profesional"
@@ -132,19 +142,21 @@ export default function BookAppointmentScreen({ navigation, route }) {
                     .filter((p) => p.idEspecialidad === parseInt(specialty, 10) )
                       .map((p) => ({ value: p.id, label: `${p.nombre} ${p.apellido}` }))}
                 />
+
               )}
               {professional && (
-                <>
-                  <Text className="text-base font-semibold text-gray-800 mt-4">Seleccionar fecha</Text>
+                <View>
+                  <Text className={`text-base font-semibold ${textClass} mt-4`}>Seleccionar fecha</Text>
                   <Calendar
                     availableDays={availableDays}
                     onSelectDate={(date) => {
                       setSelectedDate(date);
                       setSelectedTime(null);
                     }}
+                    colorScheme={colorScheme}
                   />
 
-                  <Text className="text-base font-semibold text-gray-800 mt-4">Horarios disponibles</Text>
+                  <Text className={`text-base font-semibold ${textClass} mt-4`}>Horarios disponibles</Text>
                   <View className="flex-row flex-wrap justify-between">
                     {availableTimeSlots.length > 0 ? (
                       availableTimeSlots.map((slot, index) => (
@@ -153,21 +165,22 @@ export default function BookAppointmentScreen({ navigation, route }) {
                           time={formatTimeSlot(slot)}
                           isSelected={selectedTime?.horaInicio === slot.horaInicio}
                           onSelect={() => setSelectedTime(slot)}
+                          colorScheme={colorScheme}
                         />
                       ))
                     ) : (
-                      <Text className="text-sm text-gray-600">No hay horarios disponibles</Text>
+                      <Text className={`text-sm ${secondaryTextClass}`}>No hay horarios disponibles</Text>
                     )}
                   </View>
 
                   <TouchableOpacity
                     className={`rounded-lg p-3 mt-4 flex-row justify-center ${
-                      selectedTime ? 'bg-blue-600' : 'bg-gray-300'
-                    }`}
+                      selectedTime ? primaryButtonClass : disabledButtonClass
+                    }`}\n\
                     onPress={handleConfirm}
                     disabled={!selectedTime}
                   >
-                    <Text className="text-white text-base">
+                    <Text className={buttonTextClass}>
                       {selectedTime ? (
                         <>
                           {`Confirmar turno a las ${formatTimeSlot(selectedTime)}`}

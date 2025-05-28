@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react';
 import { View, ScrollView, Text, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import { useColorScheme } from 'react-native';
 import { fetchInsurance } from "~/store/slices/insuranceSlice";
 import AppContainer from '../components/AppContainer';
 import ProfileField from '../components/ProfileField';
 
 export default function InsuranceScreen({ navigation }) {
+  const colorScheme = useColorScheme(); // Detecta el tema del sistema
   const dispatch = useDispatch();
   const { status } = useSelector((state) => state.insurance);
   const insurance = useSelector((state) => state.insurance.insurance);
