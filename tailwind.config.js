@@ -7,7 +7,16 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        lightBackground: '#ffffff', // Fondo claro
+        darkBackground: '#1f2937', // Fondo oscuro
+        lightText: '#1f2937', // Texto claro
+        darkText: '#d1d5db', // Texto oscuro
+        lightCard: '#f3f4f6', // Fondo tarjetas claro
+        darkCard: '#374151', // Fondo tarjetas oscuro
+        primary: '#2563eb', // Color principal (botones, enlaces)
+      }},
   },
   plugins: [],
   presets: [require('nativewind/preset')],

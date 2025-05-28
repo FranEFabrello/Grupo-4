@@ -1,35 +1,52 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { useTranslation } from 'react-i18next';
 
-export default function DoctorCard({ name, specialty, stars, noRating, onBook }) {
-  const { t } = useTranslation();
+export default function DoctorCard({
+                                     name,
+                                     specialty,
+                                     stars,
+                                     noRating,
+                                     onBook,
+                                     containerClassName = 'w-full',
+                                     colorScheme,
+                                   }) {
+  // Definir clases condicionales basadas en colorScheme
+  const cardBgClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-700'; // Fondo interno de la tarjeta
+  const iconBgClass = colorScheme === 'light' ? 'bg-blue-100' : 'bg-blue-900';
+  const iconColor = colorScheme === 'light' ? '#4a6fa5' : '#93c5fd';
+  const nameTextClass = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
+  const specialtyTextClass = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-400';
+  const noRatingTextClass = colorScheme === 'light' ? 'text-gray-400' : 'text-gray-500';
+  const starsTextClass = colorScheme === 'light' ? 'text-yellow-500' : 'text-yellow-400';
+  const buttonBgClass = colorScheme === 'light' ? 'bg-blue-600' : 'bg-blue-700';
 
   return (
-    <View className="bg-white rounded-lg p-3 shadow-md items-center w-full">
-      <View className="w-16 h-16 bg-gray-200 rounded-full justify-center items-center mb-2">
-        <Icon name="user-md" size={24} color="#4a6fa5" />
+    <View className={`${containerClassName}`}>
+      <View className={`${cardBgClass} rounded-lg p-4 shadow-md items-center`}>
+        <View className={`w-10 h-10 ${iconBgClass} rounded-full justify-center items-center mb-2`}>
+          <Icon name="user-md" size={18} color={iconColor} />
+        </View>
+        <Text className={`text-sm font-medium ${nameTextClass}`}>{name}</Text>
+        <Text className={`text-xs ${specialtyTextClass}`}>{specialty}</Text>
+        <View className="flex-row items-center my-1">
+          {noRating ? (
+            <Text className={`text-xs ${noRatingTextClass}`}>Sin calificación</Text>
+          ) : (
+            <>
+              <Text className={`text-xs ${starsTextClass} mr-1`}>{stars}</Text>
+              <Text className={`text-xs ${starsTextClass}`}>★</Text>
+            </>
+          )}
+        </View>
+        <TouchableOpacity
+          className={`${buttonBgClass} rounded-lg p-2 mt-2 w-full flex-row justify-center items-center`}
+          onPress={onBook}
+        >
+          <Icon name="calendar-alt" size={14} color="#ffffff" />
+          <Text className="text-white text-xs ml-1">Turno</Text>
+        </TouchableOpacity>
       </View>
-      <Text className="text-sm font-semibold text-gray-800">{name}</Text>
-      <Text className="text-xs text-gray-600">{specialty}</Text>
-      <View className="flex-row items-center my-1">
-        {noRating ? (
-          <Text className="text-xs text-gray-400"> {t('doctor_card.no_rating')}</Text>
-        ) : (
-          <>
-            <Text className="text-xs text-yellow-500 mr-1">{stars}</Text>
-            <Text className="text-xs text-yellow-500">★</Text>
-          </>
-        )}
-      </View>
-      <TouchableOpacity
-        className="border border-blue-600 rounded-lg p-2 mt-2 w-full flex-row justify-center"
-        onPress={onBook}
-      >
-        <Icon name="calendar-alt" size={14} color="#4a6fa5" />
-        <Text className="text-blue-600 text-xs ml-1"> {t('doctor_card.book')}</Text>
-      </TouchableOpacity>
     </View>
   );
 }
