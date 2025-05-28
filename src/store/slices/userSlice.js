@@ -57,7 +57,8 @@ export const solicitarCambioContrasenia = createAsyncThunk(
   'user/solicitarCambioContrasenia',
   async (correo, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${API_URL}/solicitarCambioContrasenia`, { correo });
+      const response = await api.post('Usuario/solicitarCambioContrasenia', correo );
+      console.log('Respuesta de solicitar cambio contraseña: ', response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al solicitar el cambio de contraseña');
