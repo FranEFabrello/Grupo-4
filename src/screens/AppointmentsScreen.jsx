@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Text, TouchableOpacity, Modal, Pressable } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';import { useColorScheme } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import { confirmAppointment, fetchAppointments } from "~/store/slices/appointmentsSlice";
 import AppContainer from '../components/AppContainer';
 import AppointmentCard from '../components/AppointmentCard';
@@ -14,7 +14,6 @@ import { useTranslation } from 'react-i18next';
 
 export default function AppointmentsScreen({ navigation }) {
   const { t } = useTranslation();
-  const colorScheme = useColorScheme(); // Detecta el tema del sistema
   const dispatch = useDispatch();
   const { status } = useSelector((state) => state.appointments);
   const [activeTab, setActiveTab] = useState('upcoming');
@@ -132,22 +131,14 @@ export default function AppointmentsScreen({ navigation }) {
       return true;
     });
 
-  // Definir clases condicionales basadas en colorScheme
-  const containerClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-800';
-  const cardClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-700'; // Card background
-  const textClass = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200'; // Main text color
-  const secondaryTextClass = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-400'; // Secondary text color
-  const primaryButtonClass = colorScheme === 'light' ? 'bg-blue-600' : 'bg-blue-700'; // Primary button background
-  const linkClass = colorScheme === 'light' ? 'text-blue-600' : 'text-blue-400'; // Link text color
-
 
 
   return (
     <AppContainer navigation={navigation} screenTitle={t('appointments.title')}>
-      <ScrollView className={`p-5 ${containerClass}`}>
-        <View className={`rounded-lg p-4 mb-4 shadow-md ${cardClass}`}>
+      <ScrollView className="p-5">
+        <View className="bg-white rounded-lg p-4 mb-4 shadow-md">
           <View className="flex-row justify-between items-center mb-4">
-            <Text className={`text-lg font-semibold ${textClass}`}>{t('appointments.title')}</Text>
+            <Text className="text-lg font-semibold text-gray-800">{t('appointments.title')}</Text>
             <FilterButton onPress={() => setShowFilterModal(true)} />
           </View>
           {(startDate || endDate) && (
@@ -161,20 +152,17 @@ export default function AppointmentsScreen({ navigation }) {
             <TabButton
               label="Próximos"
               isActive={activeTab === 'upcoming'}
-              colorScheme={colorScheme}
               onPress={() => setActiveTab('upcoming')}
             />
             <TabButton
               label="Pasados"
               isActive={activeTab === 'past'}
-              colorScheme={colorScheme}
               onPress={() => setActiveTab('past')}
             />
             <TabButton
               label="Cancelados"
               isActive={activeTab === 'cancelled'}
               onPress={() => setActiveTab('cancelled')}
-              colorScheme={colorScheme}
             />
           </View>
           {status === 'loading' ? (
@@ -199,7 +187,6 @@ export default function AppointmentsScreen({ navigation }) {
                   status={appt.estado}
                   onCancel={() => alert(t('appointments.cancel_alert'))}
                   onConfirm={appt.estado === 'PENDIENTE' ? () => dispatch(confirmAppointment(appt.id)) : undefined}
-                  colorScheme={colorScheme}
                 />
               ))
             ) : (
@@ -215,7 +202,6 @@ export default function AppointmentsScreen({ navigation }) {
                     doctor={appt.doctorNombre ? appt.doctorNombre : appt.doctorId ? `Dr. ${appt.doctorId}` : ''}
                     specialty={appt.especialidad || appt.specialty || ''}
                     status={appt.estado}
-                    colorScheme={colorScheme}
                   />
                   <TouchableOpacity
                     className="border border-blue-600 rounded-lg p-2 flex-row justify-center"
@@ -237,7 +223,6 @@ export default function AppointmentsScreen({ navigation }) {
                   doctor={appt.doctorNombre ? appt.doctorNombre : appt.doctorId ? `Dr. ${appt.doctorId}` : ''}
                   specialty={appt.especialidad || appt.specialty || ''}
                   status="cancelled"
-                  colorScheme={colorScheme}
                 />
               </View>
             ))
@@ -267,21 +252,19 @@ export default function AppointmentsScreen({ navigation }) {
               behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
               style={{ width: '90%' }}
             >
-              <View style={{
- backgroundColor: colorScheme === 'light' ? '#fff' : '#374151', // gray-700
- borderRadius: 16,
- padding: 20,
-              }}>
- <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 20, color: colorScheme === 'light' ? '#1F2937' : '#E5E7EB' }}>
+              <View style={{ backgroundColor: '#fff', borderRadius: 16, padding: 20 }}>
+                <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 20 }}>
                   {t('appointments.filter_dates.filter_title')}
                 </Text>
 
                 <View style={{ marginBottom: 20 }}>
- <Text style={{ color: colorScheme === 'light' ? '#1F2937' : '#E5E7EB', fontWeight: 'bold', marginBottom: 10 }}>
+                  <Text style={{ color: '#1F2937', fontWeight: 'bold', marginBottom: 10 }}>
                     {t('appointments.filter_dates.filter_range')}
                   </Text>
 
                   <AppointmentsCalendar
+                    selectedDate={startDate}
+                    endDate={endDate}
                     onSelectDate={handleSelectDate}
                   />
 
@@ -289,10 +272,10 @@ export default function AppointmentsScreen({ navigation }) {
                     style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}
                   >
                     <Text style={{ color: '#2563EB' }}>
- {startDate ? `${t('appointments.filter_dates.start')}: ${startDate.toLocaleDateString('es')}` : `${t('appointments.filter_dates.start')}: -`}
+                      {startDate ? `${t('appointments.filter_dates.start')}: ${startDate.toLocaleDateString('es')}` : `${t('appointments.filter_dates.start')}: -`}
                     </Text>
                     <Text style={{ color: '#2563EB' }}>
- {endDate ? `${t('appointments.filter_dates.end')}: ${endDate.toLocaleDateString('es')}` : `${t('appointments.filter_dates.end')}: -`}
+                      {endDate ? `${t('appointments.filter_dates.end')}: ${endDate.toLocaleDateString('es')}` : `${t('appointments.filter_dates.end')}: -`}
                     </Text>
                   </View>
                 </View>
@@ -300,13 +283,13 @@ export default function AppointmentsScreen({ navigation }) {
                 <TouchableOpacity
                   style={{
                     backgroundColor: '#2563EB',
- padding: 15,
- borderRadius: 10,
+                    padding: 15,
+                    borderRadius: 10,
                     alignItems: 'center',
                   }}
                   onPress={() => {
                     console.log('Aplicar filtro presionado', { startDate, endDate });
- setShowFilterModal(false);
+                    setShowFilterModal(false);
                   }}
                 >
                   <Text style={{ color: '#fff', fontWeight: 'bold' }}>{t('appointments.filter_dates.apply_filter')}</Text>
