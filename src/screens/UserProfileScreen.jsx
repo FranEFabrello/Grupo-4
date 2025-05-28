@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, ScrollView, Text, TouchableOpacity, Switch, TextInput } from "react-native";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, useColorScheme } from 'react-redux';
 import { fetchProfile, updateProfile } from "~/store/slices/profileSlice";
 import { cerrarSesion } from "~/store/slices/userSlice";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -12,6 +12,7 @@ import { fetchUserByToken } from "~/store/slices/userSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function UserProfileScreen({ navigation }) {
+  const colorScheme = useColorScheme();
   const dispatch = useDispatch();
   //const { usuario, status, error } = useSelector((state) => state.user);
   const [notifications, setNotifications] = useState(true);
@@ -31,6 +32,15 @@ export default function UserProfileScreen({ navigation }) {
   const {status, error} = useSelector((state) => state.user.usuario);
   const usuario = useSelector((state) => state.user.usuario);
 
+  const containerBgClass = colorScheme === 'light' ? 'bg-gray-50' : 'bg-gray-900';
+  const cardBgClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-800';
+  const textClass = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
+  const secondaryTextClass = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-400';
+  const errorTextClass = 'text-red-600';
+  const inputBorderClass = colorScheme === 'light' ? 'border-gray-300' : 'border-gray-600';
+  const inputTextClass = colorScheme === 'light' ? '#1a202c' : '#d1d5db';
+  const buttonClass = colorScheme === 'light' ? 'bg-blue-600' : 'bg-blue-800';
+  const logoutButtonClass = colorScheme === 'light' ? 'bg-red-500' : 'bg-red-700';
 
 
   useEffect(() => {
@@ -91,7 +101,7 @@ export default function UserProfileScreen({ navigation }) {
   /*const handleEdit = () => {
     dispatch(updateProfile({ notifications, darkMode }));
     alert('Información actualizada');
-  };*/
+  };*/ 
 
   // Handler para cerrar sesión
   const handleLogout = () => {
@@ -116,72 +126,72 @@ export default function UserProfileScreen({ navigation }) {
   return (
     <AppContainer navigation={navigation} screenTitle="Mi Perfil">
       <ScrollView
-        className="p-5"
+        className={`p-5 ${containerBgClass}`}
         contentContainerStyle={{ paddingBottom: insets.bottom + 20 }}
       >
         {status === 'loading' ? (
-          <Text className="text-sm text-gray-600">Cargando...</Text>
+          <Text className={`text-sm ${secondaryTextClass}`}>Cargando...</Text>
         ) : status === 'failed' ? (
           <View>
-            <Text className="text-sm text-red-600">Error al cargar el perfil: {error || 'Network error'}</Text>
+            <Text className={`text-sm ${errorTextClass}`}>Error al cargar el perfil: {error || 'Network error'}</Text>
           </View>
         ) : usuario ? (
           <>
             <View className="items-center mb-4">
-              <View className="w-24 h-24 bg-blue-100 rounded-full justify-center items-center mb-2">
+              <View className={`w-24 h-24 rounded-full justify-center items-center mb-2 ${colorScheme === 'light' ? 'bg-blue-100' : 'bg-blue-900'}`}>
                 <Icon name="user" size={40} color="#4a6fa5" />
               </View>
-              <Text className="text-lg font-semibold text-gray-800">{`${nombre} ${apellido}`}</Text>
-              <Text className="text-sm text-gray-600">{usuario.correo}</Text>
+              <Text className={`text-lg font-semibold ${textClass}`}>{`${nombre} ${apellido}`}</Text>
+              <Text className={`text-sm ${secondaryTextClass}`}>{usuario.correo}</Text>
             </View>
 
-            <View className="bg-white rounded-lg p-4 mb-4 shadow-md">
-              <Text className="text-base font-semibold text-gray-800 mb-4">Editar Información Personal</Text>
+            <View className={`${cardBgClass} rounded-lg p-4 mb-4 shadow-md`}>
+              <Text className={`text-base font-semibold mb-4 ${textClass}`}>Editar Información Personal</Text>
 
-              <Text className="text-sm text-gray-800 mt-2">Nombre</Text>
+              <Text className={`text-sm mt-2 ${textClass}`}>Nombre</Text>
               <TextInput
-                className="border-b border-gray-300 mb-2"
+                className={`border-b mb-2 ${inputBorderClass}`}
                 value={nombre}
                 onChangeText={setNombre}
                 editable={editable}
-                style={{ color: editable ? '#1a202c' : '#a0aec0' }}
+                style={{ color: editable ? inputTextClass : secondaryTextClass }}
               />
 
               <Text className="text-sm text-gray-800">Apellido</Text>
               <TextInput
-                className="border-b border-gray-300 mb-2"
+                className={`border-b mb-2 ${inputBorderClass}`}
                 value={apellido}
                 onChangeText={setApellido}
                 editable={editable}
-                style={{ color: editable ? '#1a202c' : '#a0aec0' }}
+                style={{ color: editable ? inputTextClass : secondaryTextClass }}
               />
 
               <Text className="text-sm text-gray-800">DNI</Text>
               <TextInput
-                className="border-b border-gray-300 mb-2"
+                className={`border-b mb-2 ${inputBorderClass}`}
                 value={dni}
                 onChangeText={setDni}
                 editable={editable}
-                style={{ color: editable ? '#1a202c' : '#a0aec0' }}
+                style={{ color: editable ? inputTextClass : secondaryTextClass }}
               />
 
               <Text className="text-sm text-gray-800">Celular</Text>
               <TextInput
-                className="border-b border-gray-300 mb-2"
+                className={`border-b mb-2 ${inputBorderClass}`}
                 value={celular}
                 onChangeText={setCelular}
                 editable={editable}
-                style={{ color: editable ? '#1a202c' : '#a0aec0' }}
+                style={{ color: editable ? inputTextClass : secondaryTextClass }}
               />
 
               <Text className="text-sm text-gray-800">Género</Text>
-              <View className="border-b border-gray-300 mb-2">
+              <View className={`border-b mb-2 ${inputBorderClass}`}>
                 <Picker
                   selectedValue={genero}
-                  onValueChange={setGenero}
+                  onValueChange={(itemValue) => setGenero(itemValue)}
                   style={{
                     height: 40,
-                    color: editable ? '#1a202c' : '#a0aec0',
+                    color: editable ? inputTextClass : secondaryTextClass,
                     backgroundColor: 'transparent'
                   }}
                   enabled={editable}
@@ -193,16 +203,16 @@ export default function UserProfileScreen({ navigation }) {
               </View>
 
               <TouchableOpacity
-                className="bg-blue-600 rounded-lg p-3 flex-row justify-center mt-4"
+                className={`${buttonClass} rounded-lg p-3 flex-row justify-center mt-4`}
                 onPress={handleEdit}
               >
                 <Text className="text-white text-sm">{editable ? "Guardar cambios" : "Editar perfil"}</Text>
               </TouchableOpacity>
             </View>
 
-            <View className="bg-white rounded-lg p-4 shadow-md">
+            <View className={`${cardBgClass} rounded-lg p-4 shadow-md`}>
               <TouchableOpacity
-                className="bg-red-500 rounded-lg p-3 flex-row justify-center"
+                className={`${logoutButtonClass} rounded-lg p-3 flex-row justify-center`}
                 onPress={() => {handleLogout()}}
               >
                 <Text className="text-white text-sm">Cerrar sesión</Text>

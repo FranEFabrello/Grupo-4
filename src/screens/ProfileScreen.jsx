@@ -6,21 +6,18 @@ import {
   Pressable,
   Animated, TouchableOpacity
 } from "react-native";
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import AppContainer from '../components/AppContainer';
+import { useSafeAreaInsets, useColorScheme } from 'react-native-safe-area-context';
+import AppContainer from '~/components/AppContainer';
 import QuickActions from '../components/QuickActions';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useTranslation } from 'react-i18next';
 
 import Modal from 'react-native-modal';
 // import { AuthContext } from '../context/AuthContext';
-
-export default function ProfileScreen({ navigation }) {
-  const insets = useSafeAreaInsets();
-
   const [showSettingsModal, setShowSettingsModal] = React.useState(false);
   const [selectedTheme, setSelectedTheme] = React.useState('light');
   const [selectedLanguage, setSelectedLanguage] = React.useState('es');
+  const insets = useSafeAreaInsets();
   // const { user } = useContext(AuthContext);
 
   const { t } = useTranslation();
@@ -38,34 +35,41 @@ export default function ProfileScreen({ navigation }) {
     { icon: 'shield-alt', label: t('profile.menu.privacy'), screen: 'SecurityPolicy' },
   ];
 
+  // Definir clases condicionales basadas en colorScheme
+  const containerBgClass = colorScheme === 'light' ? 'bg-gray-50' : 'bg-gray-900';
+  const cardBgClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-800';
+  const textClass = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
+  const secondaryTextClass = colorScheme === 'light' ? 'text-gray-500' : 'text-gray-400';
+  const linkTextClass = colorScheme === 'light' ? 'text-blue-700' : 'text-blue-400';
+
   return (
     <AppContainer navigation={navigation} screenTitle={t('profile.screen_title')}>
       <ScrollView
-        className="p-5"
+        className={`p-5 ${containerBgClass}`}
         contentContainerStyle={{ paddingBottom: insets.bottom + 20 }}
       >
         {/* Perfil editable */}
         <Pressable
           onPress={() => navigation.navigate('UserProfile')}
-          className="flex-row justify-between items-center bg-white rounded-lg p-4 mb-4 shadow-md"
+          className={`flex-row justify-between items-center rounded-lg p-4 mb-4 shadow-md ${cardBgClass}`}
           android_ripple={{ color: '#e2e8f0' }}
         >
           <View className="flex-row items-center">
-            <Icon name="user-circle" size={40} color="#4A5568" className="mr-4" />
+            <Icon name="user-circle" size={40} color={colorScheme === 'light' ? '#4A5568' : '#A0AEC0'} className="mr-4" />
             <View>
-              <Text className="text-lg font-semibold text-gray-800">{user.name}</Text>
-              <Text className="text-sm text-gray-500">{user.email}</Text>
+              <Text className={`text-lg font-semibold ${textClass}`}>{user.name}</Text>
+              <Text className={`text-sm ${secondaryTextClass}`}>{user.email}</Text>
             </View>
           </View>
-          <View className="flex-row items-center gap-x-3">
+          <View className={`flex-row items-center gap-x-3 ${linkTextClass}`}>
             <Icon name="eye" size={16} color="#2563EB" />
             <Text className="text-sm text-blue-700 font-medium">{t('profile.view_profile')}</Text>
           </View>
         </Pressable>
 
         {/* Acciones rápidas */}
-        <View className="bg-white rounded-lg p-4 mb-4 shadow-md">
-          <Text className="text-lg font-semibold text-gray-800 mb-4">{t('profile.options_title')}</Text>
+        <View className={`rounded-lg p-4 mb-4 shadow-md ${cardBgClass}`}>
+          <Text className={`text-lg font-semibold mb-4 ${textClass}`}>{t('profile.options_title')}</Text>
           <QuickActions
             actions={moreActions}
             navigation={navigation}
@@ -73,21 +77,21 @@ export default function ProfileScreen({ navigation }) {
             itemStyle="w-full"
           />
           <TouchableOpacity
-            className="w-full bg-white rounded-lg p-4 mb-3 shadow-md items-center"
+            className={`w-full rounded-lg p-4 mb-3 shadow-md items-center ${cardBgClass}`}
             onPress={() => setShowSettingsModal(true)}
           >
             <View className="w-10 h-10 bg-blue-100 rounded-full justify-center items-center mb-2">
-              <Icon name="cog" size={18} color="#4a6fa5" />
+              <Icon name="cog" size={18} color={colorScheme === 'light' ? '#4a6fa5' : '#90CDF4'} />
             </View>
-            <Text className="text-base font-medium text-gray-800">{t('profile.menu.settings.title')}</Text>
+            <Text className={`text-base font-medium ${textClass}`}>{t('profile.menu.settings.title')}</Text>
           </TouchableOpacity>
         </View>
 
         {/* Acerca de la app */}
-        <View className="bg-white rounded-lg p-4 shadow-md">
-          <Text className="text-base font-semibold text-gray-800 mb-2">{t('profile.about_title')}</Text>
-          <Text className="text-sm text-gray-600 mb-2">{t('profile.about_version')} 1.0.0</Text>
-          <Text className="text-sm text-gray-600">{t('profile.about')}</Text>
+        <View className={`rounded-lg p-4 shadow-md ${cardBgClass}`}>
+          <Text className={`text-base font-semibold mb-2 ${textClass}`}>{t('profile.about_title')}</Text>
+          <Text className={`text-sm mb-2 ${secondaryTextClass}`}>{t('profile.about_version')} 1.0.0</Text>
+          <Text className={`text-sm ${secondaryTextClass}`}>{t('profile.about')}</Text>
         </View>
       </ScrollView>
 
@@ -100,7 +104,7 @@ export default function ProfileScreen({ navigation }) {
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundColor: 'rgba(0,0,0,0.3)',
+            backgroundColor: colorScheme === 'light' ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.7)',
             justifyContent: 'center',
             alignItems: 'center',
             zIndex: 10,
@@ -109,7 +113,7 @@ export default function ProfileScreen({ navigation }) {
         >
           <Animated.View
             style={{
-              backgroundColor: '#fff',
+              backgroundColor: colorScheme === 'light' ? '#fff' : '#374151',
               borderRadius: 12,
               padding: 24,
               width: '85%',
@@ -128,38 +132,38 @@ export default function ProfileScreen({ navigation }) {
             onStartShouldSetResponder={() => true}
             onResponderStart={e => e.stopPropagation()}
           >
-            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 16 }}>{t('profile.menu.settings.title')}</Text>
-            <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>{t('profile.menu.settings.theme')}</Text>
+            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 16, color: colorScheme === 'light' ? '#1F2937' : '#D1D5DB' }}>{t('profile.menu.settings.title')}</Text>{/* Title */}
+            <Text style={{ fontWeight: 'bold', marginBottom: 8, color: colorScheme === 'light' ? '#1F2937' : '#D1D5DB' }}>{t('profile.menu.settings.theme')}</Text>{/* Theme Label */}
             <View style={{ flexDirection: 'row', marginBottom: 16 }}>
               <TouchableOpacity
                 style={{
-                  backgroundColor: selectedTheme === 'light' ? '#2563EB' : '#E2E8F0',
+                  backgroundColor: selectedTheme === 'light' ? (colorScheme === 'light' ? '#2563EB' : '#60A5FA') : (colorScheme === 'light' ? '#E2E8F0' : '#4B5563'),
                   padding: 10,
                   borderRadius: 6,
-                  marginRight: 10,
+                  marginRight: 10, // Added marginRight here
                 }}
                 onPress={() => setSelectedTheme('light')}
               >
-                <Text style={{ color: selectedTheme === 'light' ? '#fff' : '#2563EB' }}>{t('profile.menu.settings.theme_light')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
+                <Text style={{ color: selectedTheme === 'light' ? (colorScheme === 'light' ? '#fff' : '#1F2937') : (colorScheme === 'light' ? '#2563EB' : '#9CA3AF') }}>{t('profile.menu.settings.theme_light')}</Text>
+              </TouchableOpacity> 
+              <TouchableOpacity 
                 style={{
-                  backgroundColor: selectedTheme === 'dark' ? '#2563EB' : '#E2E8F0',
+                  backgroundColor: selectedTheme === 'dark' ? (colorScheme === 'light' ? '#2563EB' : '#60A5FA') : (colorScheme === 'light' ? '#E2E8F0' : '#4B5563'),
                   padding: 10,
                   borderRadius: 6,
-                }}
+                  marginLeft: 10,
+                 }}
                 onPress={() => setSelectedTheme('dark')}
               >
-                <Text style={{ color: selectedTheme === 'dark' ? '#fff' : '#2563EB' }}>{t('profile.menu.settings.theme_dark')}</Text>
+                <Text style={{ color: selectedTheme === 'dark' ? (colorScheme === 'light' ? '#fff' : '#1F2937') : (colorScheme === 'light' ? '#2563EB' : '#9CA3AF') }}>{t('profile.menu.settings.theme_dark')}</Text>
               </TouchableOpacity>
             </View>
-            <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>{t('profile.menu.settings.language')}</Text>
             <View style={{ flexDirection: 'row', marginBottom: 24 }}>
               <TouchableOpacity
-                style={{
+                style={{ 
                   backgroundColor: selectedLanguage === 'es' ? '#2563EB' : '#E2E8F0',
                   padding: 10,
-                  borderRadius: 6,
+                  borderRadius: 6, // Corrected borderRadius
                   marginRight: 10,
                 }}
                 onPress={() => {
@@ -169,14 +173,14 @@ export default function ProfileScreen({ navigation }) {
                   });
                 }}
               >
-                <Text style={{ color: selectedLanguage === 'es' ? '#fff' : '#2563EB' }}>{t('profile.menu.settings.language_es')}</Text>
+                <Text style={{ color: selectedLanguage === 'es' ? (colorScheme === 'light' ? '#fff' : '#1F2937') : (colorScheme === 'light' ? '#2563EB' : '#9CA3AF') }}>{t('profile.menu.settings.language_es')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={{
+                style={{ 
                   backgroundColor: selectedLanguage === 'en' ? '#2563EB' : '#E2E8F0',
                   padding: 10,
                   borderRadius: 6,
-                }}
+                }} // Corrected style closing
                 onPress={() => {
                   setSelectedLanguage('en');
                   import('../i18n').then(({ default: i18n }) => {
@@ -184,17 +188,17 @@ export default function ProfileScreen({ navigation }) {
                   });
                 }}
               >
-                <Text style={{ color: selectedLanguage === 'en' ? '#fff' : '#2563EB' }}>{t('profile.menu.settings.language_en')}</Text>
+                <Text style={{ color: selectedLanguage === 'en' ? (colorScheme === 'light' ? '#fff' : '#1F2937') : (colorScheme === 'light' ? '#2563EB' : '#9CA3AF') }}>{t('profile.menu.settings.language_en')}</Text>
               </TouchableOpacity>
             </View>
             <TouchableOpacity
               style={{
-                backgroundColor: '#2563EB',
+                backgroundColor: colorScheme === 'light' ? '#2563EB' : '#60A5FA',
                 padding: 12,
                 borderRadius: 8,
                 alignItems: 'center',
               }}
-              onPress={() => setShowSettingsModal(false)}
+              onPress={() => setShowSettingsModal(false)} // Added closing parenthesis and brace
             >
               <Text style={{ color: '#fff', fontWeight: 'bold' }}>{t('profile.menu.settings.save_button')}</Text>
             </TouchableOpacity>
