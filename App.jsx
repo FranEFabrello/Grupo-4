@@ -1,12 +1,17 @@
 // App.js
-import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
+import { useColorScheme } from 'react-native';
+import { ThemeProvider } from 'styled-components/native';
+
 import AppNavigator from '~/navigation/AppNavigator';
 import store from '~/store';
-import "./global.css";
+
+import './global.css';
 import './src/i18n';
+import { lightTheme, darkTheme } from "~/themes";
 
 const linking = {
   prefixes: ['http://localhost:8081'],
@@ -31,14 +36,17 @@ const linking = {
 };
 
 export default function App() {
-  console.log('App: Renderizando, iniciando con Splash');
-  console.log('i18n:', require('./src/i18n').default || require('./src/i18n'));
+  const scheme = useColorScheme();
+  const theme = scheme === 'dark' ? darkTheme : lightTheme;
+
   return (
     <Provider store={store}>
       <SafeAreaProvider>
-        <NavigationContainer>
-          <AppNavigator />
-        </NavigationContainer>
+        <ThemeProvider theme={theme}>
+          <NavigationContainer>
+            <AppNavigator />
+          </NavigationContainer>
+        </ThemeProvider>
       </SafeAreaProvider>
     </Provider>
   );
