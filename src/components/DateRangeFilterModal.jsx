@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity, Pressable, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
 import AppointmentsCalendar from './AppointmentsCalendar';
+import { useTranslation } from 'react-i18next';
 
 export default function DateRangeFilterModal({
   visible,
@@ -11,6 +12,8 @@ export default function DateRangeFilterModal({
   onClear,
   onClose,
 }) {
+  const { t } = useTranslation();
+
   return (
     <Modal
       visible={visible}
@@ -33,12 +36,12 @@ export default function DateRangeFilterModal({
           >
             <View style={{ backgroundColor: '#fff', borderRadius: 16, padding: 20 }}>
               <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 20 }}>
-                Filtrar por rango de fechas
+                {t('appointments.filter_dates.filter_title')}
               </Text>
 
               <View style={{ marginBottom: 20 }}>
                 <Text style={{ color: '#1F2937', fontWeight: 'bold', marginBottom: 10 }}>
-                  Selecciona el rango de fechas
+                  {t('appointments.filter_dates.filter_range')}
                 </Text>
 
                 <AppointmentsCalendar
@@ -51,10 +54,12 @@ export default function DateRangeFilterModal({
                   style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}
                 >
                   <Text style={{ color: '#2563EB' }}>
-                    {startDate ? `Inicio: ${startDate.toLocaleDateString('es')}` : 'Inicio: -'}
+                    {startDate ? `${t('appointments.filter_dates.start')}: ${startDate.toLocaleDateString('es')}`
+                      : `${t('appointments.filter_dates.start')}: -`}
                   </Text>
                   <Text style={{ color: '#2563EB' }}>
-                    {endDate ? `Fin: ${endDate.toLocaleDateString('es')}` : 'Fin: -'}
+                    {endDate ? `${t('appointments.filter_dates.end')}: ${endDate.toLocaleDateString('es')}`
+                      : `${t('appointments.filter_dates.end')}: -`}
                   </Text>
                 </View>
               </View>
@@ -68,13 +73,13 @@ export default function DateRangeFilterModal({
                 }}
                 onPress={onApply}
               >
-                <Text style={{ color: '#fff', fontWeight: 'bold' }}>Aplicar filtro</Text>
+                <Text style={{ color: '#fff', fontWeight: 'bold' }}>{t('appointments.filter_dates.apply_filter')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{ marginTop: 10, alignItems: 'center' }}
                 onPress={onClear}
               >
-                <Text style={{ color: '#2563EB', fontWeight: 'bold' }}>Limpiar filtro</Text>
+                <Text style={{ color: '#2563EB', fontWeight: 'bold' }}>L{t('appointments.filter_dates.clear_filter')}</Text>
               </TouchableOpacity>
             </View>
           </KeyboardAvoidingView>

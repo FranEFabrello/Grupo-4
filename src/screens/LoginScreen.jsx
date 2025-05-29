@@ -28,6 +28,12 @@ export default function LoginScreen({ navigation }) {
     navigation.navigate('Register');
   };
 
+  const handlePaswordChange = () => {
+    // Navegar a la pantalla de cambiar contrasenia
+    Keyboard.dismiss();
+    navigation.navigate('CambioContrasenia');
+  };
+
   return (
     <View className="flex-1 justify-center items-center p-5 bg-gray-100">
       <Text className="text-2xl font-bold mb-5 text-gray-800">Iniciar Sesión</Text>
@@ -58,6 +64,10 @@ export default function LoginScreen({ navigation }) {
 
       <TouchableOpacity onPress={handleRegister}>
         <Text className="text-blue-600 text-sm mt-2">¿No tienes una cuenta? Regístrate</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={handlePaswordChange}>
+        <Text className="text-blue-600 text-sm mt-2">¿Olvidaste tu contraseña? Cámbiala</Text>
       </TouchableOpacity>
     </View>
   );
