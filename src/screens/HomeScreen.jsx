@@ -47,25 +47,21 @@ export default function HomeScreen({ navigation }) {
   const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const endOfTomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 2);
 
-  const upcomingAppointments = (appointments || [])
+  /*const upcomingAppointments = (appointments || [])
     .filter((appt) => {
-      const [year, month, day] = (appt.fecha || appt.date || '').split('-');
-      const [hour, minute] = (appt.horaInicio || '00:00').split(':');
-      const apptDate = new Date(year, month - 1, day, hour, minute);
-      return apptDate >= startOfToday && apptDate < endOfTomorrow;
+      const apptDate = new Date(appt.fecha);
+      return (
+        (appt.estado === 'PENDIENTE' || appt.estado === 'CONFIRMADO') &&
+        apptDate >= startOfToday &&
+        apptDate < endOfTomorrow &&
+        appt.cuentaActiva
+      );
     })
-    .sort((a, b) => {
-      const [aYear, aMonth, aDay] = (a.fecha || a.date || '').split('-');
-      const [aHour, aMinute] = (a.horaInicio || '00:00').split(':');
-      const aDate = new Date(aYear, aMonth - 1, aDay, aHour, aMinute);
-
-      const [bYear, bMonth, bDay] = (b.fecha || b.date || '').split('-');
-      const [bHour, bMinute] = (b.horaInicio || '00:00').split(':');
-      const bDate = new Date(bYear, bMonth - 1, bDay, bHour, bMinute);
-
-      return aDate - bDate;
-    })
+    .sort((a, b) => new Date(a.fecha + 'T' + a.horaInicio) - new Date(b.fecha + 'T' + b.horaInicio))
     .slice(0, 3);
+*/
+
+  const upcomingAppointments = (appointments || [])
 
   const containerClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-800';
   const cardClass = colorScheme === 'light' ? 'bg-gray-100' : 'bg-gray-700';
@@ -102,18 +98,31 @@ export default function HomeScreen({ navigation }) {
         <View className={`rounded-lg p-4 mb-4 shadow-md ${cardClass}`}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View className="flex-row items-center px-2 h-full">
-              {upcomingAppointments.map((appt, idx) => (
-                <View key={appt.id || idx} className="mr-3">
-                  <AppointmentCard
-                    day={new Date(appt.fecha).toLocaleDateString('es', { weekday: 'short' })}
-                    time={appt.horaInicio}
-                    doctor={`ID: ${appt.doctorId}`}
-                    specialty={appt.nota}
-                    onCancel={() => alert('Turno cancelado')}
-                    colorScheme={colorScheme}
-                  />
-                </View>
-              ))}
+              {appointmentsStatus === 'loading' ? (
+                <Text className={`text-sm ${secondaryTextClass}`}>Cargando...</Text>
+              ) : upcomingAppointments.length > 0 ? (
+                upcomingAppointments.map((appt) => (
+                  <View key={appt.id} className="mr-3">
+                    <AppointmentCard
+                      day={new Date(appt.fecha).toLocaleDateString('es-AR', {
+                        weekday: 'short',
+                        day: 'numeric',
+                        month: 'short',
+                      })}
+                      time={`${appt.horaInicio} - ${appt.horaFin}`}
+                      doctor={`${appt.doctorInfo.nombre} ${appt.doctorInfo.apellido}`}
+                      specialty={appt.especialidadInfo.descripcion}
+                      status={appt.estado}
+                      onPress={() => navigation.navigate('AppointmentDetail', { appointment: appt })}
+                      colorScheme={colorScheme}
+                    />
+                  </View>
+                ))
+              ) : (
+                <Text className={`text-sm ${secondaryTextClass}`}>
+                  No hay turnos próximos
+                </Text>
+              )}
             </View>
           </ScrollView>
         </View>

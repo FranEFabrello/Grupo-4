@@ -60,13 +60,12 @@ export default function ResultsScreen({ navigation }) {
               filteredResults.map((result, index) => (
                 <View key={index} className="mb-4">
                   <AppointmentCard
-                    day={new Date(result.date).toLocaleDateString('es', { day: 'numeric' })}
-                    time={new Date(result.date).toLocaleDateString('es', { month: 'short' })}
-                    doctor={result.title}
-                    specialty={result.specialty}
-                    icon="file-pdf"
-                    iconColor={index % 2 === 0 ? '#2e7d32' : '#1565c0'}
-                    bgColor={index % 2 === 0 ? 'bg-green-100' : 'bg-blue-100'}
+                    day={new Date(appt.fecha).toLocaleDateString('es', { weekday: 'short' })}
+                    time={appt.horaInicio}
+                    doctor={`ID: ${appt.doctorId}`}
+                    specialty={appt.nota}
+                    onPress={() => navigation.navigate('AppointmentDetail', { appointment: appt })}
+                    colorScheme={colorScheme}
                   />
                   <TouchableOpacity
                     className="border border-blue-600 rounded-lg p-2 flex-row justify-center"
