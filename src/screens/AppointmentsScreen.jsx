@@ -86,76 +86,111 @@ export default function AppointmentsScreen({ navigation }) {
     (appointments || []).filter((appt) => appt.estado === 'CANCELADO' && appt.cuentaActiva)
   ).sort((a, b) => new Date(b.fecha + 'T' + b.horaInicio) - new Date(a.fecha + 'T' + a.horaInicio));
 
-  const containerClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-800';
-  const textClass = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
-  const secondaryTextClass = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-400';
+  // ==================== CLASES COMPLETAS ====================
+  // Contenedores
+  const screenContainerClass = "flex-1 bg-transparent"; // Respeta el fondo de la app
+  const scrollContainerClass = "p-5 bg-transparent";
+  const contentContainerClass = colorScheme === 'light'
+    ? 'bg-white border border-gray-200 shadow-md'
+    : 'bg-gray-700 border border-gray-600 shadow-lg';
+
+  // Textos
+  const textPrimaryClass = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-100';
+  const textSecondaryClass = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-300';
+  const textAccentClass = colorScheme === 'light' ? 'text-blue-600' : 'text-blue-400';
+  const textWhiteClass = 'text-white';
+
+  // Botones
+  const buttonPrimaryClass = colorScheme === 'light'
+    ? 'bg-blue-600'
+    : 'bg-blue-500';
+
+  const buttonSecondaryClass = colorScheme === 'light'
+    ? 'border border-blue-600 bg-transparent'
+    : 'border border-blue-400 bg-transparent';
+
+  // Modal
+  const modalOverlayClass = 'flex-1 bg-black/50 justify-center items-center';
+
+  const modalContainerClass = colorScheme === 'light'
+    ? 'bg-white rounded-xl p-6 w-[90%]'
+    : 'bg-gray-800 rounded-xl p-6 w-[90%]';
+
+
 
   return (
-    <AppContainer navigation={navigation} screenTitle="Mis Turnos">
-      <ScrollView className="p-5">
-        <View className={`rounded-lg p-4 mb-4 shadow-md ${containerClass}`}>
+    <AppContainer navigation={navigation} screenTitle="Mis Turnos" className={screenContainerClass}>
+      <ScrollView className={scrollContainerClass}>
+        {/* Contenedor principal */}
+        <View className={`rounded-lg p-4 mb-4 ${contentContainerClass}`}>
+
+          {/* Header */}
           <View className="flex-row justify-between items-center mb-4">
-            <Text className={`text-lg font-semibold ${textClass}`}>
-              Mis Turnos
-            </Text>
+            <Text className={`text-lg font-semibold ${textPrimaryClass}`}>Mis Turnos</Text>
             <FilterButton onPress={() => setShowFilterModal(true)} />
           </View>
+
+          {/* Filtro activo */}
           {(startDate || endDate) && (
             <View className="mb-2">
-              <Text className="text-blue-600 text-sm">
+              <Text className={`text-sm ${textAccentClass}`}>
                 Filtrando por: {startDate ? startDate.toLocaleDateString('es-AR') : '-'}
                 {endDate ? ` al ${endDate.toLocaleDateString('es-AR')}` : ''}
               </Text>
             </View>
           )}
+
+          {/* Pestañas */}
           <View className="mb-4 flex-row justify-between" style={{ width: '100%' }}>
             <TabButton
               label="Próximos"
               isActive={activeTab === 'upcoming'}
               onPress={() => setActiveTab('upcoming')}
+              colorScheme={colorScheme}
             />
             <TabButton
               label="Pasados"
               isActive={activeTab === 'past'}
               onPress={() => setActiveTab('past')}
+              colorScheme={colorScheme}
             />
             <TabButton
               label="Cancelados"
               isActive={activeTab === 'cancelled'}
               onPress={() => setActiveTab('cancelled')}
+              colorScheme={colorScheme}
             />
           </View>
+
+          {/* Contenido dinámico */}
           {status === 'loading' ? (
-            <Text className={`text-sm ${secondaryTextClass}`}>
-              Cargando...
-            </Text>
+            <Text className={`text-sm ${textSecondaryClass}`}>Cargando...</Text>
           ) : activeTab === 'upcoming' ? (
             upcomingAppointments.length > 0 ? (
               upcomingAppointments.map((appt) => (
-                <AppointmentCard
-                  key={appt.id}
-                  day={new Date(appt.fecha).toLocaleDateString('es-AR', {
-                    weekday: 'short',
-                    day: 'numeric',
-                    month: 'short',
-                  })}
-                  time={`${appt.horaInicio} - ${appt.horaFin}`}
-                  doctor={`${appt.doctorInfo.nombre} ${appt.doctorInfo.apellido}`}
-                  specialty={appt.especialidadInfo.descripcion}
-                  status={appt.estado}
-                  onPress={() => navigation.navigate('AppointmentDetail', { appointment: appt })}
-                  colorScheme={colorScheme}
-                />
+                <View key={appt.id} className="mb-4">
+                  <AppointmentCard
+                    day={new Date(appt.fecha).toLocaleDateString('es-AR', {
+                      weekday: 'short',
+                      day: 'numeric',
+                      month: 'short',
+                    })}
+                    time={`${appt.horaInicio} - ${appt.horaFin}`}
+                    doctor={`${appt.doctorInfo.nombre} ${appt.doctorInfo.apellido}`}
+                    specialty={appt.especialidadInfo.descripcion}
+                    status={appt.estado}
+                    onPress={() => navigation.navigate('AppointmentDetail', { appointment: appt })}
+                    colorScheme={colorScheme}
+                  />
+                </View>
               ))
             ) : (
-              <Text className={`text-sm ${secondaryTextClass}`}>
-                No hay turnos próximos
-              </Text>
+              <Text className={`text-sm ${textSecondaryClass}`}>No hay turnos próximos</Text>
             )
           ) : activeTab === 'past' ? (
             pastAppointments.length > 0 ? (
               pastAppointments.map((appt) => (
-                <View key={appt.id} className="mb-6">
+                <View key={appt.id} className="mb-4">
                   <AppointmentCard
                     day={new Date(appt.fecha).toLocaleDateString('es-AR', {
                       day: 'numeric',
@@ -169,23 +204,21 @@ export default function AppointmentsScreen({ navigation }) {
                     colorScheme={colorScheme}
                   />
                   <TouchableOpacity
-                    className="border border-blue-600 rounded-lg p-2 flex-row justify-center"
+                    className={`${buttonSecondaryClass} rounded-lg p-2 mt-2`}
                     onPress={() => navigation.navigate('MedicalNotes', { appointmentId: appt.id })}
                   >
-                    <Text className="text-blue-600 text-sm">
+                    <Text className={`text-sm ${textAccentClass}`}>
                       Ver notas médicas
                     </Text>
                   </TouchableOpacity>
                 </View>
               ))
             ) : (
-              <Text className={`text-sm ${secondaryTextClass}`}>
-                No hay turnos pasados
-              </Text>
+              <Text className={`text-sm ${textSecondaryClass}`}>No hay turnos pasados</Text>
             )
           ) : cancelledAppointments.length > 0 ? (
             cancelledAppointments.map((appt) => (
-              <View key={appt.id} className="mb-6">
+              <View key={appt.id} className="mb-4">
                 <AppointmentCard
                   day={new Date(appt.fecha).toLocaleDateString('es-AR', {
                     weekday: 'short',
@@ -202,92 +235,63 @@ export default function AppointmentsScreen({ navigation }) {
               </View>
             ))
           ) : (
-            <Text className={`text-sm ${secondaryTextClass}`}>
-              No hay turnos cancelados
-            </Text>
+            <Text className={`text-sm ${textSecondaryClass}`}>No hay turnos cancelados</Text>
           )}
         </View>
       </ScrollView>
 
+      {/* Modal de filtro */}
       <Modal
         visible={showFilterModal}
         animationType="slide"
         transparent
         onRequestClose={() => setShowFilterModal(false)}
       >
-        <Pressable onPress={Keyboard.dismiss} style={{ flex: 1 }}>
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: 'rgba(0,0,0,0.2)',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
+        <Pressable onPress={Keyboard.dismiss} className={modalOverlayClass}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            className="w-full items-center"
           >
-            <KeyboardAvoidingView
-              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-              style={{ width: '90%' }}
-            >
-              <View style={{ backgroundColor: '#fff', borderRadius: 16, padding: 20 }}>
-                <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 20 }}>
-                  Filtrar por fechas
+            <View className={modalContainerClass}>
+              <Text className={`text-lg font-bold mb-5 ${textPrimaryClass}`}>
+                Filtrar por fechas
+              </Text>
+
+              <AppointmentsCalendar
+                selectedDate={startDate}
+                endDate={endDate}
+                onSelectDate={handleSelectDate}
+                colorScheme={colorScheme}
+              />
+
+              <View className="flex-row justify-between mt-3">
+                <Text className={textAccentClass}>
+                  {startDate ? `Inicio: ${startDate.toLocaleDateString('es-AR')}` : 'Inicio: -'}
                 </Text>
-
-                <View style={{ marginBottom: 20 }}>
-                  <Text style={{ color: '#1F2937', fontWeight: 'bold', marginBottom: 10 }}>
-                    Rango de fechas
-                  </Text>
-
-                  <AppointmentsCalendar
-                    selectedDate={startDate}
-                    endDate={endDate}
-                    onSelectDate={handleSelectDate}
-                  />
-
-                  <View
-                    style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}
-                  >
-                    <Text style={{ color: '#2563EB' }}>
-                      {startDate
-                        ? `Inicio: ${startDate.toLocaleDateString('es-AR')}`
-                        : 'Inicio: -'}
-                    </Text>
-                    <Text style={{ color: '#2563EB' }}>
-                      {endDate
-                        ? `Fin: ${endDate.toLocaleDateString('es-AR')}`
-                        : 'Fin: -'}
-                    </Text>
-                  </View>
-                </View>
-
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: '#2563EB',
-                    padding: 15,
-                    borderRadius: 10,
-                    alignItems: 'center',
-                  }}
-                  onPress={() => setShowFilterModal(false)}
-                >
-                  <Text style={{ color: '#fff', fontWeight: 'bold' }}>
-                    Aplicar filtro
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{ marginTop: 10, alignItems: 'center' }}
-                  onPress={() => {
-                    setStartDate(null);
-                    setEndDate(null);
-                    setShowFilterModal(false);
-                  }}
-                >
-                  <Text style={{ color: '#2563EB', fontWeight: 'bold' }}>
-                    Limpiar filtro
-                  </Text>
-                </TouchableOpacity>
+                <Text className={textAccentClass}>
+                  {endDate ? `Fin: ${endDate.toLocaleDateString('es-AR')}` : 'Fin: -'}
+                </Text>
               </View>
-            </KeyboardAvoidingView>
-          </View>
+
+              <TouchableOpacity
+                className={`${buttonPrimaryClass} py-3 rounded-lg mt-5 items-center`}
+                onPress={() => setShowFilterModal(false)}
+              >
+                <Text className={`text-base font-bold ${textWhiteClass}`}>Aplicar filtro</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                className="mt-3 items-center"
+                onPress={() => {
+                  setStartDate(null);
+                  setEndDate(null);
+                  setShowFilterModal(false);
+                }}
+              >
+                <Text className={`text-sm font-bold ${textAccentClass}`}>Limpiar filtro</Text>
+              </TouchableOpacity>
+            </View>
+          </KeyboardAvoidingView>
         </Pressable>
       </Modal>
     </AppContainer>
