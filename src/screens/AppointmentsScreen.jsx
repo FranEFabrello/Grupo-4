@@ -63,33 +63,41 @@ export default function AppointmentsScreen({ navigation }) {
 
   const upcomingAppointments = (appointments || [])
     .filter((appt) => {
-      // Filtra por estado y fecha futura
-      if (appt.estado !== 'PENDIENTE' && appt.estado !== 'CONFIRMADO') {
-        return false;
+      // Filtra por estado y fecha/hora futura
+      const [startHour, startMin] = appt.horaInicio ? appt.horaInicio.split(':').map(Number) : [0, 0];
+      const apptDateTime = new Date(appt.fecha);
+      apptDateTime.setHours(startHour, startMin, 0, 0);
+
+      const now = new Date();
+
+      const estadoValido = appt.estado === 'PENDIENTE' || appt.estado === 'CONFIRMADO';
+      const fechaHoraValida = !isNaN(apptDateTime) && apptDateTime.getTime() >= now.getTime();
+      const pasa = estadoValido && fechaHoraValida;
+      if (!pasa) {
+        //console.log('[Filtro 1] Excluido:', { id: appt.id, estado: appt.estado, fecha: appt.fecha, horaInicio: appt.horaInicio });
       }
-      const apptDate = new Date(appt.fecha);
-      const today = new Date();
-      apptDate.setHours(0, 0, 0, 0);
-      today.setHours(0, 0, 0, 0);
-      return !isNaN(apptDate) && apptDate.getTime() >= today.getTime();
+      return pasa;
     })
     .filter((appt) => {
       // Aplica el filtro de rango de fechas (AND)
-      if (!startDate && !endDate) return true;
       const apptDate = new Date(appt.fecha);
-      if (startDate && apptDate < startDate) return false;
-      if (endDate && apptDate > endDate) return false;
-      return true;
+      let dentroRango = true;
+      if (startDate && apptDate < startDate) dentroRango = false;
+      if (endDate && apptDate > endDate) dentroRango = false;
+      if (!dentroRango) {
+        //console.log('[Filtro 2] Excluido por rango:', { id: appt.id, fecha: appt.fecha, startDate, endDate });
+      }
+      return !startDate && !endDate ? true : dentroRango;
     });
 
-  console.log('upcomingAppointments', upcomingAppointments);
+  //console.log('upcomingAppointments', upcomingAppointments);
 
   const pastAppointments = (appointments || [])
     .filter((appt) => {
-      // Filtra por estado confirmado y fecha/hora pasada
-      if (appt.estado !== 'CONFIRMADO') {
-        return false;
-      }
+      // Incluir turnos PENDIENTE o CONFIRMADO cuya fecha y horaFin ya pasaron
+      const estadoValido = appt.estado === 'CONFIRMADO' || appt.estado === 'PENDIENTE';
+      if (!estadoValido) return false;
+
       const apptDate = new Date(appt.fecha);
       const today = new Date();
       apptDate.setHours(0, 0, 0, 0);
@@ -100,7 +108,7 @@ export default function AppointmentsScreen({ navigation }) {
         return true;
       }
 
-      // Si la fecha es hoy, comparar hora fin
+      // Si la fecha es hoy, comparar horaFin
       if (!isNaN(apptDate) && apptDate.getTime() === today.getTime()) {
         if (appt.horaFin) {
           const [finHour, finMin] = appt.horaFin.split(':').map(Number);
@@ -183,6 +191,7 @@ export default function AppointmentsScreen({ navigation }) {
                           ? `Dr. ${appt.doctorId}`
                           : ''
                   }
+                  showActions={true}
                   specialty={appt.especialidadInfo?.descripcion || ''}
                   status={appt.estado}
                   onCancel={() => alert(t('appointments.cancel_alert'))}
@@ -199,8 +208,16 @@ export default function AppointmentsScreen({ navigation }) {
                   <AppointmentCard
                     day={new Date(appt.fecha).toLocaleDateString('es', { day: 'numeric', month: 'short' })}
                     time={`${appt.horaInicio} - ${appt.horaFin}`}
-                    doctor={appt.doctorNombre ? appt.doctorNombre : appt.doctorId ? `Dr. ${appt.doctorId}` : ''}
-                    specialty={appt.especialidad || appt.specialty || ''}
+                    doctor={
+                      appt.doctorInfo
+                        ? `${appt.doctorInfo.nombre} ${appt.doctorInfo.apellido}`
+                        : appt.doctorNombre
+                          ? appt.doctorNombre
+                          : appt.doctorId
+                            ? `Dr. ${appt.doctorId}`
+                            : ''
+                    }
+                    specialty={appt.especialidadInfo?.descripcion || ''}
                     status={appt.estado}
                   />
                   <TouchableOpacity
@@ -220,8 +237,16 @@ export default function AppointmentsScreen({ navigation }) {
                 <AppointmentCard
                   day={new Date(appt.fecha).toLocaleDateString('es', { day: 'numeric', month: 'short' })}
                   time={`${appt.horaInicio} - ${appt.horaFin}`}
-                  doctor={appt.doctorNombre ? appt.doctorNombre : appt.doctorId ? `Dr. ${appt.doctorId}` : ''}
-                  specialty={appt.especialidad || appt.specialty || ''}
+                  doctor={
+                    appt.doctorInfo
+                      ? `${appt.doctorInfo.nombre} ${appt.doctorInfo.apellido}`
+                      : appt.doctorNombre
+                        ? appt.doctorNombre
+                        : appt.doctorId
+                          ? `Dr. ${appt.doctorId}`
+                          : ''
+                  }
+                  specialty={appt.especialidadInfo?.descripcion || ''}
                   status="cancelled"
                 />
               </View>
@@ -314,79 +339,4 @@ export default function AppointmentsScreen({ navigation }) {
   );
 }
 
-/*
-import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Text, TouchableOpacity, Modal } from 'react-native';
 
-export default function AppointmentsScreen({ navigation }) {
-  const [showFilterModal, setShowFilterModal] = useState(false);
-  const [selectedEspecialidad, setSelectedEspecialidad] = useState(null);
-  const [selectedStars, setSelectedStars] = useState(null);
-
-
-{/!* Modal de filtros *!/}
-<Modal
-  visible={showFilterModal}
-  animationType="slide"
-  transparent
-  onRequestClose={() => setShowFilterModal(false)}
->
-  <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.2)', justifyContent: 'center', alignItems: 'center' }}>
-    <View style={{ backgroundColor: '#fff', borderRadius: 16, padding: 20, width: '90%' }}>
-      <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 10 }}>Filtrar por especialidad</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator style={{ marginBottom: 10 }}>
-        {['Clínica', 'Pediatría', 'Cardiología', 'Dermatología', 'Traumatología', 'Oftalmología', 'Ginecología', 'Neurología'].map((esp, idx) => (
-          <TouchableOpacity
-            key={esp}
-            style={{
-              padding: 10,
-              backgroundColor: selectedEspecialidad === esp ? '#2563EB' : '#E5E7EB',
-              borderRadius: 20,
-              marginRight: 10,
-            }}
-            onPress={() => setSelectedEspecialidad(esp)}
-          >
-            <Text style={{ color: selectedEspecialidad === esp ? '#fff' : '#1F2937' }}>{esp}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-      <View style={{ height: 2, backgroundColor: '#2563EB', marginBottom: 20 }} />
-
-      <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 10 }}>Filtrar por estrellas</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator>
-        {[1, 2, 3, 4, 5].map((star) => (
-          <TouchableOpacity
-            key={star}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              padding: 10,
-              backgroundColor: selectedStars === star ? '#2563EB' : '#E5E7EB',
-              borderRadius: 20,
-              marginRight: 10,
-            }}
-            onPress={() => setSelectedStars(star)}
-          >
-            <Text style={{ color: selectedStars === star ? '#fff' : '#1F2937', marginRight: 5 }}>{star}</Text>
-            {/!* Puedes usar tu icono de estrella aquí *!/}
-            <Text style={{ color: selectedStars === star ? '#FFD700' : '#A0AEC0' }}>★</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-      <View style={{ height: 2, backgroundColor: '#2563EB', marginVertical: 20 }} />
-
-      <TouchableOpacity
-        style={{
-          backgroundColor: '#2563EB',
-          padding: 15,
-          borderRadius: 10,
-          alignItems: 'center',
-        }}
-        onPress={() => setShowFilterModal(false)}
-      >
-        <Text style={{ color: '#fff', fontWeight: 'bold' }}>Aplicar filtros</Text>
-      </TouchableOpacity>
-    </View>
-  </View>
-</Modal>
-</AppContainer>*/

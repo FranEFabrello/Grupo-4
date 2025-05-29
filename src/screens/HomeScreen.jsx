@@ -109,8 +109,10 @@ export default function HomeScreen({ navigation }) {
                     time={appt.horaInicio}
                     doctor={`ID: ${appt.doctorId}`}
                     specialty={appt.nota}
+                    status={appt.estado || appt.status || 'PENDIENTE'}
                     onCancel={() => alert('Turno cancelado')}
                     colorScheme={colorScheme}
+                    showActions={false}
                   />
                 </View>
               ))}
