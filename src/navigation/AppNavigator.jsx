@@ -19,31 +19,33 @@ import ChangePasswordScreen from "~/screens/ChangePasswordScreen";
 import HelpNeeded from "~/screens/HelpNeeded";
 import SecurityPolicyScreen from "~/screens/SecurityPolicyScreen";
 import NotificationsScreen from "~/screens/NotificationsScreen";
+import AppointmentsDetails from "~/screens/AppointmentsDetails";
 
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
   return (
     <Stack.Navigator initialRouteName="Splash">
-      <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: true }} />
-      <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: true }} />
-      <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: true }} />
-      <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: true }} />
-      <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: true }} />
-      <Stack.Screen name="Appointments" component={AppointmentsScreen} options={{ headerShown: true }} />
-      <Stack.Screen name="Professionals" component={ProfessionalsScreen} options={{ headerShown: true }} />
-      <Stack.Screen name="BookAppointment" component={BookAppointmentScreen} options={{ headerShown: true }} />
-      <Stack.Screen name="Results" component={ResultsScreen} options={{ headerShown: true }} />
-      <Stack.Screen name="Insurance" component={InsuranceScreen} options={{ headerShown: true }} />
-      <Stack.Screen name="MedicalNotes" component={MedicalNotesScreen} options={{ headerShown: true }} />
-      <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerShown: true }} />
-      <Stack.Screen name="UserProfile" component={UserProfileScreen} options={{ headerShown: true }} />
-      <Stack.Screen name="HealthTips" component={HealthTipsScreen} options={{ headerShown: true }} />
-        <Stack.Screen name="Help" component={HelpNeeded} options={{ headerShown: true }} />
-        <Stack.Screen name="SecurityPolicy" component={SecurityPolicyScreen} options={{ headerShown: true }} />
-        <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: true }} />
-      <Stack.Screen name="ConfirmarToken" component={ConfirmTokenRegisterScreen} options={{ headerShown: true }} />
-      <Stack.Screen name="CambioContrasenia" component={ChangePasswordScreen} options={{ headerShown: true }} />
+      <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Appointments" component={AppointmentsScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Professionals" component={ProfessionalsScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="BookAppointment" component={BookAppointmentScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Results" component={ResultsScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Insurance" component={InsuranceScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="MedicalNotes" component={MedicalNotesScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="UserProfile" component={UserProfileScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="HealthTips" component={HealthTipsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Help" component={HelpNeeded} options={{ headerShown: false }} />
+        <Stack.Screen name="SecurityPolicy" component={SecurityPolicyScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="ConfirmarToken" component={ConfirmTokenRegisterScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="CambioContrasenia" component={ChangePasswordScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="AppointmentsDetails" component={AppointmentsDetails} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 }

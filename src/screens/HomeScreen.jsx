@@ -21,6 +21,11 @@ export default function HomeScreen({ navigation }) {
   const usuario = useSelector((state) => state.user.usuario);
   const specialities = useSelector((state) => state.medicalSpecialities.specialities);
 
+  const handleGoToDetails = (appt) => {
+    console.log('Navegando a AppointmentsDetails con id:', appt.id);
+    navigation.navigate('AppointmentsDetails', { appointmentId: appt.id });
+  };
+
   useEffect(() => {
     if (!professionals || professionals.length === 0) {
       dispatch(fetchProfessionals());
@@ -109,10 +114,14 @@ export default function HomeScreen({ navigation }) {
                     time={appt.horaInicio}
                     doctor={`ID: ${appt.doctorId}`}
                     specialty={appt.nota}
-                    status={appt.estado || appt.status || 'PENDIENTE'}
+                    status={appt.estado || appt.status}
                     onCancel={() => alert('Turno cancelado')}
                     colorScheme={colorScheme}
                     showActions={false}
+                    onPress={() => {
+                      console.log('onPress ejecutado', appt);
+                      handleGoToDetails(appt);
+                    }}
                   />
                 </View>
               ))}
