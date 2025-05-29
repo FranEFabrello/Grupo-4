@@ -14,7 +14,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 
 export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
-  const colorScheme = useColorScheme(); // Detecta el tema del sistema
+  const colorScheme = useColorScheme();
   const { status: appointmentsStatus } = useSelector((state) => state.appointments);
   const appointments = useSelector((state) => state.appointments.appointmentsByUser);
   const { professionals, status: professionalsStatus } = useSelector((state) => state.professionals);
@@ -43,7 +43,6 @@ export default function HomeScreen({ navigation }) {
     { icon: 'hospital-user', label: 'Obra social', screen: 'Insurance' },
   ];
 
-  // Filtrar turnos próximos (menos de 24h) y limitar a 3
   const now = new Date();
   const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const endOfTomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 2);
@@ -68,7 +67,6 @@ export default function HomeScreen({ navigation }) {
     })
     .slice(0, 3);
 
-  // Definir clases condicionales basadas en colorScheme
   const containerClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-800';
   const cardClass = colorScheme === 'light' ? 'bg-gray-100' : 'bg-gray-700';
   const textClass = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
@@ -100,15 +98,10 @@ export default function HomeScreen({ navigation }) {
             Ver todos
           </Text>
         </View>
-        {appointmentsStatus === 'loading' ? (
-          <Text className={`text-sm ${secondaryTextClass} mb-4`}>Cargando...</Text>
-        ) : upcomingAppointments.length === 0 ? (
-          <Text className={`text-sm ${secondaryTextClass} mb-4`}>
-            No hay turnos próximos
-          </Text>
-        ) : (
-          <ScrollView horizontal className="mb-4" showsHorizontalScrollIndicator={false}>
-            <View className="flex-row px-2">
+
+        <View className={`rounded-lg p-4 mb-4 shadow-md ${cardClass}`}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <View className="flex-row items-center px-2 h-full">
               {upcomingAppointments.map((appt, idx) => (
                 <View key={appt.id || idx} className="mr-3">
                   <AppointmentCard
@@ -123,7 +116,7 @@ export default function HomeScreen({ navigation }) {
               ))}
             </View>
           </ScrollView>
-        )}
+        </View>
 
         <View className="flex-row justify-between items-center mb-4">
           <Text className={`text-lg font-semibold ${textClass}`}>
@@ -136,29 +129,31 @@ export default function HomeScreen({ navigation }) {
             Ver todos
           </Text>
         </View>
-        <ScrollView horizontal className="mb-4" showsHorizontalScrollIndicator={false}>
-          <View className="flex-row px-2">
-            {professionalsStatus === 'loading' ? (
-              <Text className={`text-sm ${secondaryTextClass}`}>Cargando...</Text>
-            ) : professionals.slice(0, 3).map((doctor) => (
-              <View key={doctor.id} className="mr-3">
-                <DoctorCard
-                  name={`${doctor.nombre} ${doctor.apellido}`}
-                  specialty={
-                    specialities.find((s) => s.id === doctor.idEspecialidad)?.descripcion || ''
-                  }
-                  stars={doctor.calificacionPromedio > 0 ? doctor.calificacionPromedio : null}
-                  noRating={doctor.calificacionPromedio === 0}
-                  onBook={() =>
-                    navigation.navigate('BookAppointment', { professionalId: doctor.id })
-                  }
-                  containerClassName="w-64"
-                  colorScheme={colorScheme}
-                />
-              </View>
-            ))}
-          </View>
-        </ScrollView>
+        <View className={`rounded-lg p-4 pb-6 mb-4 shadow-md ${cardClass}`}>
+          <ScrollView horizontal className="mb-4 h-48" showsHorizontalScrollIndicator={false}>
+            <View className="flex-row px-2">
+              {professionalsStatus === 'loading' ? (
+                <Text className={`text-sm ${secondaryTextClass}`}>Cargando...</Text>
+              ) : professionals.slice(0, 3).map((doctor) => (
+                <View key={doctor.id} className="mr-3 mb-4">
+                  <DoctorCard
+                    name={`${doctor.nombre} ${doctor.apellido}`}
+                    specialty={
+                      specialities.find((s) => s.id === doctor.idEspecialidad)?.descripcion || ''
+                    }
+                    stars={doctor.calificacionPromedio > 0 ? doctor.calificacionPromedio : null}
+                    noRating={doctor.calificacionPromedio === 0}
+                    onBook={() =>
+                      navigation.navigate('BookAppointment', { professionalId: doctor.id })
+                    }
+                    containerClassName="w-64"
+                    colorScheme={colorScheme}
+                  />
+                </View>
+              ))}
+            </View>
+          </ScrollView>
+        </View>
 
         <View className={`rounded-lg p-4 shadow-md ${cardClass}`}>
           <Text className={`text-lg font-semibold ${textClass} mb-3`}>
