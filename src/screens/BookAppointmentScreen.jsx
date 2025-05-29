@@ -1,6 +1,6 @@
 // BookAppointmentScreen.jsx
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Text, TouchableOpacity } from 'react-native';
+import { View, ScrollView, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProfessionals } from "~/store/slices/professionalsSlice";
 import {
@@ -108,7 +108,10 @@ export default function BookAppointmentScreen({ navigation, route }) {
         <View className="bg-white rounded-lg p-4 mb-4 shadow-md">
           <Text className="text-lg font-semibold text-gray-800 mb-4">Reservar Turno</Text>
           {status === 'loading' ? (
-            <Text className="text-sm text-gray-600">Cargando...</Text>
+            <>
+              <ActivityIndicator size="large" color="#2563eb" />
+              <Text className="text-sm text-gray-600">Cargando...</Text>
+            </>
           ) : (
             <>
               <ProfileField

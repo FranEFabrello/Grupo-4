@@ -21,6 +21,11 @@ export default function HomeScreen({ navigation }) {
   const usuario = useSelector((state) => state.user.usuario);
   const specialities = useSelector((state) => state.medicalSpecialities.specialities);
 
+  const handleGoToDetails = (appt) => {
+    console.log('Navegando a AppointmentsDetails con id:', appt.id);
+    navigation.navigate('AppointmentsDetails', { appointmentId: appt.id });
+  };
+
   useEffect(() => {
     if (!professionals || professionals.length === 0) {
       dispatch(fetchProfessionals());
@@ -98,31 +103,25 @@ export default function HomeScreen({ navigation }) {
         <View className={`rounded-lg p-4 mb-4 shadow-md ${cardClass}`}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View className="flex-row items-center px-2 h-full">
-              {appointmentsStatus === 'loading' ? (
-                <Text className={`text-sm ${secondaryTextClass}`}>Cargando...</Text>
-              ) : upcomingAppointments.length > 0 ? (
-                upcomingAppointments.map((appt) => (
-                  <View key={appt.id} className="mr-3">
-                    <AppointmentCard
-                      day={new Date(appt.fecha).toLocaleDateString('es-AR', {
-                        weekday: 'short',
-                        day: 'numeric',
-                        month: 'short',
-                      })}
-                      time={`${appt.horaInicio} - ${appt.horaFin}`}
-                      doctor={`${appt.doctorInfo.nombre} ${appt.doctorInfo.apellido}`}
-                      specialty={appt.especialidadInfo.descripcion}
-                      status={appt.estado}
-                      onPress={() => navigation.navigate('AppointmentDetail', { appointment: appt })}
-                      colorScheme={colorScheme}
-                    />
-                  </View>
-                ))
-              ) : (
-                <Text className={`text-sm ${secondaryTextClass}`}>
-                  No hay turnos próximos
-                </Text>
-              )}
+
+              {upcomingAppointments.map((appt, idx) => (
+                <View key={appt.id || idx} className="mr-3">
+                  <AppointmentCard
+                    day={new Date(appt.fecha).toLocaleDateString('es', { weekday: 'short' })}
+                    time={appt.horaInicio}
+                    doctor={`ID: ${appt.doctorId}`}
+                    specialty={appt.nota}
+                    status={appt.estado || appt.status}
+                    onCancel={() => alert('Turno cancelado')}
+                    colorScheme={colorScheme}
+                    showActions={false}
+                    onPress={() => {
+                      console.log('onPress ejecutado', appt);
+                      handleGoToDetails(appt);
+                    }}
+                  />
+                </View>
+              ))}
             </View>
           </ScrollView>
         </View>
@@ -180,3 +179,35 @@ export default function HomeScreen({ navigation }) {
     </AppContainer>
   );
 }
+
+/*
+*
+* <<<<<<< HEAD
+              {appointmentsStatus === 'loading' ? (
+                <Text className={`text-sm ${secondaryTextClass}`}>Cargando...</Text>
+              ) : upcomingAppointments.length > 0 ? (
+                upcomingAppointments.map((appt) => (
+                  <View key={appt.id} className="mr-3">
+                    <AppointmentCard
+                      day={new Date(appt.fecha).toLocaleDateString('es-AR', {
+                        weekday: 'short',
+                        day: 'numeric',
+                        month: 'short',
+                      })}
+                      time={`${appt.horaInicio} - ${appt.horaFin}`}
+                      doctor={`${appt.doctorInfo.nombre} ${appt.doctorInfo.apellido}`}
+                      specialty={appt.especialidadInfo.descripcion}
+                      status={appt.estado}
+                      onPress={() => navigation.navigate('AppointmentDetail', { appointment: appt })}
+                      colorScheme={colorScheme}
+                    />
+                  </View>
+                ))
+              ) : (
+                <Text className={`text-sm ${secondaryTextClass}`}>
+                  No hay turnos próximos
+                </Text>
+              )}
+=======
+*
+* */
