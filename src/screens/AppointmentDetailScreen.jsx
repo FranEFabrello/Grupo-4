@@ -38,7 +38,6 @@ export default function AppointmentDetailScreen({ route, navigation }) {
       currentStart: appointment.horaInicio,
       currentEnd: appointment.horaFin,
     });
-  };
 
 
   const getStatusConfig = (estado) => {
@@ -74,21 +73,21 @@ export default function AppointmentDetailScreen({ route, navigation }) {
 
   const handleCancel = () => {
     Alert.alert(
-      'Confirmar Cancelación',
-      '¿Estás seguro de que deseas cancelar este turno?',
+      t('appointments.cancel_button'),
+      t('appointments.cancel_confirmation'),
       [
         { text: 'No', style: 'cancel' },
         {
-          text: 'Sí',
+          text: t('global.button.yes'),
           onPress: () => {
             dispatch(cancelAppointment(appointment.id))
               .unwrap()
               .then(() => {
-                Alert.alert('Éxito', 'El turno ha sido cancelado.');
+                Alert.alert(t('global.alert.success'),  t('appointments.alerts.cancel'));
                 navigation.goBack();
               })
               .catch((err) => {
-                Alert.alert('Error', err || 'No se pudo cancelar el turno.');
+                Alert.alert(t('global.alert.error'), err || t('appointments.alerts.cancel_error'));
               });
           },
         },
@@ -104,7 +103,7 @@ export default function AppointmentDetailScreen({ route, navigation }) {
           <View className={`mb-6 ${cardClass} rounded-xl p-4`}>
             <View className="flex-row justify-between items-center">
               <Text className={`text-2xl font-bold ${textClass}`}>
-                Turno Médico
+                {t('appointments.medic_book')}
               </Text>
 
               {/* Badge de estado */}
@@ -127,7 +126,7 @@ export default function AppointmentDetailScreen({ route, navigation }) {
           <View className={`mb-4 rounded-xl p-4 ${cardClass}`}>
             <View className="flex-row items-center mb-3">
               <Icon name="calendar-alt" size={18} color={colorScheme === 'light' ? '#2563EB' : '#60A5FA'} />
-              <Text className={`ml-2 ${labelClass}`}>Fecha y Hora</Text>
+              <Text className={`ml-2 ${labelClass}`}>{t('appointments.info.date_time')}</Text>
             </View>
             <Text className={`text-lg font-medium ${textClass}`}>
               {parseLocalDate(appointment.fecha).toLocaleDateString('es-AR', {
@@ -162,7 +161,7 @@ export default function AppointmentDetailScreen({ route, navigation }) {
           <View className={`mb-6 rounded-xl p-4 ${cardClass}`}>
             <View className="flex-row items-center mb-3">
               <Icon name="comment-medical" size={18} color={colorScheme === 'light' ? '#2563EB' : '#60A5FA'} />
-              <Text className={`ml-2 ${labelClass}`}>Motivo de la consulta</Text>
+              <Text className={`ml-2 ${labelClass}`}>{t('medical_note.reason')}</Text>
             </View>
             <Text className={`text-base ${textClass}`}>
               {appointment.nota || 'Sin motivo especificado'}
@@ -180,7 +179,7 @@ export default function AppointmentDetailScreen({ route, navigation }) {
               >
                 <Icon name="times-circle" size={20} color="white" />
                 <Text className="text-white text-base font-medium ml-2">
-                  Cancelar turno
+                  {t('appointments.type.cancel')}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -199,4 +198,4 @@ export default function AppointmentDetailScreen({ route, navigation }) {
     </AppContainer>
   );
 }
-
+}
