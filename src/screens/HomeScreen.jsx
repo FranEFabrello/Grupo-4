@@ -64,7 +64,7 @@ export default function HomeScreen({ navigation }) {
     .slice(0,3);
 
   const containerClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-800';
-  const cardClass = colorScheme === 'light' ? 'bg-gray-100' : 'bg-gray-700';
+  const cardClass = colorScheme === 'light' ? 'bg-blue-50' : 'bg-gray-700';
   const textClass = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
   const secondaryTextClass = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-400';
   const primaryButtonClass = colorScheme === 'light' ? 'bg-blue-600' : 'bg-blue-700';
@@ -138,13 +138,13 @@ export default function HomeScreen({ navigation }) {
             Ver todos
           </Text>
         </View>
-        <View className={`rounded-lg p-4 pb-6 mb-4 shadow-md ${cardClass}`}>
+        <View className={`rounded-lg p-4 pb-1 mb-4 shadow-md ${cardClass}`}>
           <ScrollView horizontal className="mb-4 h-48" showsHorizontalScrollIndicator={false}>
-            <View className="flex-row px-2">
+            <View className="flex-row px-2" style={{overflow: 'visible'}}>
               {professionalsStatus === 'loading' ? (
                 <Text className={`text-sm ${secondaryTextClass}`}>Cargando...</Text>
               ) : professionals.slice(0, 3).map((doctor) => (
-                <View key={doctor.id} className="mr-3 mb-4">
+                <View key={doctor.id} className="mr-3">
                   <DoctorCard
                     name={`${doctor.nombre} ${doctor.apellido}`}
                     specialty={
@@ -180,5 +180,4 @@ export default function HomeScreen({ navigation }) {
     </AppContainer>
   );
 }
-
 
