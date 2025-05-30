@@ -28,6 +28,12 @@ const linking = {
       Profile: 'profile',
       UserProfile: 'user-profile',
       HealthTips: 'health-tips',
+      Help: 'help',
+      SecurityPolicy: 'security-policy',
+      Notifications: 'notifications',
+      ConfirmarToken: 'confirmar-token',
+      CambioContrasenia: 'cambio-contrasenia',
+      AppointmentDetail: 'appointment-detail'
     },
   },
 };

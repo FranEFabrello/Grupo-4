@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 import api from "~/api/api";
 
 // Thunk para obtener notificaciones por ID de usuario

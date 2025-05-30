@@ -14,11 +14,16 @@ import ProfileField from '../components/ProfileField';
 import Calendar from '../components/Calendar';
 import TimeSlot from '../components/TimeSlot';
 import { fetchSpecialities } from "~/store/slices/medicalSpecialitiesSlice";
+import { useNavigation } from "@react-navigation/native";
 
-export default function BookAppointmentScreen({ navigation, route }) {
+export default function BookAppointmentScreen({ route }) {
+
+  const navigation = useNavigation(); // Usa el hook en lugar de la prop
+
   const { professionalId } = route.params || {};
   const dispatch = useDispatch();
   const colorScheme = useColorScheme();
+
 
   const professionals = useSelector((state) => state.professionals.professionals);
   const { availableDays, availableTimeSlots, status } = useSelector((state) => state.appointments);
@@ -112,6 +117,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
           setModalMessage('¡Turno confirmado exitosamente!');
           setModalSuccess(true);
           setModalVisible(true);
+          navigation.navigate('Appointments'); // Navega directamente
         })
         .catch(() => {
           setModalMessage('Error al confirmar el turno');
@@ -210,7 +216,10 @@ export default function BookAppointmentScreen({ navigation, route }) {
                           key={index}
                           time={formatTimeSlot(slot)}
                           isSelected={selectedTime?.horaInicio === slot.horaInicio}
-                          onSelect={() => setSelectedTime(slot)}
+                          onSelect={() => {
+                            console.log('Seleccionando horario:', slot);
+                            setSelectedTime(slot);
+                          }}
                           colorScheme={colorScheme}
                         />
                       ))
@@ -223,24 +232,24 @@ export default function BookAppointmentScreen({ navigation, route }) {
             </View>
           </ScrollView>
           {/* Botón flotante de confirmar turno */}
-          {selectedTime && (
-            <View style={{ position: 'absolute', left: 0, right: 0, bottom: 20, alignItems: 'center', zIndex: 10 }} pointerEvents="box-none">
-              <TouchableOpacity
-                className={`rounded-xl p-4 w-11/12 flex-row justify-center shadow-lg ${primaryButtonClass}`}
-                onPress={handleConfirm}
-                disabled={loading}
-                style={{ opacity: loading ? 0.7 : 1 }}
-              >
-                {loading ? (
-                  <ActivityIndicator color="#fff" />
-                ) : (
-                  <Text className="text-white text-lg font-bold">
-                    Confirmar turno a las {formatTimeSlot(selectedTime)}
-                  </Text>
-                )}
-              </TouchableOpacity>
-            </View>
-          )}
+          {/* {selectedTime && (
+  <View style={{ position: 'absolute', left: 0, right: 0, bottom: 20, alignItems: 'center', zIndex: 10 }} pointerEvents="box-none">
+    <TouchableOpacity
+      className={`rounded-xl p-4 w-11/12 flex-row justify-center shadow-lg ${primaryButtonClass}`}
+      onPress={handleConfirm}
+      disabled={loading}
+      style={{ opacity: loading ? 0.7 : 1 }}
+    >
+      {loading ? (
+        <ActivityIndicator color="#fff" />
+      ) : (
+        <Text className="text-white text-lg font-bold">
+          Confirmar turno a las {formatTimeSlot(selectedTime)}
+        </Text>
+      )}
+    </TouchableOpacity>
+  </View>
+)} */}
           {/* Modal de confirmación */}
           <Modal
             visible={modalVisible}
@@ -248,17 +257,23 @@ export default function BookAppointmentScreen({ navigation, route }) {
             animationType="fade"
             onRequestClose={() => {
               setModalVisible(false);
-              if (modalSuccess) navigation.navigate('Appointments');
+              if (modalSuccess) {
+                navigation.navigate('Appointments');
+              }
             }}
           >
             <View className="flex-1 justify-center items-center bg-black/50">
               <View className={`w-80 p-6 rounded-2xl ${cardClass} items-center shadow-2xl`}>
-                <Text className={`text-lg font-semibold mb-4 ${modalSuccess ? 'text-green-500' : 'text-red-500'}`}>{modalMessage}</Text>
+                <Text className={`text-lg font-semibold mb-4 ${modalSuccess ? 'text-green-500' : 'text-red-500'}`}>
+                  {modalMessage}
+                </Text>
                 <TouchableOpacity
                   className={`px-6 py-3 rounded-xl ${primaryButtonClass}`}
                   onPress={() => {
                     setModalVisible(false);
-                    if (modalSuccess) navigation.navigate('Appointments');
+                    if (modalSuccess) {
+                      navigation.navigate('Appointments'); // Usa navigation del hook
+                    }
                   }}
                 >
                   <Text className="text-white text-base font-semibold">OK</Text>

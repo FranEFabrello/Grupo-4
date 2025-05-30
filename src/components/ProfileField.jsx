@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Picker } from 'react-native';
+import { View, Text } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { useColorScheme } from 'react-native';
 
 export default function ProfileField({ label, type = 'text', value, onChange, items = [], disabled, colorScheme }) {
