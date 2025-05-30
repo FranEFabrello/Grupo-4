@@ -78,17 +78,6 @@ export const cambiarContrasenia = createAsyncThunk(
   }
 );
 
-export const actualizarFcmToken = createAsyncThunk(
-  'user/actualizarFcmToken',
-  async ({ id, token }, { rejectWithValue }) => {
-    try {
-      const response = await axios.put(`${API_URL}/usuario/${id}/fcm-token`, { token });
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || 'Error al actualizar el token FCM');
-    }
-  }
-);
 
 
 export const actualizarConfiguraciones = createAsyncThunk(
@@ -137,6 +126,18 @@ export const desactivarCuenta = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al desactivar la cuenta');
+    }
+  }
+);
+
+export const actualizarFcmToken = createAsyncThunk(
+  'user/actualizarFcmToken',
+  async ({ id, token }, { rejectWithValue }) => {
+    try {
+      const response = await api.put(`/usuario/${id}/fcm-token`, { token });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Error al actualizar el token FCM');
     }
   }
 );

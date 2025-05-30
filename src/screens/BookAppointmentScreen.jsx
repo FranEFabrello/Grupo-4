@@ -7,7 +7,7 @@ import {
   fetchAvailableDays,
   fetchAvailableTimeSlots,
   bookAppointment,
-  clearAvailableTimeSlots,
+  clearAvailableTimeSlots, rescheduleAppointment
 } from "~/store/slices/appointmentsSlice";
 import AppContainer from '../components/AppContainer';
 import ProfileField from '../components/ProfileField';
@@ -24,11 +24,13 @@ export default function BookAppointmentScreen({ navigation, route }) {
   const usuario = useSelector((state) => state.user.usuario);
   const specialties = useSelector((state) => state.medicalSpecialities.specialities);
 
+  const { reprogramming, specialtyId, currentDate, currentStart, currentEnd} = route.params || {};
 
   const [specialty, setSpecialty] = useState('');
   const [professional, setProfessional] = useState(professionalId || '');
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState(null);
+  const [nota, setNota] = useState('');
 
   useEffect(() => {
     dispatch(fetchProfessionals());
@@ -62,6 +64,21 @@ export default function BookAppointmentScreen({ navigation, route }) {
   }, [selectedDate, professional, dispatch]);
 
 
+  useEffect(() => {
+    if (reprogramming) {
+      setSpecialty(specialtyId?.toString());
+      setProfessional(professionalId?.toString());
+      setNota(nota || '');
+      setSelectedDate(currentDate);
+      if (currentStart && currentEnd) {
+        setSelectedTime({
+          horaInicio: currentStart,
+          horaFin: currentEnd,
+        });
+      }
+    }
+  }, [reprogramming]);
+
 
 
   const formatTimeSlot = (slot) => {
@@ -74,27 +91,45 @@ export default function BookAppointmentScreen({ navigation, route }) {
     if (specialty && professional && selectedDate && selectedTime) {
       const payload = {
         doctorId: professional,
-        usuarioId: usuario?.id, // este dato ahora viene del userSlice
+        usuarioId: usuario?.id,
         fecha: selectedDate,
         horaInicio: selectedTime.horaInicio.substring(0, 5),
         horaFin: selectedTime.horaFin.substring(0, 5),
         nota: 'Consulta general',
         archivoAdjunto: null,
-        estado: 'PENDIENTE',
+        estado: 'CONFIRMADO',
       };
 
-      console.log('Payload que se envía al backend:', payload); // ✅ Acá sí lo ves bien
-
-      dispatch(bookAppointment(payload))
-        .unwrap()
-        .then(() => {
-          alert('Turno confirmado exitosamente');
-          navigation.navigate('Appointments');
-        })
-        .catch((err) => {
-          console.error('Error del backend:', err);
-          alert('Error al confirmar el turno');
-        });
+      if (reprogramming) {
+        // Aquí deberías despachar la acción para reprogramar el turno
+        console.log('Reprogramando turno con payload:', payload, " con este turnoId:", route.params.appointmentId);
+        dispatch(rescheduleAppointment({
+          turnoId: route.params.appointmentId,
+          nuevaFecha: selectedDate,
+          nuevaHoraInicio: selectedTime.horaInicio.substring(0, 5),
+          nuevaHoraFin: selectedTime.horaFin.substring(0, 5)
+        }))
+          .unwrap()
+          .then(() => {
+            alert('Turno reprogramado exitosamente');
+            navigation.navigate('Appointments');
+          })
+          .catch((err) => {
+            console.error('Error del backend:', err);
+            alert('Error al reprogramar el turno');
+          });
+      } else {
+        dispatch(bookAppointment(payload))
+          .unwrap()
+          .then(() => {
+            alert('Turno confirmado exitosamente');
+            navigation.navigate('Appointments');
+          })
+          .catch((err) => {
+            console.error('Error del backend:', err);
+            alert('Error al confirmar el turno');
+          });
+      }
     } else {
       alert('Por favor, completa todos los campos');
     }
@@ -173,9 +208,11 @@ export default function BookAppointmentScreen({ navigation, route }) {
                     <Text className="text-white text-base">
                       {selectedTime ? (
                         <>
-                          {`Confirmar turno a las ${formatTimeSlot(selectedTime)}`}
+                          {reprogramming
+                            ? `Reprogramar turno a las ${formatTimeSlot(selectedTime)}`
+                            : `Confirmar turno a las ${formatTimeSlot(selectedTime)}`}
                         </>
-                      ) : 'Confirmar turno'}
+                      ) : reprogramming ? 'Reprogramar turno' : 'Confirmar turno'}
                     </Text>
                   </TouchableOpacity>
                 </>

@@ -21,20 +21,7 @@ export default function HomeScreen({ navigation }) {
   const usuario = useSelector((state) => state.user.usuario);
   const specialities = useSelector((state) => state.medicalSpecialities.specialities);
 
-  useEffect(() => {
-    if (!professionals || professionals.length === 0) {
-      dispatch(fetchProfessionals());
-    }
-    dispatch(fetchUserByToken()).then((action) => {
-      const usuarioId = action.payload?.id;
-      if (usuarioId) {
-        dispatch(fetchAppointments(usuarioId));
-      }
-    });
-    if (specialities.length === 0) {
-      dispatch(fetchSpecialities());
-    }
-  }, [dispatch]);
+
 
   const quickActions = [
     { icon: 'calendar-plus', label: 'Reservar turno', screen: 'BookAppointment' },

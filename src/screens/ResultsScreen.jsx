@@ -16,6 +16,8 @@ export default function ResultsScreen({ navigation }) {
   const [startDate, setStartDate] = React.useState(null);
   const [endDate, setEndDate] = React.useState(null);
 
+  const userId = useSelector((state) => state.user.usuario.id);
+
   // Lógica para seleccionar fechas
   const handleSelectDate = (date) => {
     if (!startDate || (startDate && endDate)) {
@@ -31,50 +33,24 @@ export default function ResultsScreen({ navigation }) {
     }
   };
 
-  // Filtrar resultados por rango de fechas
-  const filteredResults = React.useMemo(() => {
-    if (!startDate || !endDate) return results;
-    return results.filter((result) => {
-      const resultDate = new Date(result.date);
-      return resultDate >= startDate && resultDate <= endDate;
-    });
-  }, [results, startDate, endDate]);
 
-  useEffect(() => {
-    dispatch(fetchResults());
-  }, [dispatch]);
+
+
 
   return (
       <AppContainer navigation={navigation} screenTitle="Resultados">
         <ScrollView className="p-5">
           <View className="bg-white rounded-lg p-4 mb-4 shadow-md">
-            <Text className="text-lg font-semibold text-gray-800 mb-2">Resultados Médicos</Text>
-            <Text className="text-sm text-gray-600 mb-4">Tus estudios y análisis clínicos</Text>
             <View className="flex-row justify-between items-center mb-4">
-              <Text className="text-base font-semibold text-gray-800">Estudios recientes</Text>
+              <View>
+                <Text className="text-lg font-semibold text-gray-800">Resultados Médicos</Text>
+                <Text className="text-sm text-gray-600">Estudios recientes</Text>
+              </View>
               <FilterButton onPress={() => setShowFilterModal(true)} />
             </View>
             {status === 'loading' ? (
               <Text className="text-sm text-gray-600">Cargando...</Text>
-            ) : filteredResults.length > 0 ? (
-              filteredResults.map((result, index) => (
-                <View key={index} className="mb-4">
-                  <AppointmentCard
-                    day={new Date(appt.fecha).toLocaleDateString('es', { weekday: 'short' })}
-                    time={appt.horaInicio}
-                    doctor={`ID: ${appt.doctorId}`}
-                    specialty={appt.nota}
-                    onPress={() => navigation.navigate('AppointmentDetail', { appointment: appt })}
-                    colorScheme={colorScheme}
-                  />
-                  <TouchableOpacity
-                    className="border border-blue-600 rounded-lg p-2 flex-row justify-center"
-                    onPress={() => alert(`Descargando ${result.file}`)}
-                  >
-                    <Text className="text-blue-600 text-sm">Descargar</Text>
-                  </TouchableOpacity>
-                </View>
-              ))
+
             ) : (
               <Text className="text-sm text-gray-600">No hay resultados disponibles</Text>
             )}

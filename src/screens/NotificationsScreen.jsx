@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import AppContainer from '../components/AppContainer';
 import { fetchNotificaciones } from '~/store/slices/notificationSlice';
 import { createSelector } from 'reselect';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 //const selectNotificaciones = state => state.notificaciones?.notificaciones;
 
@@ -19,6 +21,8 @@ const NotificationsScreen = ({ navigation }) => {
     }
   }, [dispatch, usuarioId]);
   console.log('notificaciones en screen:', notificaciones);
+
+
   return (
     <AppContainer navigation={navigation} screenTitle="Notificaciones">
       <View className="flex-1 bg-gray-50 p-4">
@@ -31,9 +35,19 @@ const NotificationsScreen = ({ navigation }) => {
             renderItem={({ item }) => (
               <View className="bg-white rounded-lg p-4 mb-3 shadow flex-row items-center">
                 <View className="mr-4">
-                  {/* Si tienes la ruta local o remota de la imagen, usa Image */}
-                  {/* <Image source={{ uri: item.logoNotificacion }} style={{ width: 40, height: 40 }} /> */}
-                  <Text>{item.logoNotificacion}</Text>
+                  {item.logoNotificacion === "logo_confirmacion.png" ? (
+                    <MaterialCommunityIcons name="check-circle" size={40} color="#22c55e" />
+                  ) : item.logoNotificacion === "logo_cancelacion.png" ? (
+                    <MaterialCommunityIcons name="close-circle" size={40} color="#ef4444" />
+                  ) : item.logoNotificacion === "logo_estudios.png" ? (
+                    <FontAwesome5 name="file-medical" size={40} color="#2563eb" />
+                  ) : item.logoNotificacion === "logo_reprogramacion.png" ? (
+                    <MaterialCommunityIcons name="calendar" size={40} color="#f59e42" />
+                  ) : item.logoNotificacion === "logo_receta.png" ? (
+                    <FontAwesome5 name="notes-medical" size={40} color="#a21caf" />
+                  ) : (
+                    <MaterialCommunityIcons name="bell" size={40} color="#6b7280" />
+                  )}
                 </View>
                 <View className="flex-1">
                   <Text className="font-bold text-base mb-1">
