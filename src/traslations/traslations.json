@@ -22,13 +22,9 @@
     }
   },
   "book_appointment": {
-    "screen_title": {
+    "title": {
       "es": "Reservar Turno",
       "en": "Book Appointment"
-    },
-    "loading": {
-      "es": "Cargando...",
-      "en": "Loading..."
     },
     "fields": {
       "specialty": {
@@ -75,100 +71,6 @@
         "es": "Por favor, completa todos los campos",
         "en": "Please complete all fields"
       }
-    }
-  },
-  "change_password": {
-    "email_placeholder": {
-      "es": "Correo",
-      "en": "Email"
-    },
-    "new_password_placeholder": {
-      "es": "Nueva contraseña",
-      "en": "New password"
-    },
-    "submit_button": {
-      "es": "Cambiar contraseña",
-      "en": "Change password"
-    },
-    "alerts": {
-      "error_title": {
-        "es": "Error",
-        "en": "Error"
-      },
-      "success_title": {
-        "es": "Éxito",
-        "en": "Success"
-      },
-      "missing_fields": {
-        "es": "Completa todos los campos.",
-        "en": "Please fill in all fields."
-      }
-    }
-  },
-  "confirm_token_register": {
-    "token_placeholder": {
-      "es": "Ingresar token",
-      "en": "Enter token"
-    },
-    "submit_button": {
-      "es": "Confirmar token",
-      "en": "Confirm token"
-    },
-    "alerts": {
-      "error_title": {
-        "es": "Error",
-        "en": "Error"
-      },
-      "success_title": {
-        "es": "Éxito",
-        "en": "Success"
-      },
-      "token_length_error": {
-        "es": "El token debe tener 8 caracteres.",
-        "en": "The token must be 8 characters long."
-      },
-      "default_success": {
-        "es": "Token validado correctamente",
-        "en": "Token successfully validated"
-      },
-      "default_error": {
-        "es": "Token inválido",
-        "en": "Invalid token"
-      }
-    }
-  },
-  "health_tips": {
-    "screen_title": {
-      "es": "Consejos de Salud",
-      "en": "Health Tips"
-    },
-    "error_prefix": {
-      "es": "Error:",
-      "en": "Error:"
-    },
-    "retry": {
-      "es": "Reintentar",
-      "en": "Retry"
-    },
-    "no_articles": {
-      "es": "No se encontraron artículos.",
-      "en": "No articles found."
-    },
-    "no_description": {
-      "es": "Sin descripción disponible.",
-      "en": "No description available."
-    },
-    "read_more": {
-      "es": "Leer más",
-      "en": "Read more"
-    },
-    "load_more": {
-      "es": "Cargar más",
-      "en": "Load more"
-    },
-    "no_more_articles": {
-      "es": "No hay más artículos para cargar.",
-      "en": "No more articles to load."
     }
   },
   "home": {
@@ -218,10 +120,6 @@
       "cancelled_alert": {
         "es": "Turno cancelado",
         "en": "Appointment cancelled"
-      },
-      "loading": {
-        "es": "Cargando...",
-        "en": "Loading..."
       }
     },
     "featured_doctors": {
@@ -232,10 +130,6 @@
       "view_all": {
         "es": "Ver todos",
         "en": "View all"
-      },
-      "loading": {
-        "es": "Cargando...",
-        "en": "Loading..."
       }
     },
     "medical_news": {
@@ -287,20 +181,12 @@
     "coverage_title": {
       "es": "Cobertura médica",
       "en": "Medical coverage"
-    },
-    "loading": {
-      "es": "Cargando...",
-      "en": "Loading..."
     }
   },
   "medical_notes": {
     "screen_title": {
       "es": "Notas Médicas",
       "en": "Medical Notes"
-    },
-    "loading": {
-      "es": "Cargando...",
-      "en": "Loading..."
     },
     "empty": {
       "es": "No hay notas disponibles",
@@ -358,25 +244,27 @@
     }
   },
   "professionals": {
-    "screen_title": {
+    "title": {
       "es": "Profesionales",
       "en": "Professionals"
     },
-    "search_placeholder": {
+    "search": {
       "es": "Buscar profesional...",
       "en": "Search professional..."
     },
-    "filter_alert": {
+    "filter": {
       "es": "Filtrar profesionales",
       "en": "Filter professionals"
-    },
-    "loading": {
-      "es": "Cargando...",
-      "en": "Loading..."
     },
     "empty": {
       "es": "No hay profesionales disponibles",
       "en": "No professionals available"
+    },
+    "alerts": {
+      "no_especiality": {
+        "es": "Sin especialidad",
+        "en": "No specialty"
+      }
     }
   },
   "profile": {
@@ -618,10 +506,6 @@
       "es": "Filtrar resultados",
       "en": "Filter results"
     },
-    "loading": {
-      "es": "Cargando...",
-      "en": "Loading..."
-    },
     "empty": {
       "es": "No hay resultados disponibles",
       "en": "No results available"
@@ -694,16 +578,6 @@
         "en": "Log out"
       }
     },
-    "status": {
-      "loading": {
-        "es": "Cargando...",
-        "en": "Loading..."
-      },
-      "load_error": {
-        "es": "Error al cargar el perfil",
-        "en": "Failed to load profile"
-      }
-    },
     "alerts": {
       "not_identified": {
         "es": "No se pudo identificar al usuario.",
@@ -737,14 +611,14 @@
       "en": "Register"
     }
   },
-  "Filter": {
-    "es": "Filtrar",
-    "en": "Filter"
-  },
   "medical_note": {
     "reason": {
-      "es": "Motivo de consulta",
-      "en": "Reason for consultation"
+      "es": "Motivo de la consulta",
+      "en": "Reason for the consultation"
+    },
+    "no_reason": {
+      "es": "Sin motivo especificado",
+      "en": "No reason specified"
     },
     "diagnosis": {
       "es": "Diagnóstico",
@@ -760,7 +634,7 @@
     }
   },
   "doctor_profile": {
-    "screen_title": {
+    "title": {
       "es": "Perfil del Profesional",
       "en": "Doctor Profile"
     },
@@ -786,15 +660,115 @@
     }
   },
   "global": {
-    "loading": {
-      "es": "Cargando...",
-      "en": "Loading..."
+    "button": {
+      "select": {
+        "es": "Seleccionar",
+        "en": "Select"
+      },
+      "cancel": {
+        "es": "Cancelar",
+        "en": "Cancel"
+      },
+      "save": {
+        "es": "Guardar",
+        "en": "Save"
+      },
+      "yes": {
+        "es": "Sí",
+        "en": "Yes"
+      },
+      "accept": {
+        "es": "Aceptar",
+        "en": "Accept"
+      },
+      "retry": {
+        "es": "Reintentar",
+        "en": "Retry"
+      },
+      "send": {
+        "es": "Enviar",
+        "en": "Send"
+      }
+    },
+    "alert": {
+      "loading": {
+        "es": "Cargando...",
+        "en": "Loading..."
+      },
+      "load_error": {
+        "es": "Error al cargar el perfil",
+        "en": "Failed to load profile"
+      },
+      "success": {
+        "es": "Éxito",
+        "en": "Success"
+      },
+      "error": {
+        "es": "Error",
+        "en": "Error"
+      },
+      "missing_fields": {
+        "es": "Completa todos los campos.",
+        "en": "Please fill in all fields."
+      }
     }
   },
   "appointments": {
     "title": {
+      "es": "Turnos",
+      "en": "Appointments"
+    },
+    "Mytitle": {
       "es": "Mis Turnos",
       "en": "My Appointments"
+    },
+    "view_medical_notes": {
+      "es": "Ver notas médicas",
+      "en": "View medical notes"
+    },
+    "cancel_button": {
+      "es": "Confirmar Cancelación",
+      "en": "Confirm Cancellation"
+    },
+    "cancel_confirmation": {
+      "es": "¿Estás seguro de que deseas cancelar este turno?",
+      "en": "Are you sure you want to cancel this appointment?"
+    },
+    "hasBeenCancelled": {
+      "es": "Este turno ha sido cancelado.",
+      "en": "This appointment has been cancelled."
+    },
+    "details": {
+      "es": "Detalles del Turno",
+      "en": "Appointment Details"
+    },
+    "info": {
+      "date_time": {
+        "es": "Fecha y hora",
+        "en": "Date and time"
+      },
+      "professional": {
+        "es": "Profesional",
+        "en": "Professional"
+      }
+    },
+    "type": {
+      "approved": {
+        "es": "Confirmado",
+        "en": "Approved"
+      },
+      "cancelled": {
+        "es": "Cancelado",
+        "en": "Cancelled"
+      },
+      "cancel": {
+        "es": "Cancelar turno",
+        "en": "Cancel appointment"
+      }
+    },
+    "medic_book": {
+      "es": "Turno Médico",
+      "en": "Medical Appointment"
     },
     "tabs": {
       "upcoming": {
@@ -810,32 +784,40 @@
         "en": "Cancelled"
       }
     },
-    "no_upcoming": {
-      "es": "No hay turnos próximos",
-      "en": "No upcoming appointments"
-    },
-    "no_past": {
-      "es": "No hay turnos pasados",
-      "en": "No past appointments"
-    },
-    "no_cancelled": {
-      "es": "No hay turnos cancelados",
-      "en": "No cancelled appointments"
-    },
-    "view_medical_notes": {
-      "es": "Ver notas médicas",
-      "en": "View medical notes"
-    },
-    "cancel_alert": {
-      "es": "Turno cancelado",
-      "en": "Appointment cancelled"
+    "alerts": {
+      "no_upcoming": {
+        "es": "No hay turnos próximos",
+        "en": "No upcoming appointments"
+      },
+      "no_past": {
+        "es": "No hay turnos pasados",
+        "en": "No past appointments"
+      },
+      "no_cancelled": {
+        "es": "No hay turnos cancelados",
+        "en": "No cancelled appointments"
+      },
+      "cancel": {
+        "es": "El turno ha sido cancelado.",
+        "en": "The appointment has been cancelled."
+      },
+      "cancel_error": {
+        "es": "No se pudo cancelar el turno",
+        "en": "Could not cancel the appointment"
+      }
+    }
+  },
+  "filter": {
+    "title": {
+      "es": "Filtrar",
+      "en": "Filter"
     },
     "filter_dates": {
-      "filter_title": {
+      "title": {
         "es": "Filtrar por rango de fechas",
         "en": "Filter by date range"
       },
-      "filter_range": {
+      "range": {
         "es": "Selecciona el rango de fechas",
         "en": "Select date range"
       },
@@ -847,18 +829,14 @@
         "es": "Fin",
         "en": "End"
       },
-      "apply_filter": {
+      "apply": {
         "es": "Aplicar filtro",
         "en": "Apply filter"
       },
-      "clear_filter": {
+      "clear": {
         "es": "Limpiar filtro",
         "en": "Clear filter"
       }
-    },
-    "loading": {
-      "es": "Cargando...",
-      "en": "Loading..."
     },
     "calendar": {
       "prev": {
@@ -870,18 +848,42 @@
         "en": "Next"
       },
       "days": {
-        "mon": { "es": "L", "en": "M" },
-        "tue": { "es": "M", "en": "T" },
-        "wed": { "es": "X", "en": "W" },
-        "thu": { "es": "J", "en": "T" },
-        "fri": { "es": "V", "en": "F" },
-        "sat": { "es": "S", "en": "Sa" },
-        "sun": { "es": "D", "en": "Su" }
+        "mon": {
+          "es": "L",
+          "en": "M"
+        },
+        "tue": {
+          "es": "M",
+          "en": "T"
+        },
+        "wed": {
+          "es": "X",
+          "en": "W"
+        },
+        "thu": {
+          "es": "J",
+          "en": "T"
+        },
+        "fri": {
+          "es": "V",
+          "en": "F"
+        },
+        "sat": {
+          "es": "S",
+          "en": "Sa"
+        },
+        "sun": {
+          "es": "D",
+          "en": "Su"
+        }
       }
     }
   },
-
   "doctor_card": {
+    "title": {
+      "es": "Perfil del Profesional",
+      "en": "Doctor Profile"
+    },
     "no_rating": {
       "es": "Sin calificación",
       "en": "No rating"
@@ -890,7 +892,163 @@
       "es": "Turno",
       "en": "Book"
     }
+  },
+  "navigator": {
+    "home": {
+      "es": "Inicio",
+      "en": "Home"
+    },
+    "appointments": {
+      "es": "Turnos",
+      "en": "Appointments"
+    },
+    "professionals": {
+      "es": "Profesionales",
+      "en": "Professionals"
+    },
+    "profile": {
+      "es": "Perfil",
+      "en": "Profile"
+    }
+  },
+  "send_email": {
+    "email": {
+      "es": "Complete con su correo electrónico.",
+      "en": "Complete with your email."
+    },
+    "alerts": {
+      "email_sent": {
+        "es": "El correo fue enviado correctamente. Ahora ingresa el token recibido.",
+        "en": "Email sent successfully. Now enter the received token."
+      }
+    }
+  },
+  "change_password": {
+    "title": {
+      "es": "Cambiar Contraseña",
+      "en": "Change Password"
+    },
+    "new_password_placeholder": {
+      "es": "Nueva contraseña",
+      "en": "New password"
+    },
+    "save_button": {
+      "es": "Guardar nueva contraseña",
+      "en": "Save new password"
+    },
+    "alerts": {
+      "emails_notMatch": {
+        "es": "Las contraseñas no coinciden.",
+        "en": "Passwords do not match."
+      },
+      "success": {
+        "es": "Contraseña cambiada correctamente.",
+        "en": "Password changed successfully."
+      },
+      "request_error": {
+        "es": "Error al solicitar el cambio de contraseña.",
+        "en": "Error requesting password change."
+      },
+      "no_email_error": {
+        "es": "Completa ambos campos de contraseña.",
+        "en": "Please fill in both password fields."
+      },
+      "chage_error": {
+        "es": "Error al cambiar la contraseña.",
+        "en": "Error changing password."
+      }
+    }
+  },
+
+  "token": {
+    "placeholder": {
+      "es": "Ingresar token",
+      "en": "Enter token"
+    },
+    "Request": {
+      "es": "Solicitar token",
+      "en": "Request token"
+    },
+    "submit_button": {
+      "es": "Confirmar token",
+      "en": "Confirm token"
+    },
+    "verify_button": {
+      "es": "validar token",
+      "en": "Verify token"
+    },
+    "verification_title": {
+      "es": "Validando token",
+      "en": "Verifying token"
+    },
+    "alerts": {
+      "token_length_error": {
+        "es": "El token debe tener 8 caracteres.",
+        "en": "The token must be 8 characters long."
+      },
+      "default_success": {
+        "es": "Token validado correctamente",
+        "en": "Token successfully validated"
+      },
+      "default_error": {
+        "es": "Token inválido",
+        "en": "Invalid token"
+      }
+    }
+  },
+  "articles": {
+    "title": {
+      "es": "Consejos de Salud",
+      "en": "Health Tips"
+    },
+    "error_prefix": {
+      "es": "Error:",
+      "en": "Error:"
+    },
+    "read_more": {
+      "es": "Leer más",
+      "en": "Read more"
+    },
+    "load_more": {
+      "es": "Cargar más",
+      "en": "Load more"
+    },
+    "alerts": {
+      "no_articles": {
+        "es": "No se encontraron artículos.",
+        "en": "No articles found."
+      },
+      "no_articles_error": {
+        "es": "Error al obtener los artículos.",
+        "en": "Error fetching articles."
+      },
+      "no_description": {
+        "es": "Sin descripción disponible.",
+        "en": "No description available."
+      },
+      "no_more_articles": {
+        "es": "No hay más artículos para cargar.",
+        "en": "No more articles to load."
+      },
+      "opening_error": {
+        "es": "Error al abrir el artículo.",
+        "en": "Error opening the article."
+      }
+    }
+  },
+
+  "help": {
+    "title": {
+      "es": "Ayuda",
+      "en": "Help"
+    },
+    "problem_description": {
+      "es": "Por favor, escriba su problema",
+      "en": "Please describe your problem"
+    },
+    "problem_placeholder": {
+      "es": "Describe su problema aquí...",
+      "en": "Describe your problem here..."
+    }
   }
-
 }
-

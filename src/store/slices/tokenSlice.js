@@ -1,15 +1,13 @@
 // src/redux/slices/tokenSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-const API_URL = 'http://localhost:4002/Tokens';
+import api from "~/api/api";
 
 export const validarTokenRegistro = createAsyncThunk(
   'tokens/validarTokenRegistro',
   async (data, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${API_URL}/validarTokenRegistro`, data);
+      const response = await api.post(`/validarTokenRegistro`, data);
       // Guarda el token si existe en la respuesta
       if (response.data && response.data.token) {
         await AsyncStorage.setItem('access_token', response.data.token);
@@ -25,7 +23,7 @@ export const validarTokenCambioContrasenia = createAsyncThunk(
   'tokens/validarTokenCambioContrasenia',
   async (data, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${API_URL}/validarTokenCambioContrasenia`, data);
+      const response = await api.post(`/validarTokenCambioContrasenia`, data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || { mensaje: 'Error al cambiar contraseña' });

@@ -1,16 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "~/api/api";
-
-const API_URL = 'http://localhost:4002/Usuario';
 
 // Thunks para las operaciones asincrónicas
 export const fetchUsuarios = createAsyncThunk(
   'user/fetchUsuarios',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${API_URL}/usuarios`);
+      const response = await api.get(`/usuarios`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al obtener los usuarios');
@@ -43,7 +40,7 @@ export const actualizarUsuarioPorCorreo = createAsyncThunk(
   'user/actualizarUsuarioPorCorreo',
   async ({ correo, updates }, { rejectWithValue }) => {
     try {
-      const response = await axios.patch(`${API_URL}/actualizarPorCorreo`, updates, {
+      const response = await api.patch(`/actualizarPorCorreo`, updates, {
         params: { correo },
       });
       return response.data;
@@ -70,7 +67,7 @@ export const cambiarContrasenia = createAsyncThunk(
   'user/cambiarContrasenia',
   async ({ correo, nuevaContrasenia }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${API_URL}/cambiarContrasenia`, { correo, nuevaContrasenia });
+      const response = await api.post(`/cambiarContrasenia`, { correo, nuevaContrasenia });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al cambiar la contraseña');
@@ -78,13 +75,24 @@ export const cambiarContrasenia = createAsyncThunk(
   }
 );
 
+export const actualizarFcmToken = createAsyncThunk(
+  'user/actualizarFcmToken',
+  async ({ id, token }, { rejectWithValue }) => {
+    try {
+      const response = await api.put(`/usuario/${id}/fcm-token`, { token });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Error al actualizar el token FCM');
+    }
+  }
+);
 
 
 export const actualizarConfiguraciones = createAsyncThunk(
   'user/actualizarConfiguraciones',
   async ({ id, configuraciones }, { rejectWithValue }) => {
     try {
-      const response = await axios.patch(`${API_URL}/usuario/${id}/configuraciones`, configuraciones);
+      const response = await api.patch(`/usuario/${id}/configuraciones`, configuraciones);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al actualizar las configuraciones');
@@ -96,7 +104,7 @@ export const enviarMensajeAyuda = createAsyncThunk(
   'user/enviarMensajeAyuda',
   async ({ correoUsuario, mensaje }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${API_URL}/ayuda`, { correoUsuario, mensaje });
+      const response = await api.post(`/ayuda`, { correoUsuario, mensaje });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al enviar el mensaje de ayuda');
@@ -120,24 +128,12 @@ export const desactivarCuenta = createAsyncThunk(
   'user/desactivarCuenta',
   async (usuarioId, { rejectWithValue }) => {
     try {
-      const response = await axios.patch(`${API_URL}/desactivarCuenta`, null, {
+      const response = await api.patch(`/desactivarCuenta`, null, {
         params: { usuarioId },
       });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al desactivar la cuenta');
-    }
-  }
-);
-
-export const actualizarFcmToken = createAsyncThunk(
-  'user/actualizarFcmToken',
-  async ({ id, token }, { rejectWithValue }) => {
-    try {
-      const response = await api.put(`/usuario/${id}/fcm-token`, { token });
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || 'Error al actualizar el token FCM');
     }
   }
 );

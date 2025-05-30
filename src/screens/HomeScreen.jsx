@@ -24,10 +24,10 @@ export default function HomeScreen({ navigation }) {
 
 
   const quickActions = [
-    { icon: 'calendar-plus', label: 'Reservar turno', screen: 'BookAppointment' },
-    { icon: 'calendar-alt', label: 'Mis Turnos', screen: 'Appointments' },
-    { icon: 'file-medical', label: 'Resultados', screen: 'Results' },
-    { icon: 'hospital-user', label: 'Obra social', screen: 'Insurance' },
+    { icon: 'calendar-plus', label: t('home.quick_actions.book'), screen: 'BookAppointment' },
+    { icon: 'calendar-alt', label: t('home.quick_actions.appointments'), screen: 'Appointments' },
+    { icon: 'file-medical', label: t('home.quick_actions.results'), screen: 'Results' },
+    { icon: 'hospital-user', label: t('home.quick_actions.insurance'), screen: 'Insurance' },
   ];
 
   const now = new Date();
@@ -51,7 +51,7 @@ export default function HomeScreen({ navigation }) {
     .slice(0,3);
 
   const containerClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-800';
-  const cardClass = colorScheme === 'light' ? 'bg-gray-100' : 'bg-gray-700';
+  const cardClass = colorScheme === 'light' ? 'bg-blue-50' : 'bg-gray-700';
   const textClass = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
   const secondaryTextClass = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-400';
   const primaryButtonClass = colorScheme === 'light' ? 'bg-blue-600' : 'bg-blue-700';
@@ -65,20 +65,20 @@ export default function HomeScreen({ navigation }) {
             Hola, {usuario?.nombre || 'Usuario'}
           </Text>
           <Text className={`text-sm ${secondaryTextClass} mt-1`}>
-            ¿Qué necesitas hacer hoy?
+            {t('home.question')}
           </Text>
           <QuickActions actions={quickActions} navigation={navigation} colorScheme={colorScheme} />
         </View>
 
         <View className="flex-row justify-between items-center mb-4">
           <Text className={`text-lg font-semibold ${textClass}`}>
-            Tus próximos turnos
+            {t('home.next_appointment.title')}
           </Text>
           <Text
             className={`text-sm ${linkClass}`}
             onPress={() => navigation.navigate('Appointments')}
           >
-            Ver todos
+            {t('home.next_appointment.view_all')}
           </Text>
         </View>
 
@@ -86,7 +86,7 @@ export default function HomeScreen({ navigation }) {
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View className="flex-row items-center px-2 h-full">
               {appointmentsStatus === 'loading' ? (
-                <Text className={`text-sm ${secondaryTextClass}`}>Cargando...</Text>
+                <Text className={`text-sm ${secondaryTextClass}`}>{t('global.alert.loading')}</Text>
               ) : upcomingAppointments.length > 0 ? (
                 upcomingAppointments.map((appt) => (
                   <View key={appt.id} className="mr-3">
@@ -107,7 +107,7 @@ export default function HomeScreen({ navigation }) {
                 ))
               ) : (
                 <Text className={`text-sm ${secondaryTextClass}`}>
-                  No hay turnos próximos
+                  {t('appointments.alerts.no_upcoming')}
                 </Text>
               )}
             </View>
@@ -116,22 +116,22 @@ export default function HomeScreen({ navigation }) {
 
         <View className="flex-row justify-between items-center mb-4">
           <Text className={`text-lg font-semibold ${textClass}`}>
-            Profesionales destacados
+            {t('home.feature_doctors.title')}
           </Text>
           <Text
             className={`text-sm ${linkClass}`}
             onPress={() => navigation.navigate('Professionals')}
           >
-            Ver todos
+            {t('home.feature_doctors.view_all')}
           </Text>
         </View>
-        <View className={`rounded-lg p-4 pb-6 mb-4 shadow-md ${cardClass}`}>
+        <View className={`rounded-lg p-4 pb-1 mb-4 shadow-md ${cardClass}`}>
           <ScrollView horizontal className="mb-4 h-48" showsHorizontalScrollIndicator={false}>
-            <View className="flex-row px-2">
+            <View className="flex-row px-2" style={{overflow: 'visible'}}>
               {professionalsStatus === 'loading' ? (
-                <Text className={`text-sm ${secondaryTextClass}`}>Cargando...</Text>
+                <Text className={`text-sm ${secondaryTextClass}`}>{t('global.alert.loading')}</Text>
               ) : professionals.slice(0, 3).map((doctor) => (
-                <View key={doctor.id} className="mr-3 mb-4">
+                <View key={doctor.id} className="mr-3">
                   <DoctorCard
                     name={`${doctor.nombre} ${doctor.apellido}`}
                     specialty={
@@ -153,19 +153,18 @@ export default function HomeScreen({ navigation }) {
 
         <View className={`rounded-lg p-4 shadow-md ${cardClass}`}>
           <Text className={`text-lg font-semibold ${textClass} mb-3`}>
-            Noticias médicas
+            {t('home.medical_news.title')}
           </Text>
           <TouchableOpacity
             className={`${primaryButtonClass} rounded-lg py-2 px-4 flex-row justify-center items-center shadow-md`}
             onPress={() => navigation.navigate('HealthTips')}
           >
             <Icon name="heart" size={20} color="#ffffff" className="mr-2" />
-            <Text className="text-white text-sm font-semibold">Ver noticias médicas</Text>
+            <Text className="text-white text-sm font-semibold">{t('home.medical_news.button')}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
     </AppContainer>
   );
 }
-
 

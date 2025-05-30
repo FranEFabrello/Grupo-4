@@ -6,7 +6,6 @@ import { fetchNotificaciones } from '~/store/slices/notificationSlice';
 import { createSelector } from 'reselect';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-
 //const selectNotificaciones = state => state.notificaciones?.notificaciones;
 
 const NotificationsScreen = ({ navigation }) => {
@@ -21,8 +20,6 @@ const NotificationsScreen = ({ navigation }) => {
     }
   }, [dispatch, usuarioId]);
   console.log('notificaciones en screen:', notificaciones);
-
-
   return (
     <AppContainer navigation={navigation} screenTitle="Notificaciones">
       <View className="flex-1 bg-gray-50 p-4">

@@ -47,6 +47,22 @@ export const confirmAppointment = createAsyncThunk(
   }
 );
 
+// Reprogramar un turno
+export const rescheduleAppointment = createAsyncThunk(
+  'appointments/rescheduleAppointment',
+  async ({ turnoId, nuevaFecha, nuevaHoraInicio, nuevaHoraFin }) => {
+    const response = await api.post(`/turnos/turnos/${turnoId}/reprogramar`,null,{
+        params: {
+          nuevaFecha,
+          nuevaHoraInicio,
+          nuevaHoraFin,
+        },
+      }
+    );
+    return response.data;
+  }
+);
+
 
 const appointmentsSlice = createSlice({
   name: 'appointments',

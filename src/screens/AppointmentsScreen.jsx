@@ -187,7 +187,7 @@ export default function AppointmentsScreen({ navigation }) {
                 </View>
               ))
             ) : (
-              <Text className={`text-sm ${textSecondaryClass}`}>No hay turnos próximos</Text>
+              <Text className={`text-sm ${textSecondaryClass}`}>{t('home.next_appointment.none')}</Text>
             )
           ) : activeTab === 'past' ? (
             pastAppointments.length > 0 ? (
@@ -216,7 +216,7 @@ export default function AppointmentsScreen({ navigation }) {
                 </View>
               ))
             ) : (
-              <Text className={`text-sm ${textSecondaryClass}`}>No hay turnos pasados</Text>
+              <Text className={`text-sm ${textSecondaryClass}`}>{t('appointments.alerts.no_past')}</Text>
             )
           ) : cancelledAppointments.length > 0 ? (
             cancelledAppointments.map((appt) => (
@@ -237,7 +237,7 @@ export default function AppointmentsScreen({ navigation }) {
               </View>
             ))
           ) : (
-            <Text className={`text-sm ${textSecondaryClass}`}>No hay turnos cancelados</Text>
+            <Text className={`text-sm ${textSecondaryClass}`}>{t('appointments.alerts.no_cancelled')}</Text>
           )}
         </View>
       </ScrollView>
@@ -257,7 +257,7 @@ export default function AppointmentsScreen({ navigation }) {
           >
             <View className={modalContainerClass}>
               <Text className={`text-lg font-bold mb-5 ${textPrimaryClass}`}>
-                Filtrar por fechas
+                {t('filter.filter_dates.title')}
               </Text>
 
               <AppointmentsCalendar
