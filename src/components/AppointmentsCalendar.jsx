@@ -96,9 +96,9 @@ export default function AppointmentsCalendar({ selectedDate, endDate, onSelectDa
                   : bgBase;
 
           const textColor = day.isHeader
-            ? colorScheme === 'dark' ? 'text-gray-300' : 'text-gray-600'
+            ? colorScheme === 'dark' ? 'text-blue-700' : 'text-gray-600' // Cambiado de text-red-300 a text-blue-700
             : day.disabled
-              ? colorScheme === 'dark' ? 'text-blue-600' : 'text-gray-400'
+              ? colorScheme === 'dark' ? 'text-gray-500' : 'text-gray-400' // Cambiado de text-blue-600 a text-gray-500
               : day.active
                 ? 'text-white'
                 : textBase;

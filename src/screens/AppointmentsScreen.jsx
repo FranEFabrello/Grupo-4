@@ -9,6 +9,8 @@ import TabButton from '../components/TabButton';
 import AppointmentsCalendar from '~/components/AppointmentsCalendar';
 import { useColorScheme } from 'react-native';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { BlurView } from 'expo-blur';
+
 
 export default function AppointmentsScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -114,7 +116,7 @@ export default function AppointmentsScreen({ navigation }) {
 
   const modalContainerClass = colorScheme === 'light'
     ? 'bg-white rounded-xl p-6 w-[90%]'
-    : 'bg-gray-800 rounded-xl p-6 w-[90%]';
+    : 'bg-gray-700 rounded-xl p-6 w-[90%]';
 
 
 
@@ -241,6 +243,7 @@ export default function AppointmentsScreen({ navigation }) {
       </ScrollView>
 
       {/* Modal de filtro */}
+      <BlurView intensity={50} tint="dark" className="flex-1 justify-center items-center">
       <Modal
         visible={showFilterModal}
         animationType="slide"
@@ -294,6 +297,7 @@ export default function AppointmentsScreen({ navigation }) {
           </KeyboardAvoidingView>
         </Pressable>
       </Modal>
+      </BlurView>
     </AppContainer>
   );
 }
