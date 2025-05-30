@@ -11,6 +11,16 @@ import { useColorScheme } from 'react-native';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { BlurView } from 'expo-blur';
 
+// Utilidad para obtener un Date con la hora deseada
+function getDateWithTime(fecha, hora) {
+  if (!fecha) return null;
+  const d = new Date(fecha);
+  if (hora) {
+    const [h, m] = hora.split(":");
+    d.setHours(Number(h), Number(m), 0, 0);
+  }
+  return d;
+}
 
 export default function AppointmentsScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -55,66 +65,28 @@ export default function AppointmentsScreen({ navigation }) {
 
   const upcomingAppointments = filterByDateRange(
     (appointments || []).filter((appt) => {
-      if (appt.estado !== 'PENDIENTE' && appt.estado !== 'CONFIRMADO') {
-        //console.log('Filtrado por estado (upcoming):', appt);
-        return false;
-      }
-      if (!appt.horaInicio) {
-        //console.log('Sin horaInicio (upcoming):', appt);
-        return false;
-      }
-      const apptDateTime = new Date(`${appt.fecha}T${appt.horaInicio}`);
-      if (isNaN(apptDateTime)) {
-        //console.log('Fecha y hora inválidas (upcoming):', appt);
-        return false;
-      }
-      const result = apptDateTime.getTime() >= Date.now() && appt.cuentaActiva;
-      /*console.log('Filtro upcoming:', {
-        id: appt.id,
-        apptDateTime: apptDateTime,
-        now: new Date(),
-        cuentaActiva: appt.cuentaActiva,
-        pasaFiltro: result
-      });*/
-      return result;
+      if (appt.estado !== 'PENDIENTE' && appt.estado !== 'CONFIRMADO') return false;
+      if (!appt.horaInicio) return false;
+      const apptDateTime = getDateWithTime(appt.fecha, appt.horaInicio);
+      if (isNaN(apptDateTime)) return false;
+      return apptDateTime.getTime() >= Date.now() && appt.cuentaActiva;
     })
-  ).sort((a, b) => new Date(a.fecha + 'T' + a.horaInicio) - new Date(b.fecha + 'T' + b.horaInicio));
+  ).sort((a, b) => getDateWithTime(a.fecha, a.horaInicio) - getDateWithTime(b.fecha, b.horaInicio));
 
   const pastAppointments = filterByDateRange(
     (appointments || []).filter((appt) => {
-      if (!appt.horaFin) {
-        //console.log('Sin horaFin (past):', appt);
-        return false;
-      }
-      const apptEndDateTime = new Date(`${appt.fecha}T${appt.horaFin}`);
-      if (isNaN(apptEndDateTime)) {
-        //console.log('Fecha y hora inválidas (past):', appt);
-        return false;
-      }
-      const result = apptEndDateTime.getTime() <= Date.now();
-      /*console.log('Filtro past:', {
-        id: appt.id,
-        estado: appt.estado,
-        apptEndDateTime: apptEndDateTime,
-        now: new Date(),
-        pasaFiltro: result
-      });*/
-      return result;
+      if (!appt.horaFin) return false;
+      const apptEndDateTime = getDateWithTime(appt.fecha, appt.horaFin);
+      if (isNaN(apptEndDateTime)) return false;
+      return apptEndDateTime.getTime() <= Date.now();
     })
-  ).sort((a, b) => new Date(b.fecha + 'T' + b.horaInicio) - new Date(a.fecha + 'T' + a.horaInicio));
+  ).sort((a, b) => getDateWithTime(b.fecha, b.horaInicio) - getDateWithTime(a.fecha, a.horaInicio));
 
   const cancelledAppointments = filterByDateRange(
     (appointments || []).filter((appt) => {
-      const result = appt.estado === 'CANCELADO' && appt.cuentaActiva;
-      /*console.log('Filtro cancelled:', {
-        id: appt.id,
-        estado: appt.estado,
-        cuentaActiva: appt.cuentaActiva,
-        pasaFiltro: result
-      });*/
-      return result;
+      return appt.estado === 'CANCELADO' && appt.cuentaActiva;
     })
-  ).sort((a, b) => new Date(b.fecha + 'T' + b.horaInicio) - new Date(a.fecha + 'T' + a.horaInicio));
+  ).sort((a, b) => getDateWithTime(b.fecha, b.horaInicio) - getDateWithTime(a.fecha, a.horaInicio));
 
   // ==================== CLASES COMPLETAS ====================
   // Contenedores
@@ -230,17 +202,17 @@ export default function AppointmentsScreen({ navigation }) {
                     doctor={`${appt.doctorInfo.nombre} ${appt.doctorInfo.apellido}`}
                     specialty={appt.especialidadInfo.descripcion}
                     status={appt.estado}
-                    onPress={() => navigation.navigate('AppointmentDetail', { appointment: appt })}
+                    onPress={() => navigation.navigate('MedicalNotes', { appointment: appt })}
                     colorScheme={colorScheme}
                   />
-                  <TouchableOpacity
+                  {/*  <TouchableOpacity
                     className={`${buttonSecondaryClass} rounded-lg p-2 mt-2`}
                     onPress={() => navigation.navigate('MedicalNotes', { appointmentId: appt.id })}
                   >
                     <Text className={`text-sm ${textAccentClass}`}>
                       Ver notas médicas
                     </Text>
-                  </TouchableOpacity>
+                  </TouchableOpacity>*/}
                 </View>
               ))
             ) : (
@@ -329,3 +301,4 @@ export default function AppointmentsScreen({ navigation }) {
     </AppContainer>
   );
 }
+

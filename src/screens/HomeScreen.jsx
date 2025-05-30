@@ -44,21 +44,24 @@ export default function HomeScreen({ navigation }) {
   ];
 
   const now = new Date();
-  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const endOfTomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 2);
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
+  const endOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 6, 23, 59, 59, 999);
 
+
+
+  // Ajuste: considerar la zona horaria y formato de fecha
   const upcomingAppointments = (appointments || [])
     .filter((appt) => {
       const apptDate = new Date(appt.fecha);
       return (
         (appt.estado === 'PENDIENTE' || appt.estado === 'CONFIRMADO') &&
         apptDate >= startOfToday &&
-        apptDate < endOfTomorrow &&
+        apptDate < endOfWeek &&
         appt.cuentaActiva
       );
     })
     .sort((a, b) => new Date(a.fecha + 'T' + a.horaInicio) - new Date(b.fecha + 'T' + b.horaInicio))
-    .slice(0, 3);
+    .slice(0,3);
 
   const containerClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-800';
   const cardClass = colorScheme === 'light' ? 'bg-gray-100' : 'bg-gray-700';
@@ -177,3 +180,5 @@ export default function HomeScreen({ navigation }) {
     </AppContainer>
   );
 }
+
+

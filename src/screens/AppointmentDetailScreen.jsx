@@ -4,7 +4,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useColorScheme } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AppContainer from '../components/AppContainer';
-import { cancelAppointment } from '~/store/slices/appointmentsSlice';
+
+// Utilidad para parsear fecha local (YYYY-MM-DD o YYYY-MM-DDTHH:mm:ss±hh:mm)
+function parseLocalDate(fechaStr) {
+  if (!fechaStr) return null;
+  // Si ya tiene T y zona, simplemente crea el Date
+  if (fechaStr.includes('T')) return new Date(fechaStr);
+  // Si solo viene YYYY-MM-DD, parsea como local
+  const [year, month, day] = fechaStr.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
 
 export default function AppointmentDetailScreen({ route, navigation }) {
   const { appointment } = route.params;
@@ -108,7 +117,7 @@ export default function AppointmentDetailScreen({ route, navigation }) {
               <Text className={`ml-2 ${labelClass}`}>Fecha y Hora</Text>
             </View>
             <Text className={`text-lg font-medium ${textClass}`}>
-              {new Date(appointment.fecha).toLocaleDateString('es-AR', {
+              {parseLocalDate(appointment.fecha).toLocaleDateString('es-AR', {
                 weekday: 'long',
                 day: 'numeric',
                 month: 'long',
@@ -166,3 +175,4 @@ export default function AppointmentDetailScreen({ route, navigation }) {
     </AppContainer>
   );
 }
+
