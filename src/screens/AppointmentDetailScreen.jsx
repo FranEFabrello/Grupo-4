@@ -27,6 +27,19 @@ export default function AppointmentDetailScreen({ route, navigation }) {
   const cardClass = colorScheme === 'light' ? 'bg-gray-50' : 'bg-gray-700';
   const borderClass = colorScheme === 'light' ? 'border-gray-100' : 'border-gray-600';
 
+  // Navega a la pantalla de reprogramación, pasando los datos del turno y doctor
+  const handleReschedule = () => {
+    navigation.navigate('BookAppointment', {
+      reprogramming: true,
+      appointmentId: appointment.id,
+      professionalId: appointment.doctorInfo?.id,
+      specialtyId: appointment.especialidadInfo?.id,
+      currentDate: appointment.fecha,
+      currentStart: appointment.horaInicio,
+      currentEnd: appointment.horaFin,
+    });
+  };
+
 
   const getStatusConfig = (estado) => {
     switch (estado) {
@@ -160,15 +173,26 @@ export default function AppointmentDetailScreen({ route, navigation }) {
           {status === 'loading' ? (
             <ActivityIndicator size="large" color={colorScheme === 'light' ? '#2563EB' : '#60A5FA'} />
           ) : appointment.estado === 'CONFIRMADO' ? (
-            <TouchableOpacity
-              className="bg-red-600 rounded-xl p-4 flex-row justify-center items-center shadow-sm"
-              onPress={handleCancel}
-            >
-              <Icon name="times-circle" size={20} color="white" />
-              <Text className="text-white text-base font-medium ml-2">
-                Cancelar turno
-              </Text>
-            </TouchableOpacity>
+            <View className="flex-row">
+              <TouchableOpacity
+                className="bg-red-600 rounded-xl p-4 flex-row justify-center items-center shadow-sm mr-2"
+                onPress={handleCancel}
+              >
+                <Icon name="times-circle" size={20} color="white" />
+                <Text className="text-white text-base font-medium ml-2">
+                  Cancelar turno
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="bg-blue-600 rounded-xl p-4 flex-row justify-center items-center shadow-sm"
+                onPress={handleReschedule}
+              >
+                <Icon name="calendar-plus" size={20} color="white" />
+                <Text className="text-white text-base font-medium ml-2">
+                  Reprogramar
+                </Text>
+              </TouchableOpacity>
+            </View>
           ) : null}
         </View>
       </ScrollView>

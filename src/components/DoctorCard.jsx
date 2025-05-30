@@ -18,14 +18,14 @@ export default function DoctorCard({
   const specialtyTextClass = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-400';
   const noRatingTextClass = colorScheme === 'light' ? 'text-gray-400' : 'text-gray-500';
   const starsTextClass = colorScheme === 'light' ? 'text-yellow-500' : 'text-yellow-400';
-  const buttonBgClass = 'bg-blue-900';
+  const buttonBgClass = colorScheme === 'light' ? 'bg-blue-600' : 'bg-blue-700';
   const borderClass = colorScheme === 'light' ? 'border border-blue-400 shadow-md' : 'border border-blue-500 shadow-md';
 
   return (
-    <View className={`${containerClassName}`}>
+    <View className={containerClassName}>
       <View
-        className={`${cardBgClass} rounded-lg p-4 mb-4 shadow-md items-center justify-center`}
-        style={{ elevation: 5, minHeight: 200 }}
+        className={`${cardBgClass} rounded-lg p-4 shadow-md items-center justify-center`}
+        style={{ elevation: 5, minHeight: 180 }}
       >
         <View className={`w-10 h-10 ${iconBgClass} rounded-full justify-center items-center mb-2`}>
           <Icon name="user-md" size={18} color={iconColor} />
@@ -53,3 +53,4 @@ export default function DoctorCard({
     </View>
   );
 }
+

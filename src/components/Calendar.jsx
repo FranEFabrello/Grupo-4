@@ -1,39 +1,55 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator, Animated } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-export default function Calendar({ availableDays = [], onSelectDate }) {
+export default function Calendar({ availableDays = [], onSelectDate, selectedDate, colorScheme: propColorScheme, isLoading }) {
   const { t, i18n } = useTranslation();
+  const colorScheme = propColorScheme || useColorScheme();
+  const [fadeAnim] = useState(new Animated.Value(0));
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
-  const [selectedDate, setSelectedDate] = useState(null);
+
+  React.useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  }, [fadeAnim]);
 
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
-  const normalizedFirstDay = (firstDayOfMonth + 6) % 7; // lunes como inicio
+  const normalizedFirstDay = (firstDayOfMonth + 6) % 7;
 
-  const days = [
-    { day: t('appointments.calendar.days.mon'), isHeader: true },
-    { day: t('appointments.calendar.days.tue'), isHeader: true },
-    { day: t('appointments.calendar.days.wed'), isHeader: true },
-    { day: t('appointments.calendar.days.thu'), isHeader: true },
-    { day: t('appointments.calendar.days.fri'), isHeader: true },
-    { day: t('appointments.calendar.days.sat'), isHeader: true },
-    { day: t('appointments.calendar.days.sun'), isHeader: true },
-    ...Array.from({ length: normalizedFirstDay }, () => ({ day: '', disabled: true })),
+  const weekDays = [
+    t('appointments.calendar.days.mon'),
+    t('appointments.calendar.days.tue'),
+    t('appointments.calendar.days.wed'),
+    t('appointments.calendar.days.thu'),
+    t('appointments.calendar.days.fri'),
+    t('appointments.calendar.days.sat'),
+    t('appointments.calendar.days.sun'),
+  ];
+
+  const dayCells = [
+    ...Array.from({ length: normalizedFirstDay }, () => null),
     ...Array.from({ length: daysInMonth }, (_, i) => {
       const date = new Date(currentYear, currentMonth, i + 1);
       const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(i + 1).padStart(2, '0')}`;
       const isDisabled = date < today || !availableDays.includes(dateStr);
       const isActive = selectedDate === dateStr;
-
+      const isToday =
+        date.getDate() === today.getDate() &&
+        date.getMonth() === today.getMonth() &&
+        date.getFullYear() === today.getFullYear();
       return {
         day: String(i + 1),
         disabled: isDisabled,
         active: isActive,
+        isToday,
         dateStr,
       };
     }),
@@ -58,59 +74,96 @@ export default function Calendar({ availableDays = [], onSelectDate }) {
   };
 
   const handleSelectDate = (dateStr) => {
-    setSelectedDate(dateStr);
     onSelectDate(dateStr);
   };
 
+  const bgMain = colorScheme === 'dark' ? 'bg-gray-800 shadow-xl' : 'bg-white border border-gray-200 shadow-xl';
+  const bgHeader = colorScheme === 'dark' ? 'bg-gray-700' : 'bg-gray-100';
+  const textHeader = colorScheme === 'dark' ? 'text-gray-200' : 'text-gray-600';
+  const borderHeader = colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-200';
+
   return (
-    <View className="mb-4">
-      <View className="flex-row justify-between mb-2">
-        <TouchableOpacity onPress={handlePrevMonth}>
-          <Text className="text-blue-600">{t('appointments.calendar.prev')}</Text>
-        </TouchableOpacity>
-        <Text className="text-base font-semibold capitalize">
-          {new Date(currentYear, currentMonth).toLocaleDateString(i18n.language, {
-            month: 'long',
-            year: 'numeric',
-          })}
-        </Text>
-        <TouchableOpacity onPress={handleNextMonth}>
-          <Text className="text-blue-600">{t('appointments.calendar.next')}</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View className="flex-row flex-wrap">
-        {days.map((day, index) => {
-          const bgColor = day.isHeader
-            ? 'bg-gray-200'
-            : day.disabled
-              ? 'bg-gray-100'
-              : day.active
-                ? 'bg-blue-600'
-                : 'bg-white';
-
-          const textColor = day.isHeader
-            ? 'text-gray-600'
-            : day.disabled
-              ? 'text-gray-400'
-              : day.active
-                ? 'text-white'
-                : 'text-gray-800';
-
-          return (
+    <Animated.View style={{ opacity: fadeAnim }} className={`rounded-2xl p-6 ${bgMain}`}>
+      {isLoading ? (
+        <View className="py-12 items-center justify-center">
+          <ActivityIndicator size="large" color={colorScheme === 'light' ? '#2563eb' : '#60a5fa'} />
+          <Text className={`mt-4 text-base ${colorScheme === 'dark' ? 'text-gray-200' : 'text-gray-600'}`}>
+            Cargando calendario...
+          </Text>
+        </View>
+      ) : (
+        <>
+          <View className="flex-row justify-between items-center mb-4">
             <TouchableOpacity
-              key={index}
-              className={`w-[14.28%] h-12 items-center justify-center rounded-lg ${bgColor}`}
-              onPress={() =>
-                !day.disabled && !day.isHeader && handleSelectDate(day.dateStr)
-              }
-              disabled={day.disabled || day.isHeader}
+              onPress={handlePrevMonth}
+              className={`px-3 py-2 rounded-lg ${colorScheme === 'dark' ? 'hover:bg-gray-600' : 'hover:bg-blue-50'}`}
             >
-              <Text className={`text-sm font-medium ${textColor}`}>{day.day}</Text>
+              <Text className="text-blue-500 font-semibold">{t('appointments.calendar.prev')}</Text>
             </TouchableOpacity>
-          );
-        })}
-      </View>
-    </View>
+            <Text className={`text-lg font-semibold capitalize ${colorScheme === 'dark' ? 'text-gray-100' : 'text-gray-900'}`}>
+              {new Date(currentYear, currentMonth).toLocaleDateString(i18n.language, {
+                month: 'long',
+                year: 'numeric',
+              })}
+            </Text>
+            <TouchableOpacity
+              onPress={handleNextMonth}
+              className={`px-3 py-2 rounded-lg ${colorScheme === 'dark' ? 'hover:bg-gray-600' : 'hover:bg-blue-50'}`}
+            >
+              <Text className="text-blue-500 font-semibold">{t('appointments.calendar.next')}</Text>
+            </TouchableOpacity>
+          </View>
+          <View className={`flex-row mb-3 rounded-lg overflow-hidden border ${borderHeader}`}>
+            {weekDays.map((wd, i) => (
+              <View key={i} className={`w-[14.28%] items-center py-2 ${bgHeader}`}>
+                <Text className={`text-sm font-semibold ${textHeader}`}>{wd}</Text>
+              </View>
+            ))}
+          </View>
+          <View>
+            {Array.from({ length: Math.ceil(dayCells.length / 7) }).map((_, rowIdx) => (
+              <View key={rowIdx} className="flex-row">
+                {dayCells.slice(rowIdx * 7, rowIdx * 7 + 7).map((day, colIdx) => {
+                  if (!day) {
+                    return <View key={colIdx} className="w-[14.28%] h-12" />;
+                  }
+                  let isAvailable = !day.disabled;
+                  let bgColor = day.disabled
+                    ? (colorScheme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')
+                    : day.active
+                      ? 'bg-blue-500'
+                      : day.isToday
+                        ? (colorScheme === 'dark' ? 'bg-blue-800' : 'bg-blue-50')
+                        : (colorScheme === 'dark' ? 'bg-gray-800' : 'bg-white');
+                  let border = day.active
+                    ? 'border-2 border-blue-400'
+                    : isAvailable
+                      ? 'border border-blue-300'
+                      : '';
+                  let textColor = day.disabled
+                    ? (colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-400')
+                    : day.active
+                      ? 'text-white font-bold'
+                      : day.isToday
+                        ? (colorScheme === 'dark' ? 'text-blue-200 font-bold' : 'text-blue-600 font-bold')
+                        : (colorScheme === 'dark' ? 'text-gray-100' : 'text-gray-900');
+                  return (
+                    <TouchableOpacity
+                      key={colIdx}
+                      className={`w-[14.28%] h-12 items-center justify-center m-[2px] rounded-lg ${bgColor} ${border} ${day.active ? 'shadow-md' : ''}`}
+                      onPress={() => !day.disabled && handleSelectDate(day.dateStr)}
+                      disabled={day.disabled}
+                      style={{ opacity: day.disabled ? 0.4 : 1 }}
+                    >
+                      <Text className={`text-sm ${textColor}`}>{day.day}</Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            ))}
+          </View>
+        </>
+      )}
+    </Animated.View>
   );
 }
