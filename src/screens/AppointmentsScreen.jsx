@@ -53,37 +53,65 @@ export default function AppointmentsScreen({ navigation }) {
 
   const upcomingAppointments = filterByDateRange(
     (appointments || []).filter((appt) => {
-      if (appt.estado !== 'PENDIENTE' && appt.estado !== 'CONFIRMADO') return false;
-      const apptDate = new Date(appt.fecha);
-      if (isNaN(apptDate)) return false;
-      const today = new Date();
-      apptDate.setHours(0, 0, 0, 0);
-      today.setHours(0, 0, 0, 0);
-      return apptDate.getTime() >= today.getTime() && appt.cuentaActiva;
+      if (appt.estado !== 'PENDIENTE' && appt.estado !== 'CONFIRMADO') {
+        //console.log('Filtrado por estado (upcoming):', appt);
+        return false;
+      }
+      if (!appt.horaInicio) {
+        //console.log('Sin horaInicio (upcoming):', appt);
+        return false;
+      }
+      const apptDateTime = new Date(`${appt.fecha}T${appt.horaInicio}`);
+      if (isNaN(apptDateTime)) {
+        //console.log('Fecha y hora inválidas (upcoming):', appt);
+        return false;
+      }
+      const result = apptDateTime.getTime() >= Date.now() && appt.cuentaActiva;
+      /*console.log('Filtro upcoming:', {
+        id: appt.id,
+        apptDateTime: apptDateTime,
+        now: new Date(),
+        cuentaActiva: appt.cuentaActiva,
+        pasaFiltro: result
+      });*/
+      return result;
     })
   ).sort((a, b) => new Date(a.fecha + 'T' + a.horaInicio) - new Date(b.fecha + 'T' + b.horaInicio));
 
   const pastAppointments = filterByDateRange(
     (appointments || []).filter((appt) => {
-      if (appt.estado !== 'CONFIRMADO') return false;
-      const apptDate = new Date(appt.fecha);
-      if (isNaN(apptDate)) return false;
-      const today = new Date();
-      apptDate.setHours(0, 0, 0, 0);
-      today.setHours(0, 0, 0, 0);
-      if (apptDate.getTime() < today.getTime()) return true;
-      if (apptDate.getTime() === today.getTime() && appt.horaFin) {
-        const [finHour, finMin] = appt.horaFin.split(':').map(Number);
-        const finDate = new Date(appt.fecha);
-        finDate.setHours(finHour, finMin, 0, 0);
-        return finDate.getTime() <= Date.now();
+      if (!appt.horaFin) {
+        //console.log('Sin horaFin (past):', appt);
+        return false;
       }
-      return false;
+      const apptEndDateTime = new Date(`${appt.fecha}T${appt.horaFin}`);
+      if (isNaN(apptEndDateTime)) {
+        //console.log('Fecha y hora inválidas (past):', appt);
+        return false;
+      }
+      const result = apptEndDateTime.getTime() <= Date.now();
+      /*console.log('Filtro past:', {
+        id: appt.id,
+        estado: appt.estado,
+        apptEndDateTime: apptEndDateTime,
+        now: new Date(),
+        pasaFiltro: result
+      });*/
+      return result;
     })
   ).sort((a, b) => new Date(b.fecha + 'T' + b.horaInicio) - new Date(a.fecha + 'T' + a.horaInicio));
 
   const cancelledAppointments = filterByDateRange(
-    (appointments || []).filter((appt) => appt.estado === 'CANCELADO' && appt.cuentaActiva)
+    (appointments || []).filter((appt) => {
+      const result = appt.estado === 'CANCELADO' && appt.cuentaActiva;
+      /*console.log('Filtro cancelled:', {
+        id: appt.id,
+        estado: appt.estado,
+        cuentaActiva: appt.cuentaActiva,
+        pasaFiltro: result
+      });*/
+      return result;
+    })
   ).sort((a, b) => new Date(b.fecha + 'T' + b.horaInicio) - new Date(a.fecha + 'T' + a.horaInicio));
 
   // ==================== CLASES COMPLETAS ====================
