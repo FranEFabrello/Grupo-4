@@ -38,7 +38,6 @@ export default function AppointmentDetailScreen({ route, navigation }) {
       currentStart: appointment.horaInicio,
       currentEnd: appointment.horaFin,
     });
-  };
 
 
   const getStatusConfig = (estado) => {
@@ -74,21 +73,21 @@ export default function AppointmentDetailScreen({ route, navigation }) {
 
   const handleCancel = () => {
     Alert.alert(
-      'Confirmar Cancelación',
-      '¿Estás seguro de que deseas cancelar este turno?',
+      t('appointments.cancel_button'),
+      t('appointments.cancel_confirmation'),
       [
         { text: 'No', style: 'cancel' },
         {
-          text: 'Sí',
+          text: t('global.button.yes'),
           onPress: () => {
             dispatch(cancelAppointment(appointment.id))
               .unwrap()
               .then(() => {
-                Alert.alert('Éxito', 'El turno ha sido cancelado.');
+                Alert.alert(t('global.alert.success'),  t('appointments.alerts.cancel'));
                 navigation.goBack();
               })
               .catch((err) => {
-                Alert.alert('Error', err || 'No se pudo cancelar el turno.');
+                Alert.alert(t('global.alert.error'), err || t('appointments.alerts.cancel_error'));
               });
           },
         },
@@ -199,4 +198,4 @@ export default function AppointmentDetailScreen({ route, navigation }) {
     </AppContainer>
   );
 }
-
+}
