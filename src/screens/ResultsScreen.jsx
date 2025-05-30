@@ -16,6 +16,8 @@ export default function ResultsScreen({ navigation }) {
   const [startDate, setStartDate] = React.useState(null);
   const [endDate, setEndDate] = React.useState(null);
 
+  const userId = useSelector((state) => state.user.usuario.id);
+
   // Lógica para seleccionar fechas
   const handleSelectDate = (date) => {
     if (!startDate || (startDate && endDate)) {
@@ -31,17 +33,33 @@ export default function ResultsScreen({ navigation }) {
     }
   };
 
-  // Filtrar resultados por rango de fechas
+  // Filtrar resultados por rango de fechas usando el campo 'fechaEstudio' del backend
   const filteredResults = React.useMemo(() => {
-    if (!startDate || !endDate) return results;
+    if (!startDate && !endDate) return results;
     return results.filter((result) => {
-      const resultDate = new Date(result.date);
+      if (!result.fechaEstudio) return false;
+      const resultDate = new Date(result.fechaEstudio);
+      if (startDate && !endDate) {
+        // Si solo hay fecha de inicio, mostrar solo los posteriores (inclusive)
+        return resultDate >= startDate;
+      }
+      if (!startDate && endDate) {
+        // Si solo hay fecha de fin, mostrar solo los anteriores (inclusive)
+        return resultDate <= endDate;
+      }
+      // Si hay ambas fechas, filtrar por rango
       return resultDate >= startDate && resultDate <= endDate;
+    }).sort((a, b) => {
+      if (!a.fechaEstudio) return 1;
+      if (!b.fechaEstudio) return -1;
+      return new Date(b.fechaEstudio) - new Date(a.fechaEstudio);
     });
   }, [results, startDate, endDate]);
 
   useEffect(() => {
-    dispatch(fetchResults());
+    console.log('Fetching results for user ID:', userId);
+    dispatch(fetchResults(userId));
+    console.log('Fetching results for user ID2:', userId);
   }, [dispatch]);
 
   return (
