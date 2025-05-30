@@ -1,21 +1,29 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, useColorScheme } from 'react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator, Animated } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-export default function Calendar({ availableDays = [], onSelectDate, selectedDate, colorScheme: propColorScheme }) {
+export default function Calendar({ availableDays = [], onSelectDate, selectedDate, colorScheme: propColorScheme, isLoading }) {
   const { t, i18n } = useTranslation();
   const colorScheme = propColorScheme || useColorScheme();
+  const [fadeAnim] = useState(new Animated.Value(0));
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
 
+  React.useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  }, [fadeAnim]);
+
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
-  const normalizedFirstDay = (firstDayOfMonth + 6) % 7; // lunes como inicio
+  const normalizedFirstDay = (firstDayOfMonth + 6) % 7;
 
-  // Renderizar headers en una sola fila
   const weekDays = [
     t('appointments.calendar.days.mon'),
     t('appointments.calendar.days.tue'),
@@ -26,7 +34,6 @@ export default function Calendar({ availableDays = [], onSelectDate, selectedDat
     t('appointments.calendar.days.sun'),
   ];
 
-  // Generar solo los días (sin headers)
   const dayCells = [
     ...Array.from({ length: normalizedFirstDay }, () => null),
     ...Array.from({ length: daysInMonth }, (_, i) => {
@@ -70,79 +77,93 @@ export default function Calendar({ availableDays = [], onSelectDate, selectedDat
     onSelectDate(dateStr);
   };
 
-  // Colores y estilos para dark y light mode mejorados
-  const bgMain = colorScheme === 'dark' ? 'bg-gray-900' : 'bg-white border border-gray-200 shadow-lg';
-  const bgHeader = colorScheme === 'dark' ? 'bg-gray-800' : 'bg-gray-100';
-  const textHeader = colorScheme === 'dark' ? 'text-gray-300' : 'text-gray-600';
-  const borderHeader = colorScheme === 'dark' ? 'border-gray-700' : 'border-gray-200';
+  const bgMain = colorScheme === 'dark' ? 'bg-gray-800 shadow-xl' : 'bg-white border border-gray-200 shadow-xl';
+  const bgHeader = colorScheme === 'dark' ? 'bg-gray-700' : 'bg-gray-100';
+  const textHeader = colorScheme === 'dark' ? 'text-gray-200' : 'text-gray-600';
+  const borderHeader = colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-200';
 
   return (
-    <View className={`mb-4 rounded-xl p-4 ${bgMain}`}>
-      <View className="flex-row justify-between items-center mb-2">
-        <TouchableOpacity onPress={handlePrevMonth} className="px-2 py-1 rounded hover:bg-blue-100 dark:hover:bg-gray-700">
-          <Text className="text-blue-600 font-bold">{t('appointments.calendar.prev')}</Text>
-        </TouchableOpacity>
-        <Text className={`text-base font-semibold capitalize ${colorScheme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>
-          {new Date(currentYear, currentMonth).toLocaleDateString(i18n.language, {
-            month: 'long',
-            year: 'numeric',
-          })}
-        </Text>
-        <TouchableOpacity onPress={handleNextMonth} className="px-2 py-1 rounded hover:bg-blue-100 dark:hover:bg-gray-700">
-          <Text className="text-blue-600 font-bold">{t('appointments.calendar.next')}</Text>
-        </TouchableOpacity>
-      </View>
-      {/* Header de días */}
-      <View className={`flex-row mb-1 rounded-lg overflow-hidden border ${borderHeader}`}>
-        {weekDays.map((wd, i) => (
-          <View key={i} className={`w-[14.28%] items-center py-1 ${bgHeader}`}>
-            <Text className={`text-xs font-semibold ${textHeader}`}>{wd}</Text>
+    <Animated.View style={{ opacity: fadeAnim }} className={`rounded-2xl p-6 ${bgMain}`}>
+      {isLoading ? (
+        <View className="py-12 items-center justify-center">
+          <ActivityIndicator size="large" color={colorScheme === 'light' ? '#2563eb' : '#60a5fa'} />
+          <Text className={`mt-4 text-base ${colorScheme === 'dark' ? 'text-gray-200' : 'text-gray-600'}`}>
+            Cargando calendario...
+          </Text>
+        </View>
+      ) : (
+        <>
+          <View className="flex-row justify-between items-center mb-4">
+            <TouchableOpacity
+              onPress={handlePrevMonth}
+              className={`px-3 py-2 rounded-lg ${colorScheme === 'dark' ? 'hover:bg-gray-600' : 'hover:bg-blue-50'}`}
+            >
+              <Text className="text-blue-500 font-semibold">{t('appointments.calendar.prev')}</Text>
+            </TouchableOpacity>
+            <Text className={`text-lg font-semibold capitalize ${colorScheme === 'dark' ? 'text-gray-100' : 'text-gray-900'}`}>
+              {new Date(currentYear, currentMonth).toLocaleDateString(i18n.language, {
+                month: 'long',
+                year: 'numeric',
+              })}
+            </Text>
+            <TouchableOpacity
+              onPress={handleNextMonth}
+              className={`px-3 py-2 rounded-lg ${colorScheme === 'dark' ? 'hover:bg-gray-600' : 'hover:bg-blue-50'}`}
+            >
+              <Text className="text-blue-500 font-semibold">{t('appointments.calendar.next')}</Text>
+            </TouchableOpacity>
           </View>
-        ))}
-      </View>
-      {/* Días del mes en filas de 7 */}
-      <View>
-        {Array.from({ length: Math.ceil(dayCells.length / 7) }).map((_, rowIdx) => (
-          <View key={rowIdx} className="flex-row">
-            {dayCells.slice(rowIdx * 7, rowIdx * 7 + 7).map((day, colIdx) => {
-              if (!day) {
-                return <View key={colIdx} className="w-[14.28%] h-12" />;
-              }
-              let isAvailable = !day.disabled;
-              let bgColor = day.disabled
-                ? (colorScheme === 'dark' ? 'bg-gray-800' : 'bg-gray-100')
-                : day.active
-                  ? 'bg-blue-600'
-                  : day.isToday
-                    ? (colorScheme === 'dark' ? 'bg-blue-900' : 'bg-blue-100')
-                    : (colorScheme === 'dark' ? 'bg-gray-900' : 'bg-white');
-              let border = day.active
-                ? 'border-2 border-blue-400'
-                : isAvailable
-                  ? 'border border-blue-400'
-                  : '';
-              let textColor = day.disabled
-                ? (colorScheme === 'dark' ? 'text-gray-500' : 'text-gray-400')
-                : day.active
-                  ? 'text-white font-bold'
-                  : day.isToday
-                    ? (colorScheme === 'dark' ? 'text-blue-200 font-bold' : 'text-blue-700 font-bold')
-                    : (colorScheme === 'dark' ? 'text-gray-100' : 'text-gray-800');
-              return (
-                <TouchableOpacity
-                  key={colIdx}
-                  className={`w-[14.28%] h-12 items-center justify-center m-[1px] rounded-lg ${bgColor} ${border} ${day.active ? 'shadow-lg' : ''}`}
-                  onPress={() => !day.disabled && handleSelectDate(day.dateStr)}
-                  disabled={day.disabled}
-                  style={{ opacity: day.disabled ? 0.4 : 1 }}
-                >
-                  <Text className={`text-sm ${textColor}`}>{day.day}</Text>
-                </TouchableOpacity>
-              );
-            })}
+          <View className={`flex-row mb-3 rounded-lg overflow-hidden border ${borderHeader}`}>
+            {weekDays.map((wd, i) => (
+              <View key={i} className={`w-[14.28%] items-center py-2 ${bgHeader}`}>
+                <Text className={`text-sm font-semibold ${textHeader}`}>{wd}</Text>
+              </View>
+            ))}
           </View>
-        ))}
-      </View>
-    </View>
+          <View>
+            {Array.from({ length: Math.ceil(dayCells.length / 7) }).map((_, rowIdx) => (
+              <View key={rowIdx} className="flex-row">
+                {dayCells.slice(rowIdx * 7, rowIdx * 7 + 7).map((day, colIdx) => {
+                  if (!day) {
+                    return <View key={colIdx} className="w-[14.28%] h-12" />;
+                  }
+                  let isAvailable = !day.disabled;
+                  let bgColor = day.disabled
+                    ? (colorScheme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')
+                    : day.active
+                      ? 'bg-blue-500'
+                      : day.isToday
+                        ? (colorScheme === 'dark' ? 'bg-blue-800' : 'bg-blue-50')
+                        : (colorScheme === 'dark' ? 'bg-gray-800' : 'bg-white');
+                  let border = day.active
+                    ? 'border-2 border-blue-400'
+                    : isAvailable
+                      ? 'border border-blue-300'
+                      : '';
+                  let textColor = day.disabled
+                    ? (colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-400')
+                    : day.active
+                      ? 'text-white font-bold'
+                      : day.isToday
+                        ? (colorScheme === 'dark' ? 'text-blue-200 font-bold' : 'text-blue-600 font-bold')
+                        : (colorScheme === 'dark' ? 'text-gray-100' : 'text-gray-900');
+                  return (
+                    <TouchableOpacity
+                      key={colIdx}
+                      className={`w-[14.28%] h-12 items-center justify-center m-[2px] rounded-lg ${bgColor} ${border} ${day.active ? 'shadow-md' : ''}`}
+                      onPress={() => !day.disabled && handleSelectDate(day.dateStr)}
+                      disabled={day.disabled}
+                      style={{ opacity: day.disabled ? 0.4 : 1 }}
+                    >
+                      <Text className={`text-sm ${textColor}`}>{day.day}</Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            ))}
+          </View>
+        </>
+      )}
+    </Animated.View>
   );
 }

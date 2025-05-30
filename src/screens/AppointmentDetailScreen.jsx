@@ -27,6 +27,19 @@ export default function AppointmentDetailScreen({ route, navigation }) {
   const cardClass = colorScheme === 'light' ? 'bg-gray-50' : 'bg-gray-700';
   const borderClass = colorScheme === 'light' ? 'border-gray-100' : 'border-gray-600';
 
+  // Navega a la pantalla de reprogramación, pasando los datos del turno y doctor
+  const handleReschedule = () => {
+    navigation.navigate('BookAppointment', {
+      reprogramming: true,
+      appointmentId: appointment.id,
+      professionalId: appointment.doctorInfo?.id,
+      specialtyId: appointment.especialidadInfo?.id,
+      currentDate: appointment.fecha,
+      currentStart: appointment.horaInicio,
+      currentEnd: appointment.horaFin,
+    });
+  };
+
 
   const getStatusConfig = (estado) => {
     switch (estado) {
