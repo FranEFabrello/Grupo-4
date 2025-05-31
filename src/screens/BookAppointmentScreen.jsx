@@ -15,11 +15,12 @@ import Calendar from '../components/Calendar';
 import TimeSlot from '../components/TimeSlot';
 import { fetchSpecialities } from "~/store/slices/medicalSpecialitiesSlice";
 import { useNavigation } from "@react-navigation/native";
+import { useTranslation } from 'react-i18next';
 
 export default function BookAppointmentScreen({ route }) {
 
   const navigation = useNavigation(); // Usa el hook en lugar de la prop
-
+  const { t } = useTranslation();
   const { professionalId } = route.params || {};
   const dispatch = useDispatch();
   const colorScheme = useColorScheme();
@@ -29,6 +30,7 @@ export default function BookAppointmentScreen({ route }) {
   const { availableDays, availableTimeSlots, status } = useSelector((state) => state.appointments);
   const usuario = useSelector((state) => state.user.usuario);
   const specialties = useSelector((state) => state.medicalSpecialities.specialities);
+
 
   const [specialty, setSpecialty] = useState('');
   const [professional, setProfessional] = useState(professionalId || '');
@@ -114,7 +116,7 @@ export default function BookAppointmentScreen({ route }) {
       dispatch(bookAppointment(payload))
         .unwrap()
         .then(() => {
-          setModalMessage('¡Turno confirmado exitosamente!');
+          setModalMessage(t('appointment.success'));
           setModalSuccess(true);
           setModalVisible(true);
           navigation.navigate('Appointments'); // Navega directamente
@@ -145,7 +147,7 @@ export default function BookAppointmentScreen({ route }) {
             <View className={`rounded-2xl p-8 w-full ${cardClass}`}>
               <Text className={`text-xl font-bold mb-6 ${textClass}`}>Reservar Turno</Text>
               <ProfileField
-                label="Especialidad"
+                label={t('appointment.specialty')}
                 type="picker"
                 value={specialty}
                 onChange={handleSpecialtyChange}
@@ -155,7 +157,7 @@ export default function BookAppointmentScreen({ route }) {
               />
               {specialty && (
                 <ProfileField
-                  label="Profesional"
+                  label={t('appointment.professional')}
                   type="picker"
                   value={professional}
                   onChange={handleProfessionalChange}
@@ -175,7 +177,7 @@ export default function BookAppointmentScreen({ route }) {
                     <Text
                       className={`text-base ${selectedDate ? (colorScheme === 'light' ? 'text-blue-900 font-semibold' : 'text-white font-semibold') : 'text-gray-400'} text-center`}
                     >
-                      {selectedDate ? selectedDate : 'Elegir fecha'}
+                      {selectedDate ? selectedDate : t('appointment.selectDate')}
                     </Text>
                   </TouchableOpacity>
                   <Modal
@@ -206,7 +208,7 @@ export default function BookAppointmentScreen({ route }) {
                       </View>
                     </View>
                   </Modal>
-                  <Text className={`text-lg font-semibold mt-8 mb-3 ${textClass}`}>Horarios Disponibles</Text>
+                  <Text className={`text-lg font-semibold mt-8 mb-3 ${textClass}`}>{t('appointment.timeSlots')}</Text>
                   <View className="mb-8">
                     {status === 'loading' ? (
                       <ActivityIndicator size="large" color={colorScheme === 'light' ? '#2563eb' : '#60a5fa'} />
@@ -224,7 +226,7 @@ export default function BookAppointmentScreen({ route }) {
                         />
                       ))
                     ) : (
-                      <Text className={`text-base ${secondaryTextClass}`}>No hay horarios disponibles</Text>
+                      <Text className={`text-base ${secondaryTextClass}`}>{t('appointment.noTimeSlots')}</Text>
                     )}
                   </View>
                 </View>
@@ -232,24 +234,24 @@ export default function BookAppointmentScreen({ route }) {
             </View>
           </ScrollView>
           {/* Botón flotante de confirmar turno */}
-          {/* {selectedTime && (
-  <View style={{ position: 'absolute', left: 0, right: 0, bottom: 20, alignItems: 'center', zIndex: 10 }} pointerEvents="box-none">
-    <TouchableOpacity
-      className={`rounded-xl p-4 w-11/12 flex-row justify-center shadow-lg ${primaryButtonClass}`}
-      onPress={handleConfirm}
-      disabled={loading}
-      style={{ opacity: loading ? 0.7 : 1 }}
-    >
-      {loading ? (
-        <ActivityIndicator color="#fff" />
-      ) : (
-        <Text className="text-white text-lg font-bold">
-          Confirmar turno a las {formatTimeSlot(selectedTime)}
-        </Text>
-      )}
-    </TouchableOpacity>
-  </View>
-)} */}
+          {selectedTime && (
+            <View style={{ position: 'absolute', left: 0, right: 0, bottom: 20, alignItems: 'center', zIndex: 10 }} pointerEvents="box-none">
+              <TouchableOpacity
+                className={`rounded-xl p-4 w-11/12 flex-row justify-center shadow-lg ${primaryButtonClass}`}
+                onPress={handleConfirm}
+                disabled={loading}
+                style={{ opacity: loading ? 0.7 : 1 }}
+              >
+                {loading ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text className="text-white text-lg font-bold">
+                    Confirmar turno a las {formatTimeSlot(selectedTime)}
+                  </Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          )}
           {/* Modal de confirmación */}
           <Modal
             visible={modalVisible}

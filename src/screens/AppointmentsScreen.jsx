@@ -237,7 +237,7 @@ export default function AppointmentsScreen({ navigation }) {
               </View>
             ))
           ) : (
-            <Text className={`text-sm ${textSecondaryClass}`}>No hay turnos cancelados</Text>
+            <Text className={`text-sm ${textSecondaryClass}`}>{t('appointments.alerts.no_cancelled')}</Text>
           )}
         </View>
       </ScrollView>
@@ -260,43 +260,43 @@ export default function AppointmentsScreen({ navigation }) {
                 Filtrar por fechas
               </Text>
 
-              <AppointmentsCalendar
-                selectedDate={startDate}
-                endDate={endDate}
-                onSelectDate={handleSelectDate}
-                colorScheme={colorScheme}
-              />
+                <AppointmentsCalendar
+                  selectedDate={startDate}
+                  endDate={endDate}
+                  onSelectDate={handleSelectDate}
+                  colorScheme={colorScheme}
+                />
 
-              <View className="flex-row justify-between mt-3">
-                <Text className={textAccentClass}>
-                  {startDate ? `Inicio: ${startDate.toLocaleDateString('es-AR')}` : 'Inicio: -'}
-                </Text>
-                <Text className={textAccentClass}>
-                  {endDate ? `Fin: ${endDate.toLocaleDateString('es-AR')}` : 'Fin: -'}
-                </Text>
+                <View className="flex-row justify-between mt-3">
+                  <Text className={textAccentClass}>
+                    {startDate ? `Inicio: ${startDate.toLocaleDateString('es-AR')}` : 'Inicio: -'}
+                  </Text>
+                  <Text className={textAccentClass}>
+                    {endDate ? `Fin: ${endDate.toLocaleDateString('es-AR')}` : 'Fin: -'}
+                  </Text>
+                </View>
+
+                <TouchableOpacity
+                  className={`${buttonPrimaryClass} py-3 rounded-lg mt-5 items-center`}
+                  onPress={() => setShowFilterModal(false)}
+                >
+                  <Text className={`text-base font-bold ${textWhiteClass}`}>Aplicar filtro</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  className="mt-3 items-center"
+                  onPress={() => {
+                    setStartDate(null);
+                    setEndDate(null);
+                    setShowFilterModal(false);
+                  }}
+                >
+                  <Text className={`text-sm font-bold ${textAccentClass}`}>Limpiar filtro</Text>
+                </TouchableOpacity>
               </View>
-
-              <TouchableOpacity
-                className={`${buttonPrimaryClass} py-3 rounded-lg mt-5 items-center`}
-                onPress={() => setShowFilterModal(false)}
-              >
-                <Text className={`text-base font-bold ${textWhiteClass}`}>Aplicar filtro</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                className="mt-3 items-center"
-                onPress={() => {
-                  setStartDate(null);
-                  setEndDate(null);
-                  setShowFilterModal(false);
-                }}
-              >
-                <Text className={`text-sm font-bold ${textAccentClass}`}>Limpiar filtro</Text>
-              </TouchableOpacity>
-            </View>
-          </KeyboardAvoidingView>
-        </Pressable>
-      </Modal>
+            </KeyboardAvoidingView>
+          </Pressable>
+        </Modal>
       </BlurView>
     </AppContainer>
   );

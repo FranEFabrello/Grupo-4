@@ -27,13 +27,13 @@ export default function AppointmentsCalendar({ selectedDate, endDate, onSelectDa
   const borderColor = colorScheme === 'dark' ? 'border-gray-700' : 'border-gray-200';
 
   const days = [
-    { day: t('appointments.calendar.days.mon'), isHeader: true },
-    { day: t('appointments.calendar.days.tue'), isHeader: true },
-    { day: t('appointments.calendar.days.wed'), isHeader: true },
-    { day: t('appointments.calendar.days.thu'), isHeader: true },
-    { day: t('appointments.calendar.days.fri'), isHeader: true },
-    { day: t('appointments.calendar.days.sat'), isHeader: true },
-    { day: t('appointments.calendar.days.sun'), isHeader: true },
+    { day: t('filter.calendar.days.mon'), isHeader: true },
+    { day: t('filter.calendar.days.tue'), isHeader: true },
+    { day: t('filter.calendar.days.wed'), isHeader: true },
+    { day: t('filter.calendar.days.thu'), isHeader: true },
+    { day: t('filter.calendar.days.fri'), isHeader: true },
+    { day: t('filter.calendar.days.sat'), isHeader: true },
+    { day: t('filter.calendar.days.sun'), isHeader: true },
     ...Array.from({ length: normalizedFirstDay }, () => ({ day: '', disabled: true })),
     ...Array.from({ length: daysInMonth }, (_, i) => {
       const dateObj = new Date(currentYear, currentMonth, i + 1);
@@ -70,7 +70,7 @@ export default function AppointmentsCalendar({ selectedDate, endDate, onSelectDa
     <View className={`mb-4 ${bgBase} rounded-lg p-4 shadow-md border ${borderColor}`}>
       <View className="flex-row justify-between mb-2">
         <TouchableOpacity onPress={handlePrevMonth}>
-          <Text className={linkColor}>{t('appointments.calendar.prev')}</Text>
+          <Text className={linkColor}>{t('filter.calendar.prev')}</Text>
         </TouchableOpacity>
         <Text className={`text-base font-semibold capitalize ${textBase}`}>
           {new Date(currentYear, currentMonth).toLocaleDateString(i18n.language, {
@@ -79,7 +79,7 @@ export default function AppointmentsCalendar({ selectedDate, endDate, onSelectDa
           })}
         </Text>
         <TouchableOpacity onPress={handleNextMonth}>
-          <Text className={linkColor}>{t('appointments.calendar.next')}</Text>
+          <Text className={linkColor}>{t('filter.calendar.next')}</Text>
         </TouchableOpacity>
       </View>
 

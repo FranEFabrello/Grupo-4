@@ -2,9 +2,11 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useColorScheme } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 export default function ProfileField({ label, type = 'text', value, onChange, items = [], disabled, colorScheme }) {
   const isDark = colorScheme === 'dark';
+  const { t } = useTranslation();
 
   return (
     <View className="mb-6 w-full">
@@ -27,14 +29,14 @@ export default function ProfileField({ label, type = 'text', value, onChange, it
               fontSize: 16,
             }}
           >
-            <Picker.Item label={`Seleccionar ${label.toLowerCase()}...`} value="" color={isDark ? '#9ca3af' : '#6b7280'} />
+            <Picker.Item label={`${t('global.select')} ${label.toLowerCase()}...`} value="" color={isDark ? '#9ca3af' : '#6b7280'} />
             {items.map((item) => (
               <Picker.Item key={item.value} label={item.label} value={item.value} color={isDark ? '#ffffff' : '#1f2937'} />
             ))}
           </Picker>
         </View>
       ) : (
-        <Text className={`rounded-xl p-3 text-base ${isDark ? 'bg-gray-700 text-gray-100' : 'bg-gray-100 text-gray-900'} shadow-sm`}>{value}</Text>
+        <Text className="bg-gray-100 rounded-lg p-3 text-sm text-gray-600">{value}</Text>
       )}
     </View>
   );

@@ -109,7 +109,7 @@ export default function AppointmentDetailScreen({ route, navigation }) {
           <View className={`mb-6 ${cardClass} rounded-xl p-4`}>
             <View className="flex-row justify-between items-center">
               <Text className={`text-2xl font-bold ${textClass}`}>
-                Turno Médico
+                {t('appointments.medic_book')}
               </Text>
 
               {/* Badge de estado */}

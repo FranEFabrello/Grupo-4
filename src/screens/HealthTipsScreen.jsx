@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Text, TouchableOpacity, Linking, ActivityIndicator, Image } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AppContainer from '../components/AppContainer';
+import { useTranslation } from 'react-i18next';
 
 // Reemplaza con tu clave API de NewsAPI
 const API_KEY = '4c9dab8cf2f24d3287780a7250edbd50';
@@ -13,6 +14,7 @@ export default function HealthTipsScreen({ navigation }) {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const { t } = useTranslation();
 
   const fetchHealthTips = async (page) => {
     try {
@@ -23,7 +25,7 @@ export default function HealthTipsScreen({ navigation }) {
       const data = await response.json();
 
       if (data.status !== 'ok') {
-        throw new Error(data.message || 'Error al obtener los artículos');
+        throw new Error(data.message || t('articles.alerts.no_articles_error'));
       }
 
       if (page === 1) {
@@ -54,11 +56,11 @@ export default function HealthTipsScreen({ navigation }) {
   };
 
   const openArticle = (url) => {
-    Linking.openURL(url).catch((err) => alert('Error al abrir el artículo: ' + err.message));
+    Linking.openURL(url).catch((err) => alert(t('articles.alerts.opening_error') + err.message));
   };
 
   return (
-    <AppContainer navigation={navigation} screenTitle="Consejos de Salud">
+    <AppContainer navigation={navigation} screenTitle={t('articles.title')}>
       <ScrollView
         className="p-5"
         contentContainerStyle={{ paddingBottom: insets.bottom + 20 }}
@@ -70,11 +72,11 @@ export default function HealthTipsScreen({ navigation }) {
               className="bg-blue-600 rounded-lg py-2 px-4 mt-2 flex-row justify-center items-center shadow-md"
               onPress={() => fetchHealthTips(1)}
             >
-              <Text className="text-white text-sm font-semibold">Reintentar</Text>
+              <Text className="text-white text-sm font-semibold">{t('global.button.retry')}</Text>
             </TouchableOpacity>
           </View>
         ) : articles.length === 0 && !loading ? (
-          <Text className="text-sm text-gray-600">No se encontraron artículos.</Text>
+          <Text className="text-sm text-gray-600">{t('articles.alerts.no_articles')}</Text>
         ) : (
           articles.map((article, index) => (
             <TouchableOpacity
@@ -98,8 +100,8 @@ export default function HealthTipsScreen({ navigation }) {
                 })}
               </Text>
               <Text className="text-sm text-gray-600 mb-2">{article.source.name}</Text>
-              <Text className="text-sm text-gray-500 mb-2">{article.description || 'Sin descripción disponible.'}</Text>
-              <Text className="text-xs text-blue-600 font-semibold">Leer más</Text>
+              <Text className="text-sm text-gray-500 mb-2">{article.description || t('articles.no_description')}</Text>
+              <Text className="text-xs text-blue-600 font-semibold">{t('articles.load_more')}</Text>
             </TouchableOpacity>
           ))
         )}
@@ -111,10 +113,10 @@ export default function HealthTipsScreen({ navigation }) {
             className="bg-blue-600 rounded-lg py-2 px-4 mt-4 flex-row justify-center items-center shadow-md"
             onPress={loadMoreArticles}
           >
-            <Text className="text-white text-sm font-semibold">Cargar más</Text>
+            <Text className="text-white text-sm font-semibold">{t('articles.load_more')}</Text>
           </TouchableOpacity>
         ) : (
-          <Text className="text-sm text-gray-600 text-center mt-4">No hay más artículos para cargar.</Text>
+          <Text className="text-sm text-gray-600 text-center mt-4">{t('articles.alerts.no_more_articles')}</Text>
         )}
       </ScrollView>
     </AppContainer>

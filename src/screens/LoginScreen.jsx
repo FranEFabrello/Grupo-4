@@ -74,4 +74,3 @@ export default function LoginScreen({ navigation }) {
     </View>
   );
 }
-

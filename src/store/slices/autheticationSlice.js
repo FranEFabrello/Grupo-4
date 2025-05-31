@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "~/api/api";
 
 
-// Thunks para las operaciones asincrónicas
+// Thunks para las operaciones asincrÃ³nicas
 export const register = createAsyncThunk(
   'auth/register',
   async (registerData, { rejectWithValue }) => {
@@ -84,4 +84,3 @@ const authenticationSlice = createSlice({
 export const { logout } = authenticationSlice.actions;
 
 export default authenticationSlice.reducer;
-
