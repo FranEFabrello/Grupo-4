@@ -1,15 +1,14 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import api from "~/api/api";
 
-const API_URL = 'http://localhost:4002/Auth';
 
 // Thunks para las operaciones asincrónicas
 export const register = createAsyncThunk(
   'auth/register',
   async (registerData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${API_URL}/register`, registerData);
+      const response = await api.post(`/Auth/register`, registerData);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al registrar el usuario');
@@ -21,7 +20,7 @@ export const authenticate = createAsyncThunk(
   'auth/authenticate',
   async (authData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${API_URL}/authenticate`, authData);
+      const response = await api.post(`/Auth/authenticate`, authData);
       const token = response.data.access_token;
       if (token) {
         await AsyncStorage.setItem('bearerToken', token);
