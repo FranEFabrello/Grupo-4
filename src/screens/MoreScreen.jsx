@@ -2,6 +2,7 @@ import React from 'react';
 import { View, ScrollView, Text } from 'react-native';
 import AppContainer from '../components/AppContainer';
 import QuickActions from '../components/QuickActions';
+import { useTranslation } from 'react-i18next';
 
 export default function MoreScreen({ navigation }) {
   const moreActions = [
@@ -11,12 +12,14 @@ export default function MoreScreen({ navigation }) {
     { icon: 'shield-alt', label: 'Privacidad', screen: '' },
     { icon: 'cog', label: 'Configuración', screen: 'Profile' },
   ];
+  const { t} = useTranslation();
+
 
   return (
     <AppContainer navigation={navigation} screenTitle="Más Opciones">
       <ScrollView className="p-5">
         <View className="bg-white rounded-lg p-4 mb-4 shadow-md">
-          <Text className="text-lg font-semibold text-gray-800 mb-4">Más opciones</Text>
+          <Text className="text-lg font-semibold text-gray-800 mb-4">{t('more.title')}</Text>
           <QuickActions
             actions={moreActions}
             navigation={navigation}
@@ -25,11 +28,10 @@ export default function MoreScreen({ navigation }) {
           />
         </View>
         <View className="bg-white rounded-lg p-4 shadow-md">
-          <Text className="text-base font-semibold text-gray-800 mb-2">Acerca de MediBook</Text>
-          <Text className="text-sm text-gray-600 mb-2">Versión 1.0.0</Text>
+          <Text className="text-base font-semibold text-gray-800 mb-2">{t('more.about.title')}</Text>
+          <Text className="text-sm text-gray-600 mb-2">{t('more.about.version')}</Text>
           <Text className="text-sm text-gray-600">
-            MediBook es una aplicación para la gestión de turnos médicos, diseñada para hacer más fácil el
-            acceso a servicios de salud.
+            {t('more.about.description')}
           </Text>
         </View>
       </ScrollView>

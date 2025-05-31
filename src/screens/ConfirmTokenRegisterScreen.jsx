@@ -23,7 +23,7 @@ const ConfirmTokenRegisterScreen = ({ route }) => {
     dispatch(validarTokenRegistro({ correo: email, tokenIngresado: token }))
       .unwrap()
       .then((res) => {
-        Alert.alert(t('globa.success'), res.mensaje || t('toke.alerts.default_success'));
+        Alert.alert(t('global.success'), res.mensaje || t('toke.alerts.default_success'));
         dispatch(resetRegistroState());
         navigation.replace('Login');
       })
@@ -41,7 +41,7 @@ const ConfirmTokenRegisterScreen = ({ route }) => {
         maxLength={8}
         style={{ borderWidth: 1, margin: 10, padding: 10 }}
       />
-      <Button title="Confirmar token" onPress={enviarTokenConfirmacion} />
+      <Button title={t('token.submit_button')} onPress={enviarTokenConfirmacion} />
     </View>
   );
 };

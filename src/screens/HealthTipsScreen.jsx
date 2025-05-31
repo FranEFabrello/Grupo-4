@@ -93,14 +93,14 @@ export default function HealthTipsScreen({ navigation }) {
               )}
               <Text className="text-base font-bold text-gray-800 mb-1">{article.title}</Text>
               <Text className="text-xs text-gray-500 mb-2">
-                {new Date(article.publishedAt).toLocaleDateString('es-AR', {
+                {new Date(article.publishedAt).toLocaleDateString(i18n.language, {
                   day: '2-digit',
                   month: '2-digit',
                   year: 'numeric',
                 })}
               </Text>
               <Text className="text-sm text-gray-600 mb-2">{article.source.name}</Text>
-              <Text className="text-sm text-gray-500 mb-2">{article.description || t('articles.no_description')}</Text>
+              <Text className="text-sm text-gray-500 mb-2">{article.description || t('articles.alerts.no_description')}</Text>
               <Text className="text-xs text-blue-600 font-semibold">{t('articles.load_more')}</Text>
             </TouchableOpacity>
           ))

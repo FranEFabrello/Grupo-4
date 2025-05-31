@@ -146,19 +146,19 @@ export default function AppointmentsScreen({ navigation }) {
           {/* Pestañas */}
           <View className="mb-4 flex-row justify-between" style={{ width: '100%' }}>
             <TabButton
-              label="Próximos"
+              label={t('appointments.tabs.upcoming')}
               isActive={activeTab === 'upcoming'}
               onPress={() => setActiveTab('upcoming')}
               colorScheme={colorScheme}
             />
             <TabButton
-              label="Pasados"
+              label={t('appointments.tabs.past')}
               isActive={activeTab === 'past'}
               onPress={() => setActiveTab('past')}
               colorScheme={colorScheme}
             />
             <TabButton
-              label="Cancelados"
+              label={t('appointments.tabs.cancelled')}
               isActive={activeTab === 'cancelled'}
               onPress={() => setActiveTab('cancelled')}
               colorScheme={colorScheme}

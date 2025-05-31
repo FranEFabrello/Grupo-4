@@ -19,6 +19,10 @@
     "register_prompt": {
       "es": "¿No tienes una cuenta? Regístrate",
       "en": "Don't have an account? Register"
+    },
+    "forgot_password": {
+      "es": "¿Olvidaste tu contraseña? Cámbiala",
+      "en": "Forgot your password? Change it"
     }
   },
 
@@ -74,6 +78,7 @@
       }
     }
   },
+
   "home": {
     "title": {
       "es": "MediBook",
@@ -102,9 +107,9 @@
       }
     },
     "next_appointment": {
-      "title": {
-        "es": "Tu próximo turno",
-        "en": "Your next appointment"
+      "ur_next_appointment": {
+        "es": "Tus próximos turnos",
+        "en": "Your next appointments"
       },
       "view_all": {
         "es": "Ver todos",
@@ -140,6 +145,7 @@
       }
     }
   },
+
   "insurance": {
     "screen_title": {
       "es": "Obra Social",
@@ -180,33 +186,11 @@
       "en": "Medical coverage"
     }
   },
-  "medical_notes": {
-    "prescription": {
-      "es": "Receta médica",
-      "en": "Medical prescription"
-    },
-    "title": {
-      "es": "Notas Médicas",
-      "en": "Medical Notes"
-    },
-    "empty": {
-      "es": "No hay notas disponibles",
-      "en": "No notes available"
-    },
-    "download_alert": {
-      "es": "Descargando {{file}}",
-      "en": "Downloading {{file}}"
-    }
-  },
 
   "more": {
-    "screen_title": {
+    "title": {
       "es": "Más Opciones",
       "en": "More Options"
-    },
-    "section_title": {
-      "es": "Más opciones",
-      "en": "More options"
     },
     "menu": {
       "insurance": {
@@ -245,6 +229,7 @@
       }
     }
   },
+
   "professionals": {
     "title": {
       "es": "Profesionales",
@@ -258,9 +243,25 @@
       "es": "Filtrar profesionales",
       "en": "Filter professionals"
     },
+    "filter_especiality": {
+      "es": "Filtrar por especialidad",
+      "en": "Filter by specialty"
+    },
+    "aplly_filter": {
+      "es": "Aplicar filtros",
+      "en": "Apply filters"
+    },
+    "clear_filter": {
+      "es": "Limpiar filtros",
+      "en": "Clear filters"
+    },
     "empty": {
       "es": "No hay profesionales disponibles",
       "en": "No professionals available"
+    },
+    "filter_star": {
+      "es": "Filtrar por estrellas",
+      "en": "Filter by stars"
     },
     "alerts": {
       "no_especiality": {
@@ -271,7 +272,7 @@
   },
 
   "profile": {
-    "screen_title": {
+    "title": {
       "es": "Perfil",
       "en": "Profile"
     },
@@ -438,23 +439,23 @@
       }
     },
     "errors": {
-      "nombre": {
+      "name": {
         "es": "El nombre es obligatorio",
         "en": "First name is required"
       },
-      "apellido": {
+      "lastName": {
         "es": "El apellido es obligatorio",
         "en": "Last name is required"
       },
-      "correo": {
+      "email": {
         "es": "Correo inválido",
         "en": "Invalid email"
       },
-      "contrasenia": {
+      "password": {
         "es": "Mínimo 6 caracteres",
         "en": "Minimum 6 characters"
       },
-      "repetir_contrasenia": {
+      "repeat_password": {
         "es": "Las contraseñas no coinciden",
         "en": "Passwords do not match"
       },
@@ -462,32 +463,37 @@
         "es": "El DNI es obligatorio",
         "en": "ID is required"
       },
-      "genero": {
+      "gender": {
         "es": "Selecciona un género",
         "en": "Select a gender"
       },
-      "fecha_nacimiento": {
+      "birth_date": {
         "es": "La fecha es obligatoria",
         "en": "Birth date is required"
       },
-      "edad": {
+      "age": {
         "es": "Edad inválida",
         "en": "Invalid age"
       },
-      "celular": {
+      "phone": {
         "es": "El celular es obligatorio",
         "en": "Phone number is required"
       },
-      "obra_social": {
+      "insurance": {
         "es": "La obra social es obligatoria",
         "en": "Health insurance is required"
       },
       "registro_fallido": {
         "es": "Hubo un problema al registrar el usuario.",
         "en": "There was a problem registering the user."
+      },
+      "default_error": {
+        "es": "Error en el registro",
+        "en": "Error registering"
       }
     }
   },
+
   "results": {
     "screen_title": {
       "es": "Resultados",
@@ -615,32 +621,6 @@
     }
   },
 
-  "medical_note": {
-    "reason": {
-      "es": "Motivo de la consulta",
-      "en": "Reason for the consultation"
-    },
-    "no_reason": {
-      "es": "Sin motivo especificado",
-      "en": "No reason specified"
-    },
-    "general_consult": {
-        "es": "Consulta general",
-        "en": "General consultation"
-    },
-    "diagnosis": {
-      "es": "Diagnóstico",
-      "en": "Diagnosis"
-    },
-    "notes": {
-      "es": "Notas médicas",
-      "en": "Medical notes"
-    },
-    "prescription": {
-      "es": "Receta médica",
-      "en": "Prescription"
-    }
-  },
   "doctor_profile": {
     "title": {
       "es": "Perfil del Profesional",
@@ -701,6 +681,10 @@
       "send": {
         "es": "Enviar",
         "en": "Send"
+      },
+      "return": {
+        "es": "Volver",
+        "en": "Return"
       }
     },
     "alert": {
@@ -719,6 +703,18 @@
       "missing_fields": {
         "es": "Completa todos los campos.",
         "en": "Please fill in all fields."
+      },
+      "denied_access": {
+        "es": "Permiso denegado",
+        "en": "Rejected access"
+      },
+      "denied_access_message": {
+        "es": "Se necesita permiso para acceder a la galería.",
+        "en": "Permission is required to access the gallery."
+      },
+      "no_selected_image": {
+        "es": "No se pudo seleccionar la imagen",
+        "en": "Could not select image"
       }
     }
   },
@@ -727,6 +723,10 @@
     "available_time": {
         "es": "Horarios disponibles",
         "en": "Available time slots"
+    },
+    "success": {
+        "es": "Turno reservado exitosamente",
+        "en": "Appointment successfully booked"
     },
     "select_time": {
         "es": "Selecciona horario",
@@ -932,6 +932,7 @@
       "en": "Book"
     }
   },
+
   "navigator": {
     "home": {
       "es": "Inicio",
@@ -1031,7 +1032,7 @@
       "en": "Verifying token"
     },
     "alerts": {
-      "token_recieived": {
+      "token_received": {
         "es": "Token recibido.",
         "en": "Token received."
       },
@@ -1046,6 +1047,10 @@
       "default_error": {
         "es": "Token inválido",
         "en": "Invalid token"
+      },
+      "default_success": {
+        "es": "Token válido",
+        "en": "Token valid"
       }
     }
   },
@@ -1103,6 +1108,94 @@
     "problem_placeholder": {
       "es": "Describe su problema aquí...",
       "en": "Describe your problem here..."
+    }
+  },
+
+  "medical_note": {
+    "title": {
+      "es": "Notas Médicas",
+      "en": "Medical Notes"
+    },
+    "reason": {
+      "es": "Motivo de la consulta",
+      "en": "Reason for the consultation"
+    },
+    "no_reason": {
+      "es": "Sin motivo especificado",
+      "en": "No reason specified"
+    },
+    "general_consult": {
+      "es": "Consulta general",
+      "en": "General consultation"
+    },
+    "diagnosis": {
+      "es": "Diagnóstico",
+      "en": "Diagnosis"
+    },
+    "prescription": {
+      "es": "Receta médica",
+      "en": "Medical prescription"
+    },
+    "dowload_prescription": {
+      "es": "Descargar receta médica",
+      "en": "Download medical prescription"
+    },
+    "alert": {
+      "no_open": {
+        "es": "No se pudo abrir el enlace de la receta médica.",
+        "en": "Could not open the medical prescription link."
+      },
+      "download_alert": {
+        "es": "Descargando {{file}}",
+        "en": "Downloading {{file}}"
+      },
+      "empty": {
+        "es": "No hay notas disponibles",
+        "en": "No notes available"
+      },
+      "no_diagnosis": {
+        "es": "Sin diagnóstico registrado",
+        "en": "No diagnosis recorded"
+      },
+      "no_medicalNotes": {
+        "es": "Sin notas médicas",
+        "en": "No medical notes"
+      }
+    }
+  },
+
+  "notification": {
+    "title": {
+      "es": "Notificaciones",
+      "en": "Notifications"
+    },
+    "empty": {
+      "es": "No tienes notificaciones",
+      "en": "You have no notifications"
+    },
+    "alerts": {
+      "no_notifications": {
+        "es": "No hay notificaciones disponibles",
+        "en": "No notifications available"
+      }
+    },
+    "book_confirmation": {
+      "es": "Confirmación de turno",
+      "en": "Your appointment confirmation"
+    },
+    "cancel_confirmation": {
+      "es": "Cancelación de turno",
+      "en": "Your appointment cancellation"
+    },
+    "type": {
+      "read": {
+        "es": "Leído",
+        "en": "Read"
+      },
+      "unread": {
+        "es": "No leído",
+        "en": "Unread"
+      }
     }
   }
 }

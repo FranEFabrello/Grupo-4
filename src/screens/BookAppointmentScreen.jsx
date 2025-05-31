@@ -113,7 +113,7 @@ export default function BookAppointmentScreen({ route }) {
       dispatch(bookAppointment(payload))
         .unwrap()
         .then(() => {
-          setModalMessage(t('appointment.success'));
+          setModalMessage(t('appointments.success'));
           setModalSuccess(true);
           setModalVisible(true);
           navigation.navigate('Appointments'); // Navega directamente
@@ -137,14 +137,14 @@ export default function BookAppointmentScreen({ route }) {
   const primaryButtonClass = colorScheme === 'light' ? 'bg-blue-500 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700';
 
   return (
-    <AppContainer navigation={navigation} screenTitle="Reservar Turno">
+    <AppContainer navigation={navigation} screenTitle={t('book_appointment.title')}>
       <Animated.View style={{ opacity: fadeAnim, flex: 1 }}>
         <View style={{ flex: 1 }}>
           <ScrollView className="p-6" contentContainerStyle={{ paddingBottom: 100 }} keyboardShouldPersistTaps="handled">
             <View className={`rounded-2xl p-8 w-full ${cardClass}`}>
-              <Text className={`text-xl font-bold mb-6 ${textClass}`}>{t('home.alerts.quick_actions.book')}</Text>
+              <Text className={`text-xl font-bold mb-6 ${textClass}`}>{t('book_appointment.title')}</Text>
               <ProfileField
-                label={t('appointment.specialty')}
+                label={t('book_appointment.fields.specialty')}
                 type="picker"
                 value={specialty}
                 onChange={handleSpecialtyChange}
@@ -154,7 +154,7 @@ export default function BookAppointmentScreen({ route }) {
               />
               {specialty && (
                 <ProfileField
-                  label={t('appointment.professional')}
+                  label={t('book_appointment.fields.professional')}
                   type="picker"
                   value={professional}
                   onChange={handleProfessionalChange}
@@ -205,7 +205,7 @@ export default function BookAppointmentScreen({ route }) {
                       </View>
                     </View>
                   </Modal>
-                  <Text className={`text-lg font-semibold mt-8 mb-3 ${textClass}`}>{t('appointment.available_time')}</Text>
+                  <Text className={`text-lg font-semibold mt-8 mb-3 ${textClass}`}>{t('book_appointment.available_time')}</Text>
                   <View className="mb-8">
                     {status === 'loading' ? (
                       <ActivityIndicator size="large" color={colorScheme === 'light' ? '#2563eb' : '#60a5fa'} />
@@ -223,7 +223,7 @@ export default function BookAppointmentScreen({ route }) {
                         />
                       ))
                     ) : (
-                      <Text className={`text-base ${secondaryTextClass}`}>{t('appointment.alerts.no_time')}</Text>
+                      <Text className={`text-base ${secondaryTextClass}`}>{t('appointments.alerts.no_time')}</Text>
                     )}
                   </View>
                 </View>

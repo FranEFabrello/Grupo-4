@@ -100,7 +100,7 @@ const ChangePasswordScreen = () => {
             <>
               <TextInput
                 className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-4 bg-white"
-                placeholder={t('token.alerts.token_recieived')}
+                placeholder={t('token.alerts.token_received')}
                 value={token}
                 onChangeText={setToken}
                 keyboardType="default"
