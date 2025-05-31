@@ -11,6 +11,19 @@ export const fetchNotificaciones = createAsyncThunk(
   }
 );
 
+export const marcarNotificacionLeida = createAsyncThunk(
+  'notifications/marcarNotificacionLeida',
+  async (notificacionId, { rejectWithValue }) => {
+    try {
+      await api.patch(`/notificaciones/${notificacionId}/leida`);
+      return notificacionId;
+    } catch (error) {
+      return rejectWithValue(error.message || 'Error al marcar como leída');
+    }
+  }
+);
+
+
 const notificationSlice = createSlice({
   name: 'notifications',
   initialState: {

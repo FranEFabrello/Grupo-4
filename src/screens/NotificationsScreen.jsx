@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { View, Text, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
 import AppContainer from '../components/AppContainer';
-import { fetchNotificaciones } from '~/store/slices/notificationSlice';
+import { fetchNotificaciones, marcarNotificacionLeida } from "~/store/slices/notificationSlice";
 import { createSelector } from 'reselect';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -13,6 +13,7 @@ const NotificationsScreen = ({ navigation }) => {
   const { loading, error } = useSelector(state => state.notifications || {});
   const notificaciones = useSelector(state => state.notifications?.notificaciones ?? []);
   const usuarioId = useSelector(state => state.user.usuario?.id);
+  const [selectedNotificationId, setSelectedNotificationId] = React.useState(null);
 
   useEffect(() => {
     if (usuarioId) {
@@ -20,6 +21,12 @@ const NotificationsScreen = ({ navigation }) => {
     }
   }, [dispatch, usuarioId]);
   console.log('notificaciones en screen:', notificaciones);
+
+  const marcarNotificacionLeidaHandler = (id) => {
+    dispatch(marcarNotificacionLeida(id));
+    setSelectedNotificationId(null);
+  };
+
   return (
     <AppContainer navigation={navigation} screenTitle="Notificaciones">
       <View className="flex-1 bg-gray-50 p-4">
@@ -55,9 +62,29 @@ const NotificationsScreen = ({ navigation }) => {
                         : item.tipoNotificacion}
                   </Text>
                   <Text className="text-gray-700">{item.mensaje}</Text>
-                  <Text className={`text-xs mt-1 ${item.estado?.toLowerCase() === "no_leída" ? "text-blue-600" : "text-gray-400"}`}>
-                    {item.estado?.toLowerCase() === "no_leída" ? "No leído" : "Leído"}
-                  </Text>
+                  <View className="flex-row items-center mt-1">
+                    {item.estado?.toLowerCase() === "no_leída" && selectedNotificationId === item.id ? (
+                      <TouchableOpacity
+                        className="ml-2 flex-row items-center"
+                        onPress={() => marcarNotificacionLeidaHandler(item.id)}
+                      >
+                        <MaterialCommunityIcons name="check" size={18} color="#22c55e" />
+                        <Text className="ml-1 text-green-600 text-xs">Marcar como leída</Text>
+                      </TouchableOpacity>
+                    ) : item.estado?.toLowerCase() === "no_leída" ? (
+                      <>
+                        <Text className="text-xs text-blue-600">No leído</Text>
+                        <TouchableOpacity
+                          className="ml-2"
+                          onPress={() => setSelectedNotificationId(item.id)}
+                        >
+                          <MaterialCommunityIcons name="check" size={18} color="#22c55e" />
+                        </TouchableOpacity>
+                      </>
+                    ) : (
+                      <Text className="text-xs text-gray-400">Leído</Text>
+                    )}
+                  </View>
                 </View>
               </View>
             )}

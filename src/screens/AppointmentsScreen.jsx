@@ -10,6 +10,7 @@ import AppointmentsCalendar from '~/components/AppointmentsCalendar';
 import { useColorScheme } from 'react-native';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { BlurView } from 'expo-blur';
+import AppointmentCardFullWidth from "~/components/ApptCardForApptScreen";
 
 // Utilidad para obtener un Date con la hora deseada
 function getDateWithTime(fecha, hora) {
@@ -170,8 +171,8 @@ export default function AppointmentsScreen({ navigation }) {
           ) : activeTab === 'upcoming' ? (
             upcomingAppointments.length > 0 ? (
               upcomingAppointments.map((appt) => (
-                <View key={appt.id} className="mb-4">
-                  <AppointmentCard
+                <View key={appt.id} className="mb-4 w-full">
+                  <AppointmentCardFullWidth
                     day={new Date(appt.fecha).toLocaleDateString('es-AR', {
                       weekday: 'short',
                       day: 'numeric',
@@ -192,8 +193,8 @@ export default function AppointmentsScreen({ navigation }) {
           ) : activeTab === 'past' ? (
             pastAppointments.length > 0 ? (
               pastAppointments.map((appt) => (
-                <View key={appt.id} className="mb-4">
-                  <AppointmentCard
+                <View key={appt.id} className="mb-4 w-full">
+                  <AppointmentCardFullWidth
                     day={new Date(appt.fecha).toLocaleDateString('es-AR', {
                       day: 'numeric',
                       month: 'short',
@@ -220,8 +221,8 @@ export default function AppointmentsScreen({ navigation }) {
             )
           ) : cancelledAppointments.length > 0 ? (
             cancelledAppointments.map((appt) => (
-              <View key={appt.id} className="mb-4">
-                <AppointmentCard
+              <View key={appt.id} className="mb-4 w-full">
+                <AppointmentCardFullWidth
                   day={new Date(appt.fecha).toLocaleDateString('es-AR', {
                     weekday: 'short',
                     day: 'numeric',

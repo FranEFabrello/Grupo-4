@@ -1,10 +1,11 @@
-import React from 'react';
+import React from "react";
 import { View, Text, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useColorScheme } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AppContainer from '../components/AppContainer';
 import { rescheduleAppointment } from "~/store/slices/appointmentsSlice";
+import {useTranslation} from "react-i18next";
 
 // Utilidad para parsear fecha local (YYYY-MM-DD o YYYY-MM-DDTHH:mm:ss±hh:mm)
 function parseLocalDate(fechaStr) {
@@ -17,19 +18,23 @@ function parseLocalDate(fechaStr) {
 }
 
 export default function AppointmentDetailScreen({ route, navigation }) {
-  const { appointment } = route.params;
   console.log('route.params:', route.params);
   console.log('appointment:', appointment);
   const dispatch = useDispatch();
   const colorScheme = useColorScheme();
   const { status, error } = useSelector((state) => state.appointments);
-
+  const { t } = useTranslation();
 
   const containerClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-800';
   const textClass = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
   const labelClass = colorScheme === 'light' ? 'text-blue-600' : 'text-blue-400';
   const cardClass = colorScheme === 'light' ? 'bg-gray-50' : 'bg-gray-700';
   const borderClass = colorScheme === 'light' ? 'border-gray-100' : 'border-gray-600';
+
+  const notificacion = route.params?.notificacion;
+  const appointment = notificacion?.turno || route.params?.appointment;
+  console.log('route.params:', route.params);
+  console.log('appointment:', appointment);
 
 
   // Navega a la pantalla de reprogramación, pasando los datos del turno y doctor
