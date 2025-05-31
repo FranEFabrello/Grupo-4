@@ -244,80 +244,66 @@ export default function AppointmentsScreen({ navigation }) {
       </ScrollView>
 
       {/* Modal de filtro */}
-      <BlurView intensity={50} tint="dark" className="flex-1 justify-center items-center">
-        <Modal
-          visible={showFilterModal}
-          animationType="slide"
-          transparent
-          onRequestClose={() => setShowFilterModal(false)}
-        >
-          <Pressable onPress={Keyboard.dismiss} className={modalOverlayClass}>
-            <KeyboardAvoidingView
-              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-              className="w-full items-center"
-            >
-              <View className={modalContainerClass}>
-                <Text className={`text-lg font-bold mb-5 ${textPrimaryClass}`}>
-                  {t('filter.filter_dates.filter_by_date')}
-                </Text>
-      <Modal
-        visible={showFilterModal}
-        animationType="slide"
-        transparent
-        onRequestClose={() => setShowFilterModal(false)}
-      >
-        <Pressable onPress={Keyboard.dismiss} className={modalOverlayClass}>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            className="w-full items-center"
+      {showFilterModal && (
+        <BlurView intensity={50} tint="dark" className="flex-1 justify-center items-center" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
+          <Modal
+            visible={showFilterModal}
+            animationType="slide"
+            transparent
+            onRequestClose={() => setShowFilterModal(false)}
           >
-            <View className={modalContainerClass}>
-              <Text className={`text-lg font-bold mb-5 ${textPrimaryClass}`}>
-                Filtrar por fechas
-              </Text>
-
-                <AppointmentsCalendar
-                  selectedDate={startDate}
-                  endDate={endDate}
-                  onSelectDate={handleSelectDate}
-                  colorScheme={colorScheme}
-                />
-
-                <View className="flex-row justify-between mt-3">
-                  <Text className={textAccentClass}>
-                    {startDate
-                      ? `${t('filter.filter_dates.start')}: ${startDate.toLocaleDateString(i18n.language)}`
-                      : `${t('filter.filter_dates.start')}: -`}
+            <Pressable onPress={Keyboard.dismiss} className={modalOverlayClass} style={{ flex: 1 }}>
+              <KeyboardAvoidingView
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                className="w-full items-center"
+              >
+                <View className={modalContainerClass}>
+                  <Text className={`text-lg font-bold mb-5 ${textPrimaryClass}`}>
+                    {t('filter.filter_dates.filter_by_date')}
                   </Text>
-                  <Text className={textAccentClass}>
-                    {endDate
-                      ? `${t('filter.filter_dates.end')}: ${startDate.toLocaleDateString(i18n.language)}`
-                      : `${t('filter.filter_dates.end')}: -`}
-                  </Text>
+                  <AppointmentsCalendar
+                    selectedDate={startDate}
+                    endDate={endDate}
+                    onSelectDate={handleSelectDate}
+                    colorScheme={colorScheme}
+                  />
+
+                  <View className="flex-row justify-between mt-3">
+                    <Text className={textAccentClass}>
+                      {startDate
+                        ? `${t('filter.filter_dates.start')}: ${startDate.toLocaleDateString(i18n.language)}`
+                        : `${t('filter.filter_dates.start')}: -`}
+                    </Text>
+                    <Text className={textAccentClass}>
+                      {endDate
+                        ? `${t('filter.filter_dates.end')}: ${endDate.toLocaleDateString(i18n.language)}`
+                        : `${t('filter.filter_dates.end')}: -`}
+                    </Text>
+                  </View>
+
+                  <TouchableOpacity
+                    className={`${buttonPrimaryClass} py-3 rounded-lg mt-5 items-center`}
+                    onPress={() => setShowFilterModal(false)}
+                  >
+                    <Text className={`text-base font-bold ${textWhiteClass}`}>{t('filter.filter_dates.apply')}</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    className="mt-3 items-center"
+                    onPress={() => {
+                      setStartDate(null);
+                      setEndDate(null);
+                      setShowFilterModal(false);
+                    }}
+                  >
+                    <Text className={`text-sm font-bold ${textAccentClass}`}>{t('filter.filter_dates.clear')}</Text>
+                  </TouchableOpacity>
                 </View>
-
-                <TouchableOpacity
-                  className={`${buttonPrimaryClass} py-3 rounded-lg mt-5 items-center`}
-                  onPress={() => setShowFilterModal(false)}
-                >
-                  <Text className={`text-base font-bold ${textWhiteClass}`}>{t('filter.filter_dates.apply')}</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  className="mt-3 items-center"
-                  onPress={() => {
-                    setStartDate(null);
-                    setEndDate(null);
-                    setShowFilterModal(false);
-                  }}
-                >
-                  <Text className={`text-sm font-bold ${textAccentClass}`}>{t('filter.filter_dates.clear')}</Text>
-                </TouchableOpacity>
-              </View>
-            </KeyboardAvoidingView>
-          </Pressable>
-        </Modal>
-      </BlurView>
+              </KeyboardAvoidingView>
+            </Pressable>
+          </Modal>
+        </BlurView>
+      )}
     </AppContainer>
   );
 }

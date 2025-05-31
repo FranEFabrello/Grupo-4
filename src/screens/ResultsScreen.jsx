@@ -76,34 +76,6 @@ export default function ResultsScreen({ navigation }) {
           {status === 'loading' ? (
             <Text className="text-sm text-gray-600">Cargando...</Text>
           ) : filteredResults.length > 0 ? (
-              filteredResults.map((result) => (
-                <View
-                  key={result.id.toString()}
-                  className="bg-blue-50 rounded-lg p-4 mb-2"
-                >
-                  <Text className="text-base font-semibold text-gray-800 mb-1">
-                    {result.tipo?.toUpperCase() === 'ESTUDIO' ? 'Estudio' : 'Receta'}
-                  </Text>
-                  <Text className="text-sm text-gray-700 mb-1">
-                    Paciente: {result.usuario?.nombre} {result.usuario?.apellido}
-                  </Text>
-                  <Text className="text-sm text-gray-700 mb-1">
-                    Fecha: {result.fechaEstudio ? new Date(result.fechaEstudio).toLocaleDateString('es-AR') : '-'}
-                  </Text>
-                  <Text className="text-sm text-gray-700 mb-1">
-                    Nombre del Estudio: {result.nombreEstudio || '-'}
-                  </Text>
-                  <Text className="text-sm text-gray-700 mb-1">
-                    Link: {result.linkEstudio}
-                  </Text>
-                  <TouchableOpacity
-                    className="border border-blue-600 rounded-lg p-2 flex-row justify-center mt-2"
-                    onPress={() => alert(`Descargando ${result.linkEstudio}`)}
-                  >
-                    <Text className="text-blue-600 text-sm">Descargar</Text>
-                  </TouchableOpacity>
-                </View>
-              ))
             filteredResults.map((result) => (
               <View
                 key={result.id.toString()}
