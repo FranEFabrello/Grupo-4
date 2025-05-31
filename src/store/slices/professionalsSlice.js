@@ -3,7 +3,7 @@ import api from "~/api/api";
 
 export const fetchProfessionals = createAsyncThunk('professionals/fetchProfessionals', async () => {
   const response =await api.get("/doctor/todos");
-  console.log(response.data);
+  //console.log(response.data);
   return response.data;
 });
 

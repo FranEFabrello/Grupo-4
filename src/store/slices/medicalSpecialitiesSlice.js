@@ -6,7 +6,7 @@ export const fetchSpecialities = createAsyncThunk(
   'medicalSpecialities/fetchSpecialities',
   async (_, thunkAPI) => {
     const response = await api.get('/especialidad/todos');
-    console.log("Especialidades: ",response.data);
+    //console.log("Especialidades: ",response.data);
     return response.data;
   }
 );
