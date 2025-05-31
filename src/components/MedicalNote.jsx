@@ -22,7 +22,7 @@ export default function MedicalNote({ doctor, date, reason, diagnosis, notes, pr
       <ProfileField label="Diagnóstico" value={diagnosis} />
       <ProfileField label="Notas médicas" value={notes} />
       <View className="mb-4">
-        <Text className="text-sm font-semibold text-gray-800 mb-1">{t('medical_note.prescription')}</Text>
+        <Text className="text-sm font-semibold text-gray-800 mb-1">{t('medical_notes.prescription')}</Text>
         <View className="flex-row justify-between items-center bg-gray-100 rounded-lg p-3">
           <View className="flex-row items-center">
             <Icon name="file-prescription" size={14} color="#6c757d" />

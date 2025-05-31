@@ -34,7 +34,7 @@ export default function DoctorProfileScreen({ navigation, route }) {
       </AppContainer>
     );
   }
-
+  //Acá iría la traducción de la especialidad
   const specialty = especialidades.find((esp) => esp.id === doctor.idEspecialidad)?.descripcion || t('doctor_profile.no_specialty');
 
   return (

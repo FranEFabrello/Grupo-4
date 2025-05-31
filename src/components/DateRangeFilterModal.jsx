@@ -12,7 +12,8 @@ export default function DateRangeFilterModal({
   onClear,
   onClose,
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language.startsWith('es') ? 'es' : 'en';
 
   return (
     <Modal
@@ -36,7 +37,7 @@ export default function DateRangeFilterModal({
           >
             <View style={{ backgroundColor: '#fff', borderRadius: 16, padding: 20 }}>
               <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 20 }}>
-                {t('appointments.filter_dates.title')}
+                {t('filter.filter_dates.title')}
               </Text>
 
               <View style={{ marginBottom: 20 }}>
@@ -54,12 +55,10 @@ export default function DateRangeFilterModal({
                   style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}
                 >
                   <Text style={{ color: '#2563EB' }}>
-                    {startDate ? `${t('filter.filter_dates.start')}: ${startDate.toLocaleDateString('es')}`
-                      : `${t('filter.filter_dates.start')}: -`}
+                    {`${t('filter.filter_dates.start')}: ${startDate?.toLocaleDateString(i18n.language) || '-'}`}
                   </Text>
                   <Text style={{ color: '#2563EB' }}>
-                    {endDate ? `${t('filter.filter_dates.end')}: ${endDate.toLocaleDateString('es')}`
-                      : `${t('filter.filter_dates.end')}: -`}
+                    {`${t('filter.filter_dates.end')}: ${endDate?.toLocaleDateString(i18n.language) || '-'}`}
                   </Text>
                 </View>
               </View>
@@ -79,7 +78,7 @@ export default function DateRangeFilterModal({
                 style={{ marginTop: 10, alignItems: 'center' }}
                 onPress={onClear}
               >
-                <Text style={{ color: '#2563EB', fontWeight: 'bold' }}>L{t('filter.filter_dates.clear')}</Text>
+                <Text style={{ color: '#2563EB', fontWeight: 'bold' }}>{t('filter.filter_dates.clear')}</Text>
               </TouchableOpacity>
             </View>
           </KeyboardAvoidingView>
