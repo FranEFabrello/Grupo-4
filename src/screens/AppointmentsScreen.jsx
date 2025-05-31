@@ -187,7 +187,7 @@ export default function AppointmentsScreen({ navigation }) {
                 </View>
               ))
             ) : (
-              <Text className={`text-sm ${textSecondaryClass}`}>{t('home.next_appointment.none')}</Text>
+              <Text className={`text-sm ${textSecondaryClass}`}>No hay turnos próximos</Text>
             )
           ) : activeTab === 'past' ? (
             pastAppointments.length > 0 ? (
@@ -205,18 +205,18 @@ export default function AppointmentsScreen({ navigation }) {
                     onPress={() => navigation.navigate('MedicalNotes', { appointment: appt })}
                     colorScheme={colorScheme}
                   />
-                  {/*  <TouchableOpacity
+                  <TouchableOpacity
                     className={`${buttonSecondaryClass} rounded-lg p-2 mt-2`}
                     onPress={() => navigation.navigate('MedicalNotes', { appointmentId: appt.id })}
                   >
                     <Text className={`text-sm ${textAccentClass}`}>
                       Ver notas médicas
                     </Text>
-                  </TouchableOpacity>*/}
+                  </TouchableOpacity>
                 </View>
               ))
             ) : (
-              <Text className={`text-sm ${textSecondaryClass}`}>{t('appointments.alerts.no_past')}</Text>
+              <Text className={`text-sm ${textSecondaryClass}`}>No hay turnos pasados</Text>
             )
           ) : cancelledAppointments.length > 0 ? (
             cancelledAppointments.map((appt) => (
@@ -237,7 +237,7 @@ export default function AppointmentsScreen({ navigation }) {
               </View>
             ))
           ) : (
-            <Text className={`text-sm ${textSecondaryClass}`}>{t('appointments.alerts.no_cancelled')}</Text>
+            <Text className={`text-sm ${textSecondaryClass}`}>No hay turnos cancelados</Text>
           )}
         </View>
       </ScrollView>
@@ -257,7 +257,7 @@ export default function AppointmentsScreen({ navigation }) {
           >
             <View className={modalContainerClass}>
               <Text className={`text-lg font-bold mb-5 ${textPrimaryClass}`}>
-                {t('filter.filter_dates.title')}
+                Filtrar por fechas
               </Text>
 
               <AppointmentsCalendar

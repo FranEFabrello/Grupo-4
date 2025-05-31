@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useColorScheme } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AppContainer from '../components/AppContainer';
+import { rescheduleAppointment } from "~/store/slices/appointmentsSlice";
 
 // Utilidad para parsear fecha local (YYYY-MM-DD o YYYY-MM-DDTHH:mm:ss±hh:mm)
 function parseLocalDate(fechaStr) {
@@ -17,15 +18,19 @@ function parseLocalDate(fechaStr) {
 
 export default function AppointmentDetailScreen({ route, navigation }) {
   const { appointment } = route.params;
+  console.log('route.params:', route.params);
+  console.log('appointment:', appointment);
   const dispatch = useDispatch();
   const colorScheme = useColorScheme();
   const { status, error } = useSelector((state) => state.appointments);
+
 
   const containerClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-800';
   const textClass = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
   const labelClass = colorScheme === 'light' ? 'text-blue-600' : 'text-blue-400';
   const cardClass = colorScheme === 'light' ? 'bg-gray-50' : 'bg-gray-700';
   const borderClass = colorScheme === 'light' ? 'border-gray-100' : 'border-gray-600';
+
 
   // Navega a la pantalla de reprogramación, pasando los datos del turno y doctor
   const handleReschedule = () => {
@@ -38,7 +43,7 @@ export default function AppointmentDetailScreen({ route, navigation }) {
       currentStart: appointment.horaInicio,
       currentEnd: appointment.horaFin,
     });
-
+  };
 
   const getStatusConfig = (estado) => {
     switch (estado) {
@@ -70,24 +75,25 @@ export default function AppointmentDetailScreen({ route, navigation }) {
   };
 
   const statusConfig = getStatusConfig(appointment.estado);
+  console.log('statusConfig:', statusConfig);
 
   const handleCancel = () => {
     Alert.alert(
-      t('appointments.cancel_button'),
-      t('appointments.cancel_confirmation'),
+      'Confirmar Cancelación',
+      '¿Estás seguro de que deseas cancelar este turno?',
       [
         { text: 'No', style: 'cancel' },
         {
-          text: t('global.button.yes'),
+          text: 'Sí',
           onPress: () => {
             dispatch(cancelAppointment(appointment.id))
               .unwrap()
               .then(() => {
-                Alert.alert(t('global.alert.success'),  t('appointments.alerts.cancel'));
+                Alert.alert('Éxito', 'El turno ha sido cancelado.');
                 navigation.goBack();
               })
               .catch((err) => {
-                Alert.alert(t('global.alert.error'), err || t('appointments.alerts.cancel_error'));
+                Alert.alert('Error', err || 'No se pudo cancelar el turno.');
               });
           },
         },
@@ -103,7 +109,7 @@ export default function AppointmentDetailScreen({ route, navigation }) {
           <View className={`mb-6 ${cardClass} rounded-xl p-4`}>
             <View className="flex-row justify-between items-center">
               <Text className={`text-2xl font-bold ${textClass}`}>
-                {t('appointments.medic_book')}
+                Turno Médico
               </Text>
 
               {/* Badge de estado */}
@@ -126,7 +132,7 @@ export default function AppointmentDetailScreen({ route, navigation }) {
           <View className={`mb-4 rounded-xl p-4 ${cardClass}`}>
             <View className="flex-row items-center mb-3">
               <Icon name="calendar-alt" size={18} color={colorScheme === 'light' ? '#2563EB' : '#60A5FA'} />
-              <Text className={`ml-2 ${labelClass}`}>{t('appointments.info.date_time')}</Text>
+              <Text className={`ml-2 ${labelClass}`}>Fecha y Hora</Text>
             </View>
             <Text className={`text-lg font-medium ${textClass}`}>
               {parseLocalDate(appointment.fecha).toLocaleDateString('es-AR', {
@@ -161,14 +167,14 @@ export default function AppointmentDetailScreen({ route, navigation }) {
           <View className={`mb-6 rounded-xl p-4 ${cardClass}`}>
             <View className="flex-row items-center mb-3">
               <Icon name="comment-medical" size={18} color={colorScheme === 'light' ? '#2563EB' : '#60A5FA'} />
-              <Text className={`ml-2 ${labelClass}`}>{t('medical_note.reason')}</Text>
+              <Text className={`ml-2 ${labelClass}`}>Motivo de la consulta</Text>
             </View>
             <Text className={`text-base ${textClass}`}>
               {appointment.nota || 'Sin motivo especificado'}
             </Text>
           </View>
 
-          {/* Botón de cancelar */}
+          {/* Botón de cancelar*/}
           {status === 'loading' ? (
             <ActivityIndicator size="large" color={colorScheme === 'light' ? '#2563EB' : '#60A5FA'} />
           ) : appointment.estado === 'CONFIRMADO' ? (
@@ -179,7 +185,7 @@ export default function AppointmentDetailScreen({ route, navigation }) {
               >
                 <Icon name="times-circle" size={20} color="white" />
                 <Text className="text-white text-base font-medium ml-2">
-                  {t('appointments.type.cancel')}
+                  Cancelar turno
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -198,4 +204,4 @@ export default function AppointmentDetailScreen({ route, navigation }) {
     </AppContainer>
   );
 }
-}
+

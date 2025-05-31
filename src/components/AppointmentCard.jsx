@@ -21,7 +21,7 @@ export default function AppointmentCard({
   return (
     <TouchableOpacity onPress={onPress} className="w-64">
       <View className={`rounded-lg p-4 shadow-md ${cardBgClass}`}>
-        <View className="flex-row items-center h-full">
+        <View className="flex-row items-center">
           <View className={`w-20 ${dateBgClass} rounded-lg p-2 items-center`}>
             <Text className={`text-xs ${dateTextClass}`}>{day}</Text>
             <Text className={`text-sm font-semibold ${dateTextClass}`}>{time}</Text>

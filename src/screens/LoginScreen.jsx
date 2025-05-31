@@ -2,15 +2,17 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Keyboard } from "react-native";
 import { authenticate } from "~/store/slices/autheticationSlice";
 import { useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const {t} = useTranslation();
   const dispatch = useDispatch();
 
   const handleLogin = () => {
     Keyboard.dismiss();
+    console.log('Intentando iniciar sesión con:', email, password);
     dispatch(authenticate({ email, password }))
       .unwrap()
       .then(() => {

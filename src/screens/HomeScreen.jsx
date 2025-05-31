@@ -22,17 +22,32 @@ export default function HomeScreen({ navigation }) {
   const specialities = useSelector((state) => state.medicalSpecialities.specialities);
 
 
+  useEffect(() => {
+    if (!professionals || professionals.length === 0) {
+      dispatch(fetchProfessionals());
+    }
+    dispatch(fetchUserByToken()).then((action) => {
+      const usuarioId = action.payload?.id;
+      if (usuarioId) {
+        dispatch(fetchAppointments(usuarioId));
+      }
+    });
+    if (specialities.length === 0) {
+      dispatch(fetchSpecialities());
+    }
+  }, [dispatch]);
 
   const quickActions = [
-    { icon: 'calendar-plus', label: t('home.quick_actions.book'), screen: 'BookAppointment' },
-    { icon: 'calendar-alt', label: t('home.quick_actions.appointments'), screen: 'Appointments' },
-    { icon: 'file-medical', label: t('home.quick_actions.results'), screen: 'Results' },
-    { icon: 'hospital-user', label: t('home.quick_actions.insurance'), screen: 'Insurance' },
+    { icon: 'calendar-plus', label: 'Reservar turno', screen: 'BookAppointment' },
+    { icon: 'calendar-alt', label: 'Mis Turnos', screen: 'Appointments' },
+    { icon: 'file-medical', label: 'Resultados', screen: 'Results' },
+    { icon: 'hospital-user', label: 'Obra social', screen: 'Insurance' },
   ];
 
   const now = new Date();
   const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
   const endOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 6, 23, 59, 59, 999);
+
 
 
 
@@ -57,36 +72,38 @@ export default function HomeScreen({ navigation }) {
   const primaryButtonClass = colorScheme === 'light' ? 'bg-blue-600' : 'bg-blue-700';
   const linkClass = colorScheme === 'light' ? 'text-blue-600' : 'text-blue-400';
 
+
+
   return (
     <AppContainer navigation={navigation} screenTitle="MediBook">
-      <ScrollView className={`p-5 ${containerClass}`}>
+      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 64 }} className={containerClass}>
         <View className={`rounded-lg p-4 mb-4 shadow-md ${cardClass}`}>
           <Text className={`text-lg font-semibold ${textClass}`}>
             Hola, {usuario?.nombre || 'Usuario'}
           </Text>
           <Text className={`text-sm ${secondaryTextClass} mt-1`}>
-            {t('home.question')}
+            ¿Qué necesitas hacer hoy?
           </Text>
           <QuickActions actions={quickActions} navigation={navigation} colorScheme={colorScheme} />
         </View>
 
         <View className="flex-row justify-between items-center mb-4">
           <Text className={`text-lg font-semibold ${textClass}`}>
-            {t('home.next_appointment.title')}
+            Tus próximos turnos
           </Text>
           <Text
             className={`text-sm ${linkClass}`}
             onPress={() => navigation.navigate('Appointments')}
           >
-            {t('home.next_appointment.view_all')}
+            Ver todos
           </Text>
         </View>
 
         <View className={`rounded-lg p-4 mb-4 shadow-md ${cardClass}`}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View className="flex-row items-center px-2 h-full">
+            <View className="flex-row items-center px-2">
               {appointmentsStatus === 'loading' ? (
-                <Text className={`text-sm ${secondaryTextClass}`}>{t('global.alert.loading')}</Text>
+                <Text className={`text-sm ${secondaryTextClass}`}>Cargando...</Text>
               ) : upcomingAppointments.length > 0 ? (
                 upcomingAppointments.map((appt) => (
                   <View key={appt.id} className="mr-3">
@@ -107,7 +124,7 @@ export default function HomeScreen({ navigation }) {
                 ))
               ) : (
                 <Text className={`text-sm ${secondaryTextClass}`}>
-                  {t('appointments.alerts.no_upcoming')}
+                  No hay turnos próximos
                 </Text>
               )}
             </View>
@@ -116,20 +133,20 @@ export default function HomeScreen({ navigation }) {
 
         <View className="flex-row justify-between items-center mb-4">
           <Text className={`text-lg font-semibold ${textClass}`}>
-            {t('home.feature_doctors.title')}
+            Profesionales destacados
           </Text>
           <Text
             className={`text-sm ${linkClass}`}
             onPress={() => navigation.navigate('Professionals')}
           >
-            {t('home.feature_doctors.view_all')}
+            Ver todos
           </Text>
         </View>
         <View className={`rounded-lg p-4 pb-1 mb-4 shadow-md ${cardClass}`}>
           <ScrollView horizontal className="mb-4 h-48" showsHorizontalScrollIndicator={false}>
             <View className="flex-row px-2" style={{overflow: 'visible'}}>
               {professionalsStatus === 'loading' ? (
-                <Text className={`text-sm ${secondaryTextClass}`}>{t('global.alert.loading')}</Text>
+                <Text className={`text-sm ${secondaryTextClass}`}>Cargando...</Text>
               ) : professionals.slice(0, 3).map((doctor) => (
                 <View key={doctor.id} className="mr-3">
                   <DoctorCard
@@ -153,14 +170,14 @@ export default function HomeScreen({ navigation }) {
 
         <View className={`rounded-lg p-4 shadow-md ${cardClass}`}>
           <Text className={`text-lg font-semibold ${textClass} mb-3`}>
-            {t('home.medical_news.title')}
+            Noticias médicas
           </Text>
           <TouchableOpacity
             className={`${primaryButtonClass} rounded-lg py-2 px-4 flex-row justify-center items-center shadow-md`}
             onPress={() => navigation.navigate('HealthTips')}
           >
             <Icon name="heart" size={20} color="#ffffff" className="mr-2" />
-            <Text className="text-white text-sm font-semibold">{t('home.medical_news.button')}</Text>
+            <Text className="text-white text-sm font-semibold">Ver noticias médicas</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
