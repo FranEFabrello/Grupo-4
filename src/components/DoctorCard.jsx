@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { useTranslation } from 'react-i18next';
 
 export default function DoctorCard({
                                      name,
@@ -20,6 +21,7 @@ export default function DoctorCard({
   const starsTextClass = colorScheme === 'light' ? 'text-yellow-500' : 'text-yellow-400';
   const buttonBgClass = colorScheme === 'light' ? 'bg-blue-600' : 'bg-blue-700';
   const borderClass = colorScheme === 'light' ? 'border border-blue-400 shadow-md' : 'border border-blue-500 shadow-md';
+  const { t } = useTranslation();
 
   return (
     <View className={containerClassName}>
@@ -34,7 +36,7 @@ export default function DoctorCard({
         <Text className={`text-xs ${specialtyTextClass}`}>{specialty}</Text>
         <View className="flex-row items-center my-1">
           {noRating ? (
-            <Text className={`text-xs ${noRatingTextClass}`}>Sin calificación</Text>
+            <Text className={`text-xs ${noRatingTextClass}`}>{t('doctor_card.no_rating')}</Text>
           ) : (
             <>
               <Text className={`text-xs ${starsTextClass} mr-1`}>{stars}</Text>
@@ -47,7 +49,7 @@ export default function DoctorCard({
           onPress={onBook}
         >
           <Icon name="calendar-alt" size={14} color="#ffffff" />
-          <Text className="text-white text-xs ml-1">Turno</Text>
+          <Text className="text-white text-xs ml-1">{t('doctor_card.book')}</Text>
         </TouchableOpacity>
       </View>
     </View>

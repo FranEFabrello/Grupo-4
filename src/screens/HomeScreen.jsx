@@ -11,6 +11,7 @@ import QuickActions from '../components/QuickActions';
 import AppointmentCard from '../components/AppointmentCard';
 import DoctorCard from '../components/DoctorCard';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { useTranslation } from "react-i18next";
 
 export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -20,6 +21,7 @@ export default function HomeScreen({ navigation }) {
   const { professionals, status: professionalsStatus } = useSelector((state) => state.professionals);
   const usuario = useSelector((state) => state.user.usuario);
   const specialities = useSelector((state) => state.medicalSpecialities.specialities);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!professionals || professionals.length === 0) {

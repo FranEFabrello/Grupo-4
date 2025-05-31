@@ -12,7 +12,7 @@ export default function FilterButton({ onPress }) {
       onPress={onPress}
     >
       <Icon name="sliders-h" size={14} color="#4a6fa5" />
-      <Text className="text-blue-600 text-sm ml-1">{t('Filter')}</Text>
+      <Text className="text-blue-600 text-sm ml-1">{t('filter.title')}</Text>
     </TouchableOpacity>
   );
 }

@@ -1,3 +1,4 @@
+// BookAppointmentScreen.jsx
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Text, TouchableOpacity, ActivityIndicator, Modal, Animated } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,8 +15,10 @@ import ProfileField from '../components/ProfileField';
 import Calendar from '../components/Calendar';
 import TimeSlot from '../components/TimeSlot';
 import { fetchSpecialities } from "~/store/slices/medicalSpecialitiesSlice";
+import { useTranslation } from 'react-i18next';
 
 export default function BookAppointmentScreen({ navigation, route }) {
+  const { t } = useTranslation();
   const { professionalId } = route.params || {};
   const dispatch = useDispatch();
   const colorScheme = useColorScheme();
@@ -24,6 +27,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
   const { availableDays, availableTimeSlots, status } = useSelector((state) => state.appointments);
   const usuario = useSelector((state) => state.user.usuario);
   const specialties = useSelector((state) => state.medicalSpecialities.specialities);
+
 
   const [specialty, setSpecialty] = useState('');
   const [professional, setProfessional] = useState(professionalId || '');
@@ -68,6 +72,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
     }
   }, [professional, dispatch]);
 
+
   useEffect(() => {
     if (selectedDate && professional) {
       dispatch(fetchAvailableTimeSlots({ professionalId: professional, date: selectedDate }));
@@ -109,7 +114,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
       dispatch(bookAppointment(payload))
         .unwrap()
         .then(() => {
-          setModalMessage('¡Turno confirmado exitosamente!');
+          setModalMessage(t('appointment.success'));
           setModalSuccess(true);
           setModalVisible(true);
         })
@@ -139,7 +144,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
             <View className={`rounded-2xl p-8 w-full ${cardClass}`}>
               <Text className={`text-xl font-bold mb-6 ${textClass}`}>Reservar Turno</Text>
               <ProfileField
-                label="Especialidad"
+                label={t('appointment.specialty')}
                 type="picker"
                 value={specialty}
                 onChange={handleSpecialtyChange}
@@ -149,7 +154,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
               />
               {specialty && (
                 <ProfileField
-                  label="Profesional"
+                  label={t('appointment.professional')}
                   type="picker"
                   value={professional}
                   onChange={handleProfessionalChange}
@@ -169,7 +174,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
                     <Text
                       className={`text-base ${selectedDate ? (colorScheme === 'light' ? 'text-blue-900 font-semibold' : 'text-white font-semibold') : 'text-gray-400'} text-center`}
                     >
-                      {selectedDate ? selectedDate : 'Elegir fecha'}
+                      {selectedDate ? selectedDate : t('appointment.selectDate')}
                     </Text>
                   </TouchableOpacity>
                   <Modal
@@ -200,7 +205,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
                       </View>
                     </View>
                   </Modal>
-                  <Text className={`text-lg font-semibold mt-8 mb-3 ${textClass}`}>Horarios Disponibles</Text>
+                  <Text className={`text-lg font-semibold mt-8 mb-3 ${textClass}`}>{t('appointment.timeSlots')}</Text>
                   <View className="mb-8">
                     {status === 'loading' ? (
                       <ActivityIndicator size="large" color={colorScheme === 'light' ? '#2563eb' : '#60a5fa'} />
@@ -215,7 +220,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
                         />
                       ))
                     ) : (
-                      <Text className={`text-base ${secondaryTextClass}`}>No hay horarios disponibles</Text>
+                      <Text className={`text-base ${secondaryTextClass}`}>{t('appointment.noTimeSlots')}</Text>
                     )}
                   </View>
                 </View>

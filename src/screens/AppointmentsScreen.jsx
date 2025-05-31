@@ -10,6 +10,7 @@ import AppointmentsCalendar from '~/components/AppointmentsCalendar';
 import { useColorScheme } from 'react-native';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { BlurView } from 'expo-blur';
+import { useTranslation } from 'react-i18next';
 
 // Utilidad para obtener un Date con la hora deseada
 function getDateWithTime(fecha, hora) {
@@ -23,6 +24,7 @@ function getDateWithTime(fecha, hora) {
 }
 
 export default function AppointmentsScreen({ navigation }) {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const colorScheme = useColorScheme();
   const { status } = useSelector((state) => state.appointments);
@@ -121,14 +123,14 @@ export default function AppointmentsScreen({ navigation }) {
 
 
   return (
-    <AppContainer navigation={navigation} screenTitle="Mis Turnos" className={screenContainerClass}>
+    <AppContainer navigation={navigation} screenTitle={t('appointments.title')} className={screenContainerClass}>
       <ScrollView className={scrollContainerClass}>
         {/* Contenedor principal */}
         <View className={`rounded-lg p-4 mb-4 ${contentContainerClass}`}>
 
           {/* Header */}
           <View className="flex-row justify-between items-center mb-4">
-            <Text className={`text-lg font-semibold ${textPrimaryClass}`}>Mis Turnos</Text>
+            <Text className={`text-lg font-semibold ${textPrimaryClass}`}>{t('appointments.title')}</Text>
             <FilterButton onPress={() => setShowFilterModal(true)} />
           </View>
 
@@ -137,7 +139,7 @@ export default function AppointmentsScreen({ navigation }) {
             <View className="mb-2">
               <Text className={`text-sm ${textAccentClass}`}>
                 Filtrando por: {startDate ? startDate.toLocaleDateString('es-AR') : '-'}
-                {endDate ? ` al ${endDate.toLocaleDateString('es-AR')}` : ''}
+                {endDate ? `${t('appointments.to')} ${endDate.toLocaleDateString('es-AR')}` : ''}
               </Text>
             </View>
           )}
@@ -145,19 +147,19 @@ export default function AppointmentsScreen({ navigation }) {
           {/* Pestañas */}
           <View className="mb-4 flex-row justify-between" style={{ width: '100%' }}>
             <TabButton
-              label="Próximos"
+              label={t('appointments.tabs.upcoming')}
               isActive={activeTab === 'upcoming'}
               onPress={() => setActiveTab('upcoming')}
               colorScheme={colorScheme}
             />
             <TabButton
-              label="Pasados"
+              label={t('appointments.tabs.past')}
               isActive={activeTab === 'past'}
               onPress={() => setActiveTab('past')}
               colorScheme={colorScheme}
             />
             <TabButton
-              label="Cancelados"
+              label={t('appointments.tabs.cancelled')}
               isActive={activeTab === 'cancelled'}
               onPress={() => setActiveTab('cancelled')}
               colorScheme={colorScheme}
@@ -166,7 +168,7 @@ export default function AppointmentsScreen({ navigation }) {
 
           {/* Contenido dinámico */}
           {status === 'loading' ? (
-            <Text className={`text-sm ${textSecondaryClass}`}>Cargando...</Text>
+            <Text className={`text-sm ${textSecondaryClass}`}>{t('appointments.loading')}</Text>
           ) : activeTab === 'upcoming' ? (
             upcomingAppointments.length > 0 ? (
               upcomingAppointments.map((appt) => (
@@ -187,7 +189,7 @@ export default function AppointmentsScreen({ navigation }) {
                 </View>
               ))
             ) : (
-              <Text className={`text-sm ${textSecondaryClass}`}>No hay turnos próximos</Text>
+              <Text className={`text-sm ${textSecondaryClass}`}>{t('appointments.noUpcoming')}</Text>
             )
           ) : activeTab === 'past' ? (
             pastAppointments.length > 0 ? (
@@ -216,7 +218,7 @@ export default function AppointmentsScreen({ navigation }) {
                 </View>
               ))
             ) : (
-              <Text className={`text-sm ${textSecondaryClass}`}>No hay turnos pasados</Text>
+              <Text className={`text-sm ${textSecondaryClass}`}>{t('appointments.noPast')}</Text>
             )
           ) : cancelledAppointments.length > 0 ? (
             cancelledAppointments.map((appt) => (
@@ -237,7 +239,7 @@ export default function AppointmentsScreen({ navigation }) {
               </View>
             ))
           ) : (
-            <Text className={`text-sm ${textSecondaryClass}`}>No hay turnos cancelados</Text>
+            <Text className={`text-sm ${textSecondaryClass}`}>{t('appointments.noCancelled')}</Text>
           )}
         </View>
       </ScrollView>
@@ -257,7 +259,7 @@ export default function AppointmentsScreen({ navigation }) {
           >
             <View className={modalContainerClass}>
               <Text className={`text-lg font-bold mb-5 ${textPrimaryClass}`}>
-                Filtrar por fechas
+                {t('appointments.filterTitle')}
               </Text>
 
               <AppointmentsCalendar
@@ -269,10 +271,10 @@ export default function AppointmentsScreen({ navigation }) {
 
               <View className="flex-row justify-between mt-3">
                 <Text className={textAccentClass}>
-                  {startDate ? `Inicio: ${startDate.toLocaleDateString('es-AR')}` : 'Inicio: -'}
+                  {startDate ? `${t('appointments.start')}:  ${startDate.toLocaleDateString('es-AR')}` : `${t('appointments.start')}: -`}
                 </Text>
                 <Text className={textAccentClass}>
-                  {endDate ? `Fin: ${endDate.toLocaleDateString('es-AR')}` : 'Fin: -'}
+                  {endDate ? `${t('appointments.end')}: ${endDate.toLocaleDateString('es-AR')}` : `${t('appointments.end')}: -`}
                 </Text>
               </View>
 
