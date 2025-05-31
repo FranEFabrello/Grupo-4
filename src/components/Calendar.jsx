@@ -116,7 +116,7 @@ export default function Calendar({ availableDays = [], onSelectDate, selectedDat
           <View className={`flex-row mb-3 rounded-lg overflow-hidden border ${borderHeader}`}>
             {weekDays.map((wd, i) => (
               <View key={i} className={`w-[14.28%] items-center py-2 ${bgHeader}`}>
-                <Text className={`text-sm font-semibold ${textHeader}`}>{wd}</Text>
+                <Text className={`text-sm font-semibold ${textHeader}`}>{wd.day}</Text>
               </View>
             ))}
           </View>
