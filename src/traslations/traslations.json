@@ -21,6 +21,7 @@
       "en": "Don't have an account? Register"
     }
   },
+
   "book_appointment": {
     "title": {
       "es": "Reservar Turno",
@@ -54,8 +55,8 @@
         "en": "Confirm appointment"
       },
       "with_time": {
-        "es": "Confirmar turno a las {{time}}",
-        "en": "Confirm appointment at {{time}}"
+        "es": "Confirmar turno a las: ",
+        "en": "Confirm appointment at: "
       }
     },
     "alerts": {
@@ -90,10 +91,6 @@
       "book": {
         "es": "Reservar turno",
         "en": "Book appointment"
-      },
-      "appointments": {
-        "es": "Mis Turnos",
-        "en": "My Appointments"
       },
       "results": {
         "es": "Resultados",
@@ -184,7 +181,11 @@
     }
   },
   "medical_notes": {
-    "screen_title": {
+    "prescription": {
+      "es": "Receta médica",
+      "en": "Medical prescription"
+    },
+    "title": {
       "es": "Notas Médicas",
       "en": "Medical Notes"
     },
@@ -197,6 +198,7 @@
       "en": "Downloading {{file}}"
     }
   },
+
   "more": {
     "screen_title": {
       "es": "Más Opciones",
@@ -267,6 +269,7 @@
       }
     }
   },
+
   "profile": {
     "screen_title": {
       "es": "Perfil",
@@ -611,6 +614,7 @@
       "en": "Register"
     }
   },
+
   "medical_note": {
     "reason": {
       "es": "Motivo de la consulta",
@@ -619,6 +623,10 @@
     "no_reason": {
       "es": "Sin motivo especificado",
       "en": "No reason specified"
+    },
+    "general_consult": {
+        "es": "Consulta general",
+        "en": "General consultation"
     },
     "diagnosis": {
       "es": "Diagnóstico",
@@ -659,11 +667,16 @@
       "en": "Book Appointment"
     }
   },
+
   "global": {
     "button": {
       "select": {
         "es": "Seleccionar",
         "en": "Select"
+      },
+      "close": {
+        "es": "Cerrar",
+        "en": "Close"
       },
       "cancel": {
         "es": "Cancelar",
@@ -703,17 +716,22 @@
         "es": "Éxito",
         "en": "Success"
       },
-      "error": {
-        "es": "Error",
-        "en": "Error"
-      },
       "missing_fields": {
         "es": "Completa todos los campos.",
         "en": "Please fill in all fields."
       }
     }
   },
+
   "appointments": {
+    "available_time": {
+        "es": "Horarios disponibles",
+        "en": "Available time slots"
+    },
+    "select_time": {
+        "es": "Selecciona horario",
+        "en": "Select time"
+    },
     "title": {
       "es": "Turnos",
       "en": "Appointments"
@@ -722,6 +740,10 @@
       "es": "Mis Turnos",
       "en": "My Appointments"
     },
+    "filter_by": {
+        "es": "Filtrado por",
+        "en": "Filtered by"
+    },
     "view_medical_notes": {
       "es": "Ver notas médicas",
       "en": "View medical notes"
@@ -729,6 +751,10 @@
     "cancel_button": {
       "es": "Confirmar Cancelación",
       "en": "Confirm Cancellation"
+    },
+    "reschedule": {
+      "es": "Reprogramar",
+      "en": "Reschedule"
     },
     "cancel_confirmation": {
       "es": "¿Estás seguro de que deseas cancelar este turno?",
@@ -760,10 +786,6 @@
       "cancelled": {
         "es": "Cancelado",
         "en": "Cancelled"
-      },
-      "cancel": {
-        "es": "Cancelar turno",
-        "en": "Cancel appointment"
       }
     },
     "medic_book": {
@@ -804,9 +826,18 @@
       "cancel_error": {
         "es": "No se pudo cancelar el turno",
         "en": "Could not cancel the appointment"
+      },
+      "no_assign": {
+        "es": "Sin asignar",
+        "en": "Unassigned"
+      },
+      "no_time": {
+        "es": "Sin horario disponible",
+        "en": "No available time"
       }
     }
   },
+
   "filter": {
     "title": {
       "es": "Filtrar",
@@ -816,6 +847,10 @@
       "title": {
         "es": "Filtrar por rango de fechas",
         "en": "Filter by date range"
+      },
+      "filter_by_date": {
+        "es": "Filtrar por fechas",
+        "en": "Filter by dates"
       },
       "range": {
         "es": "Selecciona el rango de fechas",
@@ -846,6 +881,10 @@
       "next": {
         "es": "Siguiente",
         "en": "Next"
+      },
+      "loading": {
+        "es": "Cargando calendario...",
+        "en": "Loading calendar..."
       },
       "days": {
         "mon": {
@@ -911,10 +950,15 @@
       "en": "Profile"
     }
   },
+
   "send_email": {
     "email": {
       "es": "Complete con su correo electrónico.",
       "en": "Complete with your email."
+    },
+    "send": {
+      "es": "Enviar correo",
+      "en": "Send email"
     },
     "alerts": {
       "email_sent": {
@@ -923,6 +967,7 @@
       }
     }
   },
+
   "change_password": {
     "title": {
       "es": "Cambiar Contraseña",
@@ -931,6 +976,10 @@
     "new_password_placeholder": {
       "es": "Nueva contraseña",
       "en": "New password"
+    },
+    "repeat_password_placeholder": {
+      "es": "Repetir nueva contraseña",
+      "en": "Repeat new password"
     },
     "save_button": {
       "es": "Guardar nueva contraseña",
@@ -965,7 +1014,7 @@
       "es": "Ingresar token",
       "en": "Enter token"
     },
-    "Request": {
+    "request": {
       "es": "Solicitar token",
       "en": "Request token"
     },
@@ -982,11 +1031,15 @@
       "en": "Verifying token"
     },
     "alerts": {
+      "token_recieived": {
+        "es": "Token recibido.",
+        "en": "Token received."
+      },
       "token_length_error": {
         "es": "El token debe tener 8 caracteres.",
         "en": "The token must be 8 characters long."
       },
-      "default_success": {
+      "success": {
         "es": "Token validado correctamente",
         "en": "Token successfully validated"
       },
@@ -996,6 +1049,7 @@
       }
     }
   },
+
   "articles": {
     "title": {
       "es": "Consejos de Salud",

@@ -10,6 +10,7 @@ import AppointmentsCalendar from '~/components/AppointmentsCalendar';
 import { useColorScheme } from 'react-native';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { BlurView } from 'expo-blur';
+import {useTranslation} from "react-i18next";
 
 // Utilidad para obtener un Date con la hora deseada
 function getDateWithTime(fecha, hora) {
@@ -29,7 +30,7 @@ export default function AppointmentsScreen({ navigation }) {
   const [activeTab, setActiveTab] = useState('upcoming');
   const appointments = useSelector((state) => state.appointments.appointmentsByUser);
   const usuarioId = useSelector((state) => state.user.usuario?.id);
-
+  const { t, i18n } = useTranslation();
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -121,14 +122,14 @@ export default function AppointmentsScreen({ navigation }) {
 
 
   return (
-    <AppContainer navigation={navigation} screenTitle="Mis Turnos" className={screenContainerClass}>
+    <AppContainer navigation={navigation} screenTitle={t('appointments.Mytitle')} className={screenContainerClass}>
       <ScrollView className={scrollContainerClass}>
         {/* Contenedor principal */}
         <View className={`rounded-lg p-4 mb-4 ${contentContainerClass}`}>
 
           {/* Header */}
           <View className="flex-row justify-between items-center mb-4">
-            <Text className={`text-lg font-semibold ${textPrimaryClass}`}>Mis Turnos</Text>
+            <Text className={`text-lg font-semibold ${textPrimaryClass}`}>{t('appointments.Mytitle')}</Text>
             <FilterButton onPress={() => setShowFilterModal(true)} />
           </View>
 
@@ -136,8 +137,8 @@ export default function AppointmentsScreen({ navigation }) {
           {(startDate || endDate) && (
             <View className="mb-2">
               <Text className={`text-sm ${textAccentClass}`}>
-                Filtrando por: {startDate ? startDate.toLocaleDateString('es-AR') : '-'}
-                {endDate ? ` al ${endDate.toLocaleDateString('es-AR')}` : ''}
+                Filtrando por: {startDate ? startDate.toLocaleDateString(i18n.language) : '-'}
+                {endDate ? ` al ${endDate.toLocaleDateString(i18n.language)}` : ''}
               </Text>
             </View>
           )}
@@ -166,13 +167,13 @@ export default function AppointmentsScreen({ navigation }) {
 
           {/* Contenido dinámico */}
           {status === 'loading' ? (
-            <Text className={`text-sm ${textSecondaryClass}`}>Cargando...</Text>
+            <Text className={`text-sm ${textSecondaryClass}`}>{t('global.alert.loading')}</Text>
           ) : activeTab === 'upcoming' ? (
             upcomingAppointments.length > 0 ? (
               upcomingAppointments.map((appt) => (
                 <View key={appt.id} className="mb-4">
                   <AppointmentCard
-                    day={new Date(appt.fecha).toLocaleDateString('es-AR', {
+                    day={new Date(appt.fecha).toLocaleDateString(i18n.language, {
                       weekday: 'short',
                       day: 'numeric',
                       month: 'short',
@@ -187,14 +188,14 @@ export default function AppointmentsScreen({ navigation }) {
                 </View>
               ))
             ) : (
-              <Text className={`text-sm ${textSecondaryClass}`}>No hay turnos próximos</Text>
+              <Text className={`text-sm ${textSecondaryClass}`}>{t('appointments.alerts.no_upcoming')}</Text>
             )
           ) : activeTab === 'past' ? (
             pastAppointments.length > 0 ? (
               pastAppointments.map((appt) => (
                 <View key={appt.id} className="mb-4">
                   <AppointmentCard
-                    day={new Date(appt.fecha).toLocaleDateString('es-AR', {
+                    day={new Date(appt.fecha).toLocaleDateString(i18n.language, {
                       day: 'numeric',
                       month: 'short',
                     })}
@@ -210,19 +211,19 @@ export default function AppointmentsScreen({ navigation }) {
                     onPress={() => navigation.navigate('MedicalNotes', { appointmentId: appt.id })}
                   >
                     <Text className={`text-sm ${textAccentClass}`}>
-                      Ver notas médicas
+                      {t('appointments.view_medical_notes')}
                     </Text>
                   </TouchableOpacity>
                 </View>
               ))
             ) : (
-              <Text className={`text-sm ${textSecondaryClass}`}>No hay turnos pasados</Text>
+              <Text className={`text-sm ${textSecondaryClass}`}>{t('appointments.alerts.no_past')}</Text>
             )
           ) : cancelledAppointments.length > 0 ? (
             cancelledAppointments.map((appt) => (
               <View key={appt.id} className="mb-4">
                 <AppointmentCard
-                  day={new Date(appt.fecha).toLocaleDateString('es-AR', {
+                  day={new Date(appt.fecha).toLocaleDateString(i18n.language, {
                     weekday: 'short',
                     day: 'numeric',
                     month: 'short',
@@ -237,7 +238,7 @@ export default function AppointmentsScreen({ navigation }) {
               </View>
             ))
           ) : (
-            <Text className={`text-sm ${textSecondaryClass}`}>No hay turnos cancelados</Text>
+            <Text className={`text-sm ${textSecondaryClass}`}>{t('appointments.alerts.no_cancelled')}</Text>
           )}
         </View>
       </ScrollView>
@@ -257,7 +258,7 @@ export default function AppointmentsScreen({ navigation }) {
             >
               <View className={modalContainerClass}>
                 <Text className={`text-lg font-bold mb-5 ${textPrimaryClass}`}>
-                  Filtrar por fechas
+                  {t('filter.filter_dates.filter_by_date')}
                 </Text>
 
                 <AppointmentsCalendar
@@ -269,10 +270,14 @@ export default function AppointmentsScreen({ navigation }) {
 
                 <View className="flex-row justify-between mt-3">
                   <Text className={textAccentClass}>
-                    {startDate ? `Inicio: ${startDate.toLocaleDateString('es-AR')}` : 'Inicio: -'}
+                    {startDate
+                      ? `${t('filter.filter_dates.start')}: ${startDate.toLocaleDateString(i18n.language)}`
+                      : `${t('filter.filter_dates.start')}: -`}
                   </Text>
                   <Text className={textAccentClass}>
-                    {endDate ? `Fin: ${endDate.toLocaleDateString('es-AR')}` : 'Fin: -'}
+                    {endDate
+                      ? `${t('filter.filter_dates.end')}: ${startDate.toLocaleDateString(i18n.language)}`
+                      : `${t('filter.filter_dates.end')}: -`}
                   </Text>
                 </View>
 
@@ -280,7 +285,7 @@ export default function AppointmentsScreen({ navigation }) {
                   className={`${buttonPrimaryClass} py-3 rounded-lg mt-5 items-center`}
                   onPress={() => setShowFilterModal(false)}
                 >
-                  <Text className={`text-base font-bold ${textWhiteClass}`}>Aplicar filtro</Text>
+                  <Text className={`text-base font-bold ${textWhiteClass}`}>{t('filter.filter_dates.apply')}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -291,7 +296,7 @@ export default function AppointmentsScreen({ navigation }) {
                     setShowFilterModal(false);
                   }}
                 >
-                  <Text className={`text-sm font-bold ${textAccentClass}`}>Limpiar filtro</Text>
+                  <Text className={`text-sm font-bold ${textAccentClass}`}>{t('filter.filter_dates.clear')}</Text>
                 </TouchableOpacity>
               </View>
             </KeyboardAvoidingView>

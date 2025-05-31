@@ -66,28 +66,39 @@ export default function ResultsScreen({ navigation }) {
     <AppContainer navigation={navigation} screenTitle="Resultados">
       <ScrollView className="p-5">
         <View className="bg-white rounded-lg p-4 mb-4 shadow-md">
-          <Text className="text-lg font-semibold text-gray-800 mb-2">Resultados Médicos</Text>
-          <Text className="text-sm text-gray-600 mb-4">Tus estudios y análisis clínicos</Text>
           <View className="flex-row justify-between items-center mb-4">
-            <Text className="text-base font-semibold text-gray-800">Estudios recientes</Text>
+            <View>
+              <Text className="text-lg font-semibold text-gray-800">Resultados Médicos</Text>
+              <Text className="text-sm text-gray-600">Estudios recientes</Text>
+            </View>
             <FilterButton onPress={() => setShowFilterModal(true)} />
           </View>
           {status === 'loading' ? (
             <Text className="text-sm text-gray-600">Cargando...</Text>
           ) : filteredResults.length > 0 ? (
-            filteredResults.map((result, index) => (
-              <View key={index} className="mb-4">
-                <AppointmentCard
-                  day={new Date(appt.fecha).toLocaleDateString('es', { weekday: 'short' })}
-                  time={appt.horaInicio}
-                  doctor={`ID: ${appt.doctorId}`}
-                  specialty={appt.nota}
-                  onPress={() => navigation.navigate('AppointmentDetail', { appointment: appt })}
-                  colorScheme={colorScheme}
-                />
+            filteredResults.map((result) => (
+              <View
+                key={result.id.toString()}
+                className="bg-blue-50 rounded-lg p-4 mb-2"
+              >
+                <Text className="text-base font-semibold text-gray-800 mb-1">
+                  {result.tipo?.toUpperCase() === 'ESTUDIO' ? 'Estudio' : 'Receta'}
+                </Text>
+                <Text className="text-sm text-gray-700 mb-1">
+                  Paciente: {result.usuario?.nombre} {result.usuario?.apellido}
+                </Text>
+                <Text className="text-sm text-gray-700 mb-1">
+                  Fecha: {result.fechaEstudio ? new Date(result.fechaEstudio).toLocaleDateString('es-AR') : '-'}
+                </Text>
+                <Text className="text-sm text-gray-700 mb-1">
+                  Nombre del Estudio: {result.nombreEstudio || '-'}
+                </Text>
+                <Text className="text-sm text-gray-700 mb-1">
+                  Link: {result.linkEstudio}
+                </Text>
                 <TouchableOpacity
-                  className="border border-blue-600 rounded-lg p-2 flex-row justify-center"
-                  onPress={() => alert(`Descargando ${result.file}`)}
+                  className="border border-blue-600 rounded-lg p-2 flex-row justify-center mt-2"
+                  onPress={() => alert(`Descargando ${result.linkEstudio}`)}
                 >
                   <Text className="text-blue-600 text-sm">Descargar</Text>
                 </TouchableOpacity>

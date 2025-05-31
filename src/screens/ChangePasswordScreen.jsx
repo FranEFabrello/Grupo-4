@@ -29,7 +29,7 @@ const ChangePasswordScreen = () => {
         t('send_email.alerts.email_sent'),
         [
           {
-            text: t('global.button.accept'),
+            text: t('send_email.send'),
           },
         ]
       );
@@ -92,7 +92,7 @@ const ChangePasswordScreen = () => {
                   await cambiarContraseniaHandler();
                 }}
               >
-                <Text className="text-white text-base font-bold">{t('token.Request')}</Text>
+                <Text className="text-white text-base font-bold">{t('token.request')}</Text>
               </TouchableOpacity>
             </>
           )}
@@ -100,7 +100,7 @@ const ChangePasswordScreen = () => {
             <>
               <TextInput
                 className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-4 bg-white"
-                placeholder="Token recibido"
+                placeholder={t('token.alerts.token_recieived')}
                 value={token}
                 onChangeText={setToken}
                 keyboardType="default"
@@ -110,7 +110,7 @@ const ChangePasswordScreen = () => {
                 className="w-full h-12 bg-blue-500 rounded-lg justify-center items-center mb-3"
                 onPress={() => validarTokenHandler(token)}
               >
-                <Text className="text-white text-base font-bold">{t('toke.verify_button')}</Text>
+                <Text className="text-white text-base font-bold">{t('token.verify_button')}</Text>
               </TouchableOpacity>
             </>
           )}
@@ -121,14 +121,14 @@ const ChangePasswordScreen = () => {
         <>
           <TextInput
             className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-4 bg-white"
-            placeholder="Nueva contraseña"
+            placeholder={t('change_password.new_password_placeholder')}
             value={nuevaContrasenia}
             onChangeText={setNuevaContrasenia}
             secureTextEntry={true}
           />
           <TextInput
             className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-4 bg-white"
-            placeholder="Repetir nueva contraseña"
+            placeholder={t('change_password.repeat_password_placeholder')}
             value={repetirContrasenia}
             onChangeText={setRepetirContrasenia}
             secureTextEntry={true}

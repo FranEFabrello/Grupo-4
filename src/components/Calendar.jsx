@@ -88,7 +88,7 @@ export default function Calendar({ availableDays = [], onSelectDate, selectedDat
         <View className="py-12 items-center justify-center">
           <ActivityIndicator size="large" color={colorScheme === 'light' ? '#2563eb' : '#60a5fa'} />
           <Text className={`mt-4 text-base ${colorScheme === 'dark' ? 'text-gray-200' : 'text-gray-600'}`}>
-            Cargando calendario...
+            {t('filter.calendar.loading')}
           </Text>
         </View>
       ) : (
