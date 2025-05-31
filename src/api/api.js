@@ -5,6 +5,7 @@ const api = axios.create({
   baseURL: 'https://app3-0.onrender.com/',
   timeout: 10000,
 });
+//baseURL: 'http://localhost:4002/', // Para pruebas locales
 
 // Interceptor para agregar token automáticamente
 api.interceptors.request.use(

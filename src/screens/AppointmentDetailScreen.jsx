@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useColorScheme } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AppContainer from '../components/AppContainer';
-import { rescheduleAppointment } from "~/store/slices/appointmentsSlice";
-import {useTranslation} from "react-i18next";
+import { rescheduleAppointment, cancelAppointment } from "~/store/slices/appointmentsSlice";
+import { useTranslation } from "react-i18next";
 
 // Utilidad para parsear fecha local (YYYY-MM-DD o YYYY-MM-DDTHH:mm:ss±hh:mm)
 function parseLocalDate(fechaStr) {
@@ -18,9 +18,6 @@ function parseLocalDate(fechaStr) {
 }
 
 export default function AppointmentDetailScreen({ route, navigation }) {
-  const { appointment } = route.params;
-  console.log('route.params:', route.params);
-  console.log('appointment:', appointment);
   const dispatch = useDispatch();
   const colorScheme = useColorScheme();
   const { status, error } = useSelector((state) => state.appointments);
@@ -32,6 +29,8 @@ export default function AppointmentDetailScreen({ route, navigation }) {
   const cardClass = colorScheme === 'light' ? 'bg-gray-50' : 'bg-gray-700';
   const borderClass = colorScheme === 'light' ? 'border-gray-100' : 'border-gray-600';
 
+  const notificacion = route.params?.notificacion;
+  const appointment = notificacion?.turno || route.params?.appointment;
 
   // Navega a la pantalla de reprogramación, pasando los datos del turno y doctor
   const handleReschedule = () => {
@@ -76,7 +75,6 @@ export default function AppointmentDetailScreen({ route, navigation }) {
   };
 
   const statusConfig = getStatusConfig(appointment.estado);
-  console.log('statusConfig:', statusConfig);
 
   const handleCancel = () => {
     Alert.alert(
@@ -112,15 +110,14 @@ export default function AppointmentDetailScreen({ route, navigation }) {
               <Text className={`text-2xl font-bold ${textClass}`}>
                 {t('appointments.medic_book')}
               </Text>
-
               {/* Badge de estado */}
               <View className={`flex-row items-center ${statusConfig.bgColor} border ${statusConfig.borderColor} px-3 py-2 rounded-full`}>
                 <Icon
                   name={statusConfig.icon}
                   size={16}
-                  color={colorScheme === 'light' ?
-                    (appointment.estado === 'CONFIRMADO' ? '#065f46' : '#991b1b') :
-                    (appointment.estado === 'CONFIRMADO' ? '#6ee7b7' : '#fca5a5')}
+                  color={colorScheme === 'light'
+                    ? (appointment.estado === 'CONFIRMADO' ? '#065f46' : '#991b1b')
+                    : (appointment.estado === 'CONFIRMADO' ? '#6ee7b7' : '#fca5a5')}
                 />
                 <Text className={`ml-2 font-medium ${statusConfig.textColor}`}>
                   {statusConfig.label}
@@ -175,7 +172,7 @@ export default function AppointmentDetailScreen({ route, navigation }) {
             </Text>
           </View>
 
-          {/* Botón de cancelar*/}
+          {/* Botón de cancelar y reprogramar */}
           {status === 'loading' ? (
             <ActivityIndicator size="large" color={colorScheme === 'light' ? '#2563EB' : '#60A5FA'} />
           ) : appointment.estado === 'CONFIRMADO' ? (
