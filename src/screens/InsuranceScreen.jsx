@@ -11,13 +11,13 @@ export default function InsuranceScreen({ navigation }) {
   const { status } = useSelector((state) => state.insurance);
   const insurance = useSelector((state) => state.insurance.insurance);
   const usuario = useSelector((state) => state.user.usuario);
-  const { t, i18n } = useTranslation();
+  const { t,i18n } = useTranslation();
 
   useEffect(() => {
     console.log("Id de la obra social: ",usuario.idObraSocial)
     if (usuario?.obraSocialId) {
       dispatch(fetchInsurance(usuario.obraSocialId));
-      console.log('InsuranceScreen: Cargando información de obra social', usuario.obraSocialId);
+      console.log('InsuranceScreen: ' + t('insurance.info_loading'), usuario.obraSocialId);
     }
   }, [dispatch, usuario?.obraSocialId]);
 
@@ -30,8 +30,8 @@ export default function InsuranceScreen({ navigation }) {
             <Text className="text-sm text-gray-600">{t('global.alert.loading')}</Text>
           ) : insurance ? (
             <>
-              <ProfileField label="Plan" value={insurance.plan} />
-              <ProfileField label="Tipo de Obra Social" value={insurance.tipoObraSocial} />
+              <ProfileField label={t('insurance.fields.plan')} value={insurance.plan} />
+              <ProfileField label={t('insurance.fields.type')} value={insurance.tipoObraSocial} />
             </>
           ) : (
             <Text className="text-sm text-gray-600">{t('insurance.no_info')}</Text>

@@ -6,10 +6,12 @@ import AppContainer from '../components/AppContainer';
 import AppointmentCard from '../components/AppointmentCard';
 import FilterButton from '../components/FilterButton';
 import DateRangeFilterModal from '../components/DateRangeFilterModal';
+import { useTranslation } from 'react-i18next';
 
 export default function ResultsScreen({ navigation }) {
   const dispatch = useDispatch();
   const { results, status } = useSelector((state) => state.results);
+  const { t } = useTranslation();
 
   // Estado para el filtro de fechas
   const [showFilterModal, setShowFilterModal] = React.useState(false);
@@ -63,18 +65,18 @@ export default function ResultsScreen({ navigation }) {
   }, [dispatch]);
 
   return (
-    <AppContainer navigation={navigation} screenTitle="Resultados">
+    <AppContainer navigation={navigation} screenTitle={t('results.screen_title')}>
       <ScrollView className="p-5">
         <View className="bg-white rounded-lg p-4 mb-4 shadow-md">
           <View className="flex-row justify-between items-center mb-4">
             <View>
-              <Text className="text-lg font-semibold text-gray-800">Resultados Médicos</Text>
-              <Text className="text-sm text-gray-600">Estudios recientes</Text>
+              <Text className="text-lg font-semibold text-gray-800">{t('results.title')}</Text>
+              <Text className="text-sm text-gray-600">{t('results.section_title')}</Text>
             </View>
             <FilterButton onPress={() => setShowFilterModal(true)} />
           </View>
           {status === 'loading' ? (
-            <Text className="text-sm text-gray-600">Cargando...</Text>
+            <Text className="text-sm text-gray-600">{t('global.alert.loading')}</Text>
           ) : filteredResults.length > 0 ? (
             filteredResults.map((result) => (
               <View
@@ -82,7 +84,7 @@ export default function ResultsScreen({ navigation }) {
                 className="bg-blue-50 rounded-lg p-4 mb-2"
               >
                 <Text className="text-base font-semibold text-gray-800 mb-1">
-                  {result.tipo?.toUpperCase() === 'ESTUDIO' ? 'Estudio' : 'Receta'}
+                  {result.tipo?.toUpperCase() === 'ESTUDIO' ? t('results.tests') : t('results.prescription')}
                 </Text>
                 <Text className="text-sm text-gray-700 mb-1">
                   Paciente: {result.usuario?.nombre} {result.usuario?.apellido}
@@ -100,12 +102,12 @@ export default function ResultsScreen({ navigation }) {
                   className="border border-blue-600 rounded-lg p-2 flex-row justify-center mt-2"
                   onPress={() => alert(`Descargando ${result.linkEstudio}`)}
                 >
-                  <Text className="text-blue-600 text-sm">Descargar</Text>
+                  <Text className="text-blue-600 text-sm">{t('results.download.button')}</Text>
                 </TouchableOpacity>
               </View>
             ))
           ) : (
-            <Text className="text-sm text-gray-600">No hay resultados disponibles</Text>
+            <Text className="text-sm text-gray-600">{t('results.download.empty')}</Text>
           )}
         </View>
       </ScrollView>

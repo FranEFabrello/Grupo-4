@@ -5,6 +5,7 @@ import { useColorScheme } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AppContainer from '../components/AppContainer';
 import { rescheduleAppointment, cancelAppointment } from "~/store/slices/appointmentsSlice";
+import AppointmentCardFullWidth from "~/components/ApptCardForApptScreen";
 import { useTranslation } from "react-i18next";
 
 // Utilidad para parsear fecha local (YYYY-MM-DD o YYYY-MM-DDTHH:mm:ss±hh:mm)

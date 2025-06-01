@@ -18,7 +18,7 @@ export default function ProfessionalsScreen({ navigation }) {
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [selectedStars, setSelectedStars] = useState(null);
   const [selectedEspecialidades, setSelectedEspecialidades] = useState([]);
-  const { t} = useTranslation();
+  const { t } = useTranslation();
 
   const especialidades = useSelector((state) => state.medicalSpecialities.specialities);
 

@@ -11,6 +11,7 @@ import { useColorScheme } from 'react-native';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { BlurView } from 'expo-blur';
 import AppointmentCardFullWidth from "~/components/ApptCardForApptScreen";
+import { useTranslation } from 'react-i18next';
 
 // Utilidad para obtener un Date con la hora deseada
 function getDateWithTime(fecha, hora) {
@@ -30,6 +31,7 @@ export default function AppointmentsScreen({ navigation }) {
   const [activeTab, setActiveTab] = useState('upcoming');
   const appointments = useSelector((state) => state.appointments.appointmentsByUser);
   const usuarioId = useSelector((state) => state.user.usuario?.id);
+  const { t, i18n } = useTranslation();
 
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [startDate, setStartDate] = useState(null);
@@ -120,6 +122,7 @@ export default function AppointmentsScreen({ navigation }) {
     : 'bg-gray-700 rounded-xl p-6 w-[90%]';
 
 
+  console.log("Traducción de prueba:", t('appointments.Mytitle'));
 
   return (
     <AppContainer navigation={navigation} screenTitle={t('appointments.Mytitle')} className={screenContainerClass}>

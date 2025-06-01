@@ -2,8 +2,6 @@ import React from 'react';
 import { View, ScrollView, Text } from 'react-native';
 import AppContainer from '../components/AppContainer';
 import QuickActions from '../components/QuickActions';
-import { useTranslation } from 'react-i18next';
-
 export default function MoreScreen({ navigation }) {
   const moreActions = [
     { icon: 'hospital-user', label: 'Obra social', screen: 'Insurance' },

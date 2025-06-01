@@ -4,7 +4,7 @@ import { enviarMensajeAyuda } from "~/store/slices/userSlice";
 import { Alert, TextInput, TouchableOpacity, View, Text } from 'react-native';
 import AppContainer from "~/components/AppContainer";
 import { useNavigation } from '@react-navigation/native';
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 
 export default function HelpNeeded() {
   const navigation = useNavigation();
