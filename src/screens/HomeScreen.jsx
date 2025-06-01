@@ -21,7 +21,8 @@ export default function HomeScreen({ navigation }) {
   const { professionals, status: professionalsStatus } = useSelector((state) => state.professionals);
   const usuario = useSelector((state) => state.user.usuario);
   const specialities = useSelector((state) => state.medicalSpecialities.specialities);
-  const { t, i18n } = useTranslation();
+  const { t,i18n } = useTranslation();
+
 
   useEffect(() => {
     if (!professionals || professionals.length === 0) {
@@ -39,16 +40,17 @@ export default function HomeScreen({ navigation }) {
   }, [dispatch]);
 
   const quickActions = [
-    { icon: 'calendar-plus', labelKey: 'book_appointment.title', screen: 'BookAppointment' },
-    { icon: 'calendar-alt', labelKey: 'appointments.Mytitle', screen: 'Appointments' },
-    { icon: 'file-medical', labelKey: 'home.quick_actions.results', screen: 'Results' },
-    { icon: 'hospital-user', labelKey: 'home.quick_actions.insurance', screen: 'Insurance' },
+    { icon: 'calendar-plus', label: t('book_appointment.title'), screen: 'BookAppointment' },
+    { icon: 'calendar-alt', label: t('appointments.Mytitle'), screen: 'Appointments' },
+    { icon: 'file-medical', label: t('home.quick_actions.results'), screen: 'Results' },
+    { icon: 'hospital-user', label: t('home.quick_actions.insurance'), screen: 'Insurance' },
   ];
 
   const now = new Date();
   const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
   const endOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 6, 23, 59, 59, 999);
 
+  // Ajuste: considerar la zona horaria y formato de fecha
   const upcomingAppointments = (appointments || [])
     .filter((appt) => {
       const apptDate = new Date(appt.fecha);
@@ -60,7 +62,7 @@ export default function HomeScreen({ navigation }) {
       );
     })
     .sort((a, b) => new Date(a.fecha + 'T' + a.horaInicio) - new Date(b.fecha + 'T' + b.horaInicio))
-    .slice(0, 3);
+    .slice(0,3);
 
   const containerClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-800';
   const cardClass = colorScheme === 'light' ? 'bg-blue-50' : 'bg-gray-700';
@@ -68,6 +70,8 @@ export default function HomeScreen({ navigation }) {
   const secondaryTextClass = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-400';
   const primaryButtonClass = colorScheme === 'light' ? 'bg-blue-600' : 'bg-blue-700';
   const linkClass = colorScheme === 'light' ? 'text-blue-600' : 'text-blue-400';
+
+
 
   return (
     <AppContainer navigation={navigation} screenTitle="MediBook">
@@ -137,10 +141,9 @@ export default function HomeScreen({ navigation }) {
             {t('home.featured_doctors.view_all')}
           </Text>
         </View>
-
         <View className={`rounded-lg p-4 pb-1 mb-4 shadow-md ${cardClass}`}>
           <ScrollView horizontal className="mb-4 h-48" showsHorizontalScrollIndicator={false}>
-            <View className="flex-row px-2" style={{ overflow: 'visible' }}>
+            <View className="flex-row px-2" style={{overflow: 'visible'}}>
               {professionalsStatus === 'loading' ? (
                 <Text className={`text-sm ${secondaryTextClass}`}>{t('global.alert.loading')}</Text>
               ) : professionals.slice(0, 3).map((doctor) => (

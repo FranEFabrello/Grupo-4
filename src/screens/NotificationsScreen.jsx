@@ -30,7 +30,7 @@ const NotificationsScreen = ({ navigation }) => {
   };
 
   return (
-    <AppContainer navigation={navigation} screenTitle={t('notifications.title')}>
+    <AppContainer navigation={navigation} screenTitle={t('notification.title')}>
       <View className="flex-1 bg-gray-50 p-4">
         {loading && <ActivityIndicator size="large" color="#2563eb" />}
         {error && <Text className="text-red-500 mb-4">{error}</Text>}
@@ -60,8 +60,16 @@ const NotificationsScreen = ({ navigation }) => {
                     {item.tipoNotificacion === "CONFIRMACION_TURNO"
                       ? t('notification.book_confirmation')
                       : item.tipoNotificacion === "CANCELACION_TURNO"
-                        ? t('notification.cancel_confirmation')
-                        : item.tipoNotificacion}
+                      ? t('notification.cancel_confirmation')
+                      : item.tipoNotificacion === "ESTUDIOS_ENVIADOS"
+                      ? t('notification.test_send')
+                      : item.tipoNotificacion === "REPROGRAMACION_TURNO"
+                      ? t('notification.rescheduel_appointment')
+                      : item.tipoNotificacion === "RECETA_MEDICA"
+                      ? t('notification.medical_note')
+                      : item.tipoNotificacion === "RECETA_ENVIADA"
+                      ? t('notification.medical_note_send')
+                      : item.tipoNotificacion}
                   </Text>
                   <Text className="text-gray-700">{item.mensaje}</Text>
                   <View className="flex-row items-center mt-1">
@@ -71,7 +79,7 @@ const NotificationsScreen = ({ navigation }) => {
                         onPress={() => marcarNotificacionLeidaHandler(item.id)}
                       >
                         <MaterialCommunityIcons name="check" size={18} color="#22c55e" />
-                        <Text className="ml-1 text-green-600 text-xs">Marcar como leída</Text>
+                        <Text className="ml-1 text-green-600 text-xs">{t('notification.read_button')}</Text>
                       </TouchableOpacity>
                     ) : item.estado?.toLowerCase() === "no_leída" ? (
                       <>

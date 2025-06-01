@@ -11,7 +11,7 @@ import { useColorScheme } from 'react-native';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { BlurView } from 'expo-blur';
 import AppointmentCardFullWidth from "~/components/ApptCardForApptScreen";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 
 // Utilidad para obtener un Date con la hora deseada
 function getDateWithTime(fecha, hora) {
@@ -121,10 +121,8 @@ export default function AppointmentsScreen({ navigation }) {
     ? 'bg-white rounded-xl p-6 w-[90%]'
     : 'bg-gray-700 rounded-xl p-6 w-[90%]';
 
-
-
   return (
-    <AppContainer navigation={navigation} screenTitle= {t('appointments.Mytitle')} className={screenContainerClass}>
+    <AppContainer navigation={navigation} screenTitle={t('appointments.Mytitle')} className={screenContainerClass}>
       <ScrollView className={scrollContainerClass}>
         {/* Contenedor principal */}
         <View className={`rounded-lg p-4 mb-4 ${contentContainerClass}`}>
@@ -140,7 +138,7 @@ export default function AppointmentsScreen({ navigation }) {
             <View className="mb-2">
               <Text className={`text-sm ${textAccentClass}`}>
                 Filtrando por: {startDate ? startDate.toLocaleDateString(i18n.language) : '-'}
-                {endDate ? ` al ${endDate.toLocaleDateString(i18n.language)}` : ''}
+                {endDate ? t('filter.till') + ' ' + endDate.toLocaleDateString(i18n.language) : ''}
               </Text>
             </View>
           )}
@@ -175,7 +173,7 @@ export default function AppointmentsScreen({ navigation }) {
               upcomingAppointments.map((appt) => (
                 <View key={appt.id} className="mb-4">
                   <AppointmentCard
-                    day={new Date(appt.fecha).toLocaleDateString('es-AR', {
+                    day={new Date(appt.fecha).toLocaleDateString(i18n.language, {
                       weekday: 'short',
                       day: 'numeric',
                       month: 'short',

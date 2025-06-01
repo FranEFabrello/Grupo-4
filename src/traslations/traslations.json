@@ -955,6 +955,10 @@
       "es": "Filtrar",
       "en": "Filter"
     },
+    "till": {
+        "es": "al",
+        "en": "to"
+    },
     "filter_dates": {
       "title": {
         "es": "Filtrar por rango de fechas",
@@ -1299,6 +1303,22 @@
       "es": "Cancelación de turno",
       "en": "Your appointment cancellation"
     },
+    "test_send":{
+        "es": "Resultados de estudios enviados",
+        "en": "Test results sent"
+    },
+    "rescheduel_appointment": {
+      "es": "Reprogramación de turno",
+      "en": "Appointment rescheduling"
+    },
+    "medical_note": {
+      "es": "Receta médica",
+      "en": "Medical prescription"
+    },
+    "medical_note_send": {
+      "es": "Receta médica recivida",
+      "en": "Medical prescription received"
+    },
     "type": {
       "read": {
         "es": "Leído",
@@ -1308,6 +1328,10 @@
         "es": "No leído",
         "en": "Unread"
       }
+    },
+    "read_button": {
+      "es": "Marcar como leído",
+      "en": "Mark as read"
     }
   },
 
