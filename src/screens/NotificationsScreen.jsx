@@ -75,7 +75,7 @@ const NotificationsScreen = ({ navigation }) => {
                       </TouchableOpacity>
                     ) : item.estado?.toLowerCase() === "no_leída" ? (
                       <>
-                        <Text className="text-xs text-blue-600">No leído</Text>
+                        <Text className="text-xs text-blue-600">{t('notification.type.unread')}</Text>
                         <TouchableOpacity
                           className="ml-2"
                           onPress={() => setSelectedNotificationId(item.id)}
@@ -84,7 +84,7 @@ const NotificationsScreen = ({ navigation }) => {
                         </TouchableOpacity>
                       </>
                     ) : (
-                      <Text className="text-xs text-gray-400">Leído</Text>
+                      <Text className="text-xs text-gray-400">{t('notification.type.read')}</Text>
                     )}
                   </View>
                 </View>
