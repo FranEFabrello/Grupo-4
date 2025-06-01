@@ -120,7 +120,7 @@ export default function UserProfileScreen({ navigation }) {
         contentContainerStyle={{ paddingBottom: insets.bottom + 20 }}
       >
         {status === 'loading' ? (
-          <Text className="text-sm text-gray-600">Cargando...</Text>
+          <Text className="text-sm text-gray-600">{t('global.alert.loading')}</Text>
         ) : status === 'failed' ? (
           <View>
             <Text className="text-sm text-red-600">Error al cargar el perfil: {error || 'Network error'}</Text>
@@ -138,7 +138,7 @@ export default function UserProfileScreen({ navigation }) {
             <View className="bg-white rounded-lg p-4 mb-4 shadow-md">
               <Text className="text-base font-semibold text-gray-800 mb-4">Editar Información Personal</Text>
 
-              <Text className="text-sm text-gray-800 mt-2">Nombre</Text>
+              <Text className="text-sm text-gray-800 mt-2">{t('register.placeholder.nombre')}</Text>
               <TextInput
                 className="border-b border-gray-300 mb-2"
                 value={nombre}
@@ -147,7 +147,7 @@ export default function UserProfileScreen({ navigation }) {
                 style={{ color: editable ? '#1a202c' : '#a0aec0' }}
               />
 
-              <Text className="text-sm text-gray-800">Apellido</Text>
+              <Text className="text-sm text-gray-800">{t('register.placeholder.apellido')}</Text>
               <TextInput
                 className="border-b border-gray-300 mb-2"
                 value={apellido}
@@ -156,7 +156,7 @@ export default function UserProfileScreen({ navigation }) {
                 style={{ color: editable ? '#1a202c' : '#a0aec0' }}
               />
 
-              <Text className="text-sm text-gray-800">DNI</Text>
+              <Text className="text-sm text-gray-800">{t('register.placeholder.dni')}</Text>
               <TextInput
                 className="border-b border-gray-300 mb-2"
                 value={dni}
@@ -165,7 +165,7 @@ export default function UserProfileScreen({ navigation }) {
                 style={{ color: editable ? '#1a202c' : '#a0aec0' }}
               />
 
-              <Text className="text-sm text-gray-800">Celular</Text>
+              <Text className="text-sm text-gray-800">{t('register.placeholder.celular')}</Text>
               <TextInput
                 className="border-b border-gray-300 mb-2"
                 value={celular}
@@ -174,7 +174,7 @@ export default function UserProfileScreen({ navigation }) {
                 style={{ color: editable ? '#1a202c' : '#a0aec0' }}
               />
 
-              <Text className="text-sm text-gray-800">Género</Text>
+              <Text className="text-sm text-gray-800">{t('register.placeholder.genero')}</Text>
               <View className="border-b border-gray-300 mb-2">
                 <Picker
                   selectedValue={genero}
@@ -205,7 +205,7 @@ export default function UserProfileScreen({ navigation }) {
                 className="bg-red-500 rounded-lg p-3 flex-row justify-center"
                 onPress={() => {handleLogout()}}
               >
-                <Text className="text-white text-sm">Cerrar sesión</Text>
+                <Text className="text-white text-sm">{t('user.buttons.logout')}</Text>
 
               </TouchableOpacity>
             </View>

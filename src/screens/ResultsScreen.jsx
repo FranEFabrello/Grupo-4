@@ -68,13 +68,13 @@ export default function ResultsScreen({ navigation }) {
         <View className="bg-white rounded-lg p-4 mb-4 shadow-md">
           <View className="flex-row justify-between items-center mb-4">
             <View>
-              <Text className="text-lg font-semibold text-gray-800">Resultados Médicos</Text>
-              <Text className="text-sm text-gray-600">Estudios recientes</Text>
+              <Text className="text-lg font-semibold text-gray-800">{t('results.title')}</Text>
+              <Text className="text-sm text-gray-600">{t('results.section_title')}</Text>
             </View>
             <FilterButton onPress={() => setShowFilterModal(true)} />
           </View>
           {status === 'loading' ? (
-            <Text className="text-sm text-gray-600">Cargando...</Text>
+            <Text className="text-sm text-gray-600">{t('global.alert.loading')}</Text>
           ) : filteredResults.length > 0 ? (
             filteredResults.map((result) => (
               <View
@@ -100,12 +100,12 @@ export default function ResultsScreen({ navigation }) {
                   className="border border-blue-600 rounded-lg p-2 flex-row justify-center mt-2"
                   onPress={() => alert(`Descargando ${result.linkEstudio}`)}
                 >
-                  <Text className="text-blue-600 text-sm">Descargar</Text>
+                  <Text className="text-blue-600 text-sm">{t('results.download.button')}</Text>
                 </TouchableOpacity>
               </View>
             ))
           ) : (
-            <Text className="text-sm text-gray-600">No hay resultados disponibles</Text>
+            <Text className="text-sm text-gray-600">{t('results.empty')}</Text>
           )}
         </View>
       </ScrollView>

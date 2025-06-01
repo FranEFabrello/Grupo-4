@@ -394,6 +394,10 @@
       "celular": {
         "es": "Celular (11 1234 5678)",
         "en": "Phone (11 1234 5678)"
+      },
+      "genero": {
+        "es": "Género",
+        "en": "Gender"
       }
     },
     "genero": {
