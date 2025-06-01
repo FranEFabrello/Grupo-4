@@ -14,11 +14,13 @@ import ProfileField from '../components/ProfileField';
 import Calendar from '../components/Calendar';
 import TimeSlot from '../components/TimeSlot';
 import { fetchSpecialities } from "~/store/slices/medicalSpecialitiesSlice";
+import { useTranslation } from "react-i18next";
 
 export default function BookAppointmentScreen({ navigation, route }) {
   const { professionalId } = route.params || {};
   const dispatch = useDispatch();
   const colorScheme = useColorScheme();
+  const { t,i18n} = useTranslation();
 
   const professionals = useSelector((state) => state.professionals.professionals);
   const { availableDays, availableTimeSlots, status } = useSelector((state) => state.appointments);
@@ -109,18 +111,18 @@ export default function BookAppointmentScreen({ navigation, route }) {
       dispatch(bookAppointment(payload))
         .unwrap()
         .then(() => {
-          setModalMessage('¡Turno confirmado exitosamente!');
+          setModalMessage(t('appontmets.alerts.confirmation'));
           setModalSuccess(true);
           setModalVisible(true);
         })
         .catch(() => {
-          setModalMessage('Error al confirmar el turno');
+          setModalMessage(t('book_appontment.alerts.error'));
           setModalSuccess(false);
           setModalVisible(true);
         })
         .finally(() => setLoading(false));
     } else {
-      setModalMessage('Por favor, completa todos los campos');
+      setModalMessage(t('book_appontment.alerts.missing_fields'));
       setModalSuccess(false);
       setModalVisible(true);
     }
@@ -132,14 +134,14 @@ export default function BookAppointmentScreen({ navigation, route }) {
   const primaryButtonClass = colorScheme === 'light' ? 'bg-blue-500 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700';
 
   return (
-    <AppContainer navigation={navigation} screenTitle="Reservar Turno">
+    <AppContainer navigation={navigation} screenTitle={t('home.quick_actions.book')}>
       <Animated.View style={{ opacity: fadeAnim, flex: 1 }}>
         <View style={{ flex: 1 }}>
           <ScrollView className="p-6" contentContainerStyle={{ paddingBottom: 100 }} keyboardShouldPersistTaps="handled">
             <View className={`rounded-2xl p-8 w-full ${cardClass}`}>
-              <Text className={`text-xl font-bold mb-6 ${textClass}`}>Reservar Turno</Text>
+              <Text className={`text-xl font-bold mb-6 ${textClass}`}>{t('home.quick_actions.book')}</Text>
               <ProfileField
-                label="Especialidad"
+                label={t('book_appointment.fields.specialty')}
                 type="picker"
                 value={specialty}
                 onChange={handleSpecialtyChange}
@@ -149,7 +151,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
               />
               {specialty && (
                 <ProfileField
-                  label="Profesional"
+                  label={t('book_appointment.fields.professional')}
                   type="picker"
                   value={professional}
                   onChange={handleProfessionalChange}
@@ -161,7 +163,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
               )}
               {professional && (
                 <View>
-                  <Text className={`text-lg font-semibold mt-8 mb-3 ${textClass}`}>Seleccionar Fecha</Text>
+                  <Text className={`text-lg font-semibold mt-8 mb-3 ${textClass}`}>{t('book_appointment.select_date')}</Text>
                   <TouchableOpacity
                     className={`rounded-xl border ${colorScheme === 'light' ? 'border-blue-200 bg-blue-50' : 'border-blue-700 bg-blue-900'} px-4 py-3 mb-8 w-full items-center`}
                     onPress={() => setCalendarModalVisible(true)}
@@ -169,7 +171,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
                     <Text
                       className={`text-base ${selectedDate ? (colorScheme === 'light' ? 'text-blue-900 font-semibold' : 'text-white font-semibold') : 'text-gray-400'} text-center`}
                     >
-                      {selectedDate ? selectedDate : 'Elegir fecha'}
+                      {selectedDate ? selectedDate : t('book_appointment.choose_date')}
                     </Text>
                   </TouchableOpacity>
                   <Modal
@@ -195,12 +197,12 @@ export default function BookAppointmentScreen({ navigation, route }) {
                           className={`mt-4 px-6 py-3 rounded-xl ${colorScheme === 'light' ? 'bg-gray-200' : 'bg-gray-700'} items-center`}
                           onPress={() => setCalendarModalVisible(false)}
                         >
-                          <Text className={`text-base font-semibold ${colorScheme === 'light' ? 'text-gray-700' : 'text-gray-200'}`}>Cerrar</Text>
+                          <Text className={`text-base font-semibold ${colorScheme === 'light' ? 'text-gray-700' : 'text-gray-200'}`}>{t('global.button.close')}</Text>
                         </TouchableOpacity>
                       </View>
                     </View>
                   </Modal>
-                  <Text className={`text-lg font-semibold mt-8 mb-3 ${textClass}`}>Horarios Disponibles</Text>
+                  <Text className={`text-lg font-semibold mt-8 mb-3 ${textClass}`}>{t('book_appointment.available_times')}</Text>
                   <View className="mb-8">
                     {status === 'loading' ? (
                       <ActivityIndicator size="large" color={colorScheme === 'light' ? '#2563eb' : '#60a5fa'} />
@@ -215,7 +217,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
                         />
                       ))
                     ) : (
-                      <Text className={`text-base ${secondaryTextClass}`}>No hay horarios disponibles</Text>
+                      <Text className={`text-base ${secondaryTextClass}`}>{t('book_appointment.no_times')}</Text>
                     )}
                   </View>
                 </View>
@@ -235,7 +237,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
                   <ActivityIndicator color="#fff" />
                 ) : (
                   <Text className="text-white text-lg font-bold">
-                    Confirmar turno a las {formatTimeSlot(selectedTime)}
+                    {t('book_appointment.confirm_button.with_time')} {formatTimeSlot(selectedTime)}
                   </Text>
                 )}
               </TouchableOpacity>

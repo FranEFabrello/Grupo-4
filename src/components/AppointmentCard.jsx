@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { useTranslation } from "react-i18next";
 
 export default function AppointmentCard({
                                           day,
@@ -14,6 +15,7 @@ export default function AppointmentCard({
                                         }) {
   const cardBgClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-800';
   const dateBgClass = colorScheme === 'light' ? bgColor : 'bg-blue-900';
+  const { t,i18n} = useTranslation();
   const dateTextClass = colorScheme === 'light' ? 'text-blue-600' : 'text-blue-300';
   const doctorTextClass = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
   const specialtyTextClass = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-400';
@@ -31,7 +33,10 @@ export default function AppointmentCard({
             <Text className={`text-sm ${specialtyTextClass}`}>{specialty}</Text>
             {status && (
               <Text className={`text-xs ${specialtyTextClass}`}>
-                Estado: {status}
+                {t('appointments.status.title')}
+                {status === 'CANCELADO'
+                  ? i18n.language === 'es' ? 'Cancelado' : 'Cancelled'
+                  : i18n.language === 'es' ? 'Confirmado' : 'Confirmed'}
               </Text>
             )}
           </View>

@@ -45,6 +45,10 @@
       "es": "Seleccionar fecha",
       "en": "Select date"
     },
+    "choose_date": {
+      "es": "Elegir fecha",
+      "en": "Choose date"
+    },
     "available_times": {
       "es": "Horarios disponibles",
       "en": "Available time slots"
@@ -246,6 +250,10 @@
     "search": {
       "es": "Buscar profesional...",
       "en": "Search professional..."
+    },
+    "specialty_search": {
+      "es": "Buscar por especialidad...",
+      "en": "Search by specialty..."
     },
     "filter": {
       "es": "Filtrar profesionales",
@@ -553,8 +561,23 @@
         "es": "Descargando {{file}}",
         "en": "Downloading {{file}}"
       }
+    },
+    "info": {
+      "patient": {
+        "es": "Paciente: ",
+        "en": "Patient: "
+      },
+      "date": {
+        "es": "Fecha: ",
+        "en": "Date: "
+      },
+      "test_name": {
+        "es": "Nombre del estudio: ",
+        "en": "Test name: "
+      }
     }
   },
+
   "user_profile": {
     "screen_title": {
       "es": "Mi Perfil",
@@ -799,6 +822,16 @@
         "es": "Horarios disponibles",
         "en": "Available time slots"
     },
+    "status": {
+      "title": {
+        "es": "Estado: ",
+        "en": "Status: "
+      },
+      "status": {
+        "confirmado": "Confirmed",
+        "cancelado": "Cancelled"
+      }
+    },
     "success": {
         "es": "Turno reservado exitosamente",
         "en": "Appointment successfully booked"
@@ -909,6 +942,10 @@
       "no_time": {
         "es": "Sin horario disponible",
         "en": "No available time"
+      },
+      "confirmation": {
+        "es": "¡Turno confirmado exitosamente!",
+        "en": "Appointment successfully confirmed!"
       }
     }
   },

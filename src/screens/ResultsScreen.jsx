@@ -87,20 +87,20 @@ export default function ResultsScreen({ navigation }) {
                   {result.tipo?.toUpperCase() === 'ESTUDIO' ? t('results.tests') : t('results.prescription')}
                 </Text>
                 <Text className="text-sm text-gray-700 mb-1">
-                  Paciente: {result.usuario?.nombre} {result.usuario?.apellido}
+                  {t('results.info.patient')} {result.usuario?.nombre} {result.usuario?.apellido}
                 </Text>
                 <Text className="text-sm text-gray-700 mb-1">
-                  Fecha: {result.fechaEstudio ? new Date(result.fechaEstudio).toLocaleDateString('es-AR') : '-'}
+                  {t('results.info.date')} {result.fechaEstudio ? new Date(result.fechaEstudio).toLocaleDateString('es-AR') : '-'}
                 </Text>
                 <Text className="text-sm text-gray-700 mb-1">
-                  Nombre del Estudio: {result.nombreEstudio || '-'}
+                  {t('results.info.test_name')} {result.nombreEstudio || '-'}
                 </Text>
                 <Text className="text-sm text-gray-700 mb-1">
                   Link: {result.linkEstudio}
                 </Text>
                 <TouchableOpacity
                   className="border border-blue-600 rounded-lg p-2 flex-row justify-center mt-2"
-                  onPress={() => alert(`Descargando ${result.linkEstudio}`)}
+                  onPress={() => alert(t('medical_note.alert.download_alert') + '${result.linkEstudio}')}
                 >
                   <Text className="text-blue-600 text-sm">{t('results.download.button')}</Text>
                 </TouchableOpacity>

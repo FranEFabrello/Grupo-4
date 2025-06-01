@@ -65,7 +65,7 @@ export default function ProfessionalsScreen({ navigation }) {
               />
               <TextInput
                 className="bg-gray-100 rounded-full pl-10 pr-4 py-2"
-                placeholder="Buscar profesional..."
+                placeholder={t('professionals.search')}
                 value={searchQuery}
                 onChangeText={setSearchQuery}
               />
@@ -146,7 +146,7 @@ export default function ProfessionalsScreen({ navigation }) {
                   paddingVertical: 6,
                   flex: 1,
                 }}
-                placeholder="Buscar especialidad..."
+                placeholder={t('professionals.specialty_search')}
                 value={especialidadSearchQuery}
                 onChangeText={setEspecialidadSearchQuery}
               />
