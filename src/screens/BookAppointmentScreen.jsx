@@ -109,18 +109,18 @@ export default function BookAppointmentScreen({ navigation, route }) {
       dispatch(bookAppointment(payload))
         .unwrap()
         .then(() => {
-          setModalMessage('¡Turno confirmado exitosamente!');
+          setModalMessage(t('book_appointments.alerts.success'));
           setModalSuccess(true);
           setModalVisible(true);
         })
         .catch(() => {
-          setModalMessage('Error al confirmar el turno');
+          setModalMessage(t('book_appointments.alerts.error'));
           setModalSuccess(false);
           setModalVisible(true);
         })
         .finally(() => setLoading(false));
     } else {
-      setModalMessage('Por favor, completa todos los campos');
+      setModalMessage(t('book_appointments.alerts.missing_fields'));
       setModalSuccess(false);
       setModalVisible(true);
     }
@@ -137,7 +137,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
         <View style={{ flex: 1 }}>
           <ScrollView className="p-6" contentContainerStyle={{ paddingBottom: 100 }} keyboardShouldPersistTaps="handled">
             <View className={`rounded-2xl p-8 w-full ${cardClass}`}>
-              <Text className={`text-xl font-bold mb-6 ${textClass}`}>Reservar Turno</Text>
+              <Text className={`text-xl font-bold mb-6 ${textClass}`}>{t('book_appointments.title')}</Text>
               <ProfileField
                 label="Especialidad"
                 type="picker"
@@ -200,7 +200,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
                       </View>
                     </View>
                   </Modal>
-                  <Text className={`text-lg font-semibold mt-8 mb-3 ${textClass}`}>Horarios Disponibles</Text>
+                  <Text className={`text-lg font-semibold mt-8 mb-3 ${textClass}`}>{t('book_appointments.available_times')}</Text>
                   <View className="mb-8">
                     {status === 'loading' ? (
                       <ActivityIndicator size="large" color={colorScheme === 'light' ? '#2563eb' : '#60a5fa'} />
@@ -215,7 +215,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
                         />
                       ))
                     ) : (
-                      <Text className={`text-base ${secondaryTextClass}`}>No hay horarios disponibles</Text>
+                      <Text className={`text-base ${secondaryTextClass}`}>{t('book_appointments.no_times')}</Text>
                     )}
                   </View>
                 </View>
