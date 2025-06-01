@@ -6,11 +6,11 @@ import { useTranslation } from 'react-i18next';
 
 export default function MoreScreen({ navigation }) {
   const moreActions = [
-    { icon: 'hospital-user', label: 'Obra social', screen: 'Insurance' },
-    { icon: 'file-medical', label: 'Resultados médicos', screen: 'Results' },
-    { icon: 'question-circle', label: 'Ayuda', screen: '' },
-    { icon: 'shield-alt', label: 'Privacidad', screen: '' },
-    { icon: 'cog', label: 'Configuración', screen: 'Profile' },
+    { icon: 'hospital-user', label: t('insurance.screen_title'), screen: 'Insurance' },
+    { icon: 'file-medical', label: t('results.title'), screen: 'Results' },
+    { icon: 'question-circle', label: t('help.title'), screen: '' },
+    { icon: 'shield-alt', label: t('more.menu.privacy'), screen: '' },
+    { icon: 'cog', label: t('more.menu.settings'), screen: 'Profile' },
   ];
   const { t} = useTranslation();
 
