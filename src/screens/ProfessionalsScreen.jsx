@@ -53,7 +53,7 @@ export default function ProfessionalsScreen({ navigation }) {
       <ScrollView className="p-5">
         <View className="bg-white rounded-lg p-4 mb-4 shadow-md">
           <Text className="text-lg font-semibold text-gray-800 mb-4">
-            Profesionales
+            {t('professionals.title')}
           </Text>
           <View className="flex-row items-center mb-4">
             <View className="flex-1 relative">
