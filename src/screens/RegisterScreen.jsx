@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchObrasSociales } from "~/store/slices/socialWorksSlice";
 import { register } from '~/store/slices/autheticationSlice';
 import { uploadImageToFirebase } from "~/api/FirebaseConfig";
+import { useTranslation } from 'react-i18next';
 
 export default function RegisterScreen({ navigation }) {
   // Paso y estados de campos
@@ -34,6 +35,7 @@ export default function RegisterScreen({ navigation }) {
   const [idObraSocial, setIdObraSocial] = useState('');
   const [urlimagenperfil, Seturlimagenperfil] = useState(null);
   const [errores, setErrores] = useState({});
+  const { t } = useTranslation();
 
   const obrasSociales = useSelector((state) => state.socialWork.obrasSociales);
   const dispatch = useDispatch();
@@ -59,15 +61,15 @@ export default function RegisterScreen({ navigation }) {
   // Validaciones paso 1
   const validarPaso1 = () => {
     let err = {};
-    if (!nombre) err.nombre = 'El nombre es obligatorio';
-    if (!apellido) err.apellido = 'El apellido es obligatorio';
-    if (!correo || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(correo)) err.correo = 'Correo inválido';
-    if (!contrasenia || contrasenia.length < 6) err.contrasenia = 'Mínimo 6 caracteres';
-    if (contrasenia !== repetirContrasenia) err.repetirContrasenia = 'Las contraseñas no coinciden';
-    if (!dni) err.dni = 'El DNI es obligatorio';
-    if (!genero) err.genero = 'Selecciona un género';
-    if (!fechaNacimiento) err.fechaNacimiento = 'La fecha es obligatoria';
-    if (!edad || isNaN(edad)) err.edad = 'Edad inválida';
+    if (!nombre) err.nombre = t('register.errors.name');
+    if (!apellido) err.apellido = t('register.errors.lastName');
+    if (!correo || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(correo)) err.correo = t('register.errors.email');
+    if (!contrasenia || contrasenia.length < 6) err.contrasenia = t('register.errors.password');
+    if (contrasenia !== repetirContrasenia) err.repetirContrasenia = t('register.errors.repeat_password');
+    if (!dni) err.dni = t('register.errors.repeat_password');
+    if (!genero) err.genero = t('register.errors.gender');
+    if (!fechaNacimiento) err.fechaNacimiento = t('register.errors.birth_date');
+    if (!edad || isNaN(edad)) err.edad = t('register.errors.age');
     setErrores(err);
     return Object.keys(err).length === 0;
   };
@@ -75,8 +77,8 @@ export default function RegisterScreen({ navigation }) {
   // Validaciones paso 2
   const validarPaso2 = () => {
     let err = {};
-    if (!celular) err.celular = 'El celular es obligatorio', console.log(err);
-    if (!obraSocial) err.obraSocial = 'La obra social es obligatoria', console.log(err);
+    if (!celular) err.celular = t('register.errors.phone'), console.log(err);
+    if (!obraSocial) err.obraSocial = t('register.errors.insurance'), console.log(err);
     setErrores(err);
     return Object.keys(err).length === 0;
   };
@@ -117,7 +119,7 @@ export default function RegisterScreen({ navigation }) {
       })
       .catch((error) => {
         console.error("Error en el registro:", error);
-        Alert.alert('Error en el registro', JSON.stringify(error));
+        Alert.alert(t('register.errors.default_error'), JSON.stringify(error));
       });
   };
 
@@ -126,7 +128,7 @@ export default function RegisterScreen({ navigation }) {
       // Solicitar permisos para acceder a la galería
       const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (!permissionResult.granted) {
-        Alert.alert('Permiso denegado', 'Se necesita permiso para acceder a la galería.');
+        Alert.alert(t('global.alert.denied_access'), t('global.alert.denied_access_message'));
         return;
       }
 
@@ -141,7 +143,7 @@ export default function RegisterScreen({ navigation }) {
       await handleImageChange(result);
     } catch (error) {
       console.error('Error al seleccionar la imagen:', error);
-      Alert.alert('Error', 'No se pudo seleccionar la imagen');
+      Alert.alert('Error', t('global.alert.no_selected_image'));
     }
   };
 
@@ -156,7 +158,7 @@ export default function RegisterScreen({ navigation }) {
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} className="flex-1">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
         <View className="flex-1 justify-center items-center p-5 bg-gray-100">
-          <Text className="text-2xl font-bold mb-5 text-gray-800">Crear Cuenta</Text>
+          <Text className="text-2xl font-bold mb-5 text-gray-800">{t('')}</Text>
           {step === 1 ? (
             <>
               <TextInput className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-2 bg-white" placeholder="Nombre" value={nombre} onChangeText={setNombre} />

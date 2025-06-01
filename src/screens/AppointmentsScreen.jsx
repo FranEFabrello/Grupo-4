@@ -280,7 +280,7 @@ export default function AppointmentsScreen({ navigation }) {
                 className={`${buttonPrimaryClass} py-3 rounded-lg mt-5 items-center`}
                 onPress={() => setShowFilterModal(false)}
               >
-                <Text className={`text-base font-bold ${textWhiteClass}`}>{t('filter.filter_dates.apply')}</Text>
+                <Text className={`text-base font-bold ${textWhiteClass}`}>Aplicar filtro</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -291,7 +291,7 @@ export default function AppointmentsScreen({ navigation }) {
                   setShowFilterModal(false);
                 }}
               >
-                <Text className={`text-sm font-bold ${textAccentClass}`}>{t('filter.filter_dates.clear')}</Text>
+                <Text className={`text-sm font-bold ${textAccentClass}`}>Limpiar filtro</Text>
               </TouchableOpacity>
             </View>
           </KeyboardAvoidingView>

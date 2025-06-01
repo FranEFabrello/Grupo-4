@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, ScrollView, Alert, Linking } from 'react-
 import { useColorScheme } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AppContainer from '../components/AppContainer';
+import { useTranslation } from 'react-i18next';
 
 export default function MedicalNotesScreen({ route, navigation }) {
   const { appointment } = route.params;
@@ -12,32 +13,33 @@ export default function MedicalNotesScreen({ route, navigation }) {
   const textClass = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
   const labelClass = colorScheme === 'light' ? 'text-blue-600' : 'text-blue-400';
   const cardClass = colorScheme === 'light' ? 'bg-gray-50' : 'bg-gray-700';
+  const { t,i18n } = useTranslation();
 
   const handleDownload = () => {
     if (appointment.archivoAdjunto) {
       Linking.openURL(appointment.archivoAdjunto).catch(() => {
-        Alert.alert('Error', 'No se pudo abrir el enlace de la receta médica.');
+        Alert.alert('Error', t('medical_note.alert.no_open'));
       });
     }
   };
 
   return (
-    <AppContainer navigation={navigation} screenTitle="Notas Médicas">
+    <AppContainer navigation={navigation} screenTitle={t('medical_note.title')}>
       <ScrollView className={`flex-1 ${containerClass}`}>
         <View className="p-5">
           {/* Datos del médico */}
           <View className={`mb-4 rounded-xl p-4 ${cardClass}`}>
             <View className="flex-row items-center mb-3">
               <Icon name="user-md" size={18} color={colorScheme === 'light' ? '#2563EB' : '#60A5FA'} />
-              <Text className={`ml-2 ${labelClass}`}>Profesional</Text>
+              <Text className={`ml-2 ${labelClass}`}>{t('book_appointment.fields.professional')}</Text>
             </View>
             <Text className={`text-lg font-medium ${textClass}`}>
               {appointment.doctorInfo
                 ? `Dr. ${appointment.doctorInfo.nombre} ${appointment.doctorInfo.apellido}`
-                : 'Sin asignar'}
+                : t('appointment.alerts.no_assign')}
             </Text>
             <Text className={`text-base ${textClass}`}>
-              {appointment.especialidadInfo?.descripcion || 'Sin especialidad'}
+              {appointment.especialidadInfo?.descripcion || t('professionals.alerts.no_specialty')}
             </Text>
           </View>
 
@@ -45,10 +47,10 @@ export default function MedicalNotesScreen({ route, navigation }) {
           <View className={`mb-4 rounded-xl p-4 ${cardClass}`}>
             <View className="flex-row items-center mb-3">
               <Icon name="calendar-alt" size={18} color={colorScheme === 'light' ? '#2563EB' : '#60A5FA'} />
-              <Text className={`ml-2 ${labelClass}`}>Fecha y Hora</Text>
+              <Text className={`ml-2 ${labelClass}`}>{t('appointments.info.date_time')}</Text>
             </View>
             <Text className={`text-lg font-medium ${textClass}`}>
-              {new Date(appointment.fecha).toLocaleDateString('es-AR', {
+              {new Date(appointment.fecha).toLocaleDateString(i18n.language, {
                 weekday: 'long',
                 day: 'numeric',
                 month: 'long',
@@ -64,10 +66,10 @@ export default function MedicalNotesScreen({ route, navigation }) {
           <View className={`mb-4 rounded-xl p-4 ${cardClass}`}>
             <View className="flex-row items-center mb-3">
               <Icon name="comment-medical" size={18} color={colorScheme === 'light' ? '#2563EB' : '#60A5FA'} />
-              <Text className={`ml-2 ${labelClass}`}>Motivo de la consulta</Text>
+              <Text className={`ml-2 ${labelClass}`}>{t('medical_note.reason')}</Text>
             </View>
             <Text className={`text-base ${textClass}`}>
-              {appointment.nota || 'Sin motivo especificado'}
+              {appointment.nota || t('medical_note.no_reason')}
             </Text>
           </View>
 
@@ -75,10 +77,10 @@ export default function MedicalNotesScreen({ route, navigation }) {
           <View className={`mb-4 rounded-xl p-4 ${cardClass}`}>
             <View className="flex-row items-center mb-3">
               <Icon name="notes-medical" size={18} color={colorScheme === 'light' ? '#2563EB' : '#60A5FA'} />
-              <Text className={`ml-2 ${labelClass}`}>Diagnóstico</Text>
+              <Text className={`ml-2 ${labelClass}`}>{t('medical_note.diagnosis')}</Text>
             </View>
             <Text className={`text-base ${textClass}`}>
-              {appointment.diagnostico || 'Sin diagnóstico registrado'}
+              {appointment.diagnostico || t('medical_note.alert.no_diagnosis')}
             </Text>
           </View>
 
@@ -86,10 +88,10 @@ export default function MedicalNotesScreen({ route, navigation }) {
           <View className={`mb-4 rounded-xl p-4 ${cardClass}`}>
             <View className="flex-row items-center mb-3">
               <Icon name="file-medical-alt" size={18} color={colorScheme === 'light' ? '#2563EB' : '#60A5FA'} />
-              <Text className={`ml-2 ${labelClass}`}>Notas médicas</Text>
+              <Text className={`ml-2 ${labelClass}`}>{t('medical_note.title')}</Text>
             </View>
             <Text className={`text-base ${textClass}`}>
-              {appointment.notaDoctor || 'Sin notas médicas'}
+              {appointment.notaDoctor || t('medical_note.alert.no_medicalNotes')}
             </Text>
           </View>
 
@@ -101,7 +103,7 @@ export default function MedicalNotesScreen({ route, navigation }) {
             >
               <Icon name="file-download" size={20} color="white" />
               <Text className="text-white text-base font-medium ml-2">
-                Descargar receta médica
+                {t('medical_note.dowload_prescription')}
               </Text>
             </TouchableOpacity>
           )}

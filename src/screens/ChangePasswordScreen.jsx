@@ -3,6 +3,7 @@ import { Alert, View, TextInput, Text, TouchableOpacity } from "react-native";
 import { useDispatch } from 'react-redux';
 import { validarTokenCambioContrasenia } from '~/store/slices/tokenSlice';
 import { solicitarCambioContrasenia, cambiarContrasenia } from '~/store/slices/userSlice';
+import { useTranslation } from 'react-i18next';
 
 const ChangePasswordScreen = () => {
   const [correo, setCorreo] = useState('');
@@ -12,10 +13,11 @@ const ChangePasswordScreen = () => {
   const [tokenValidado, setTokenValidado] = useState(false);
   const [solicitudEnviada, setSolicitudEnviada] = useState(false);
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const cambiarContraseniaHandler = async () => {
     if (!correo) {
-      Alert.alert('Error', 'Completa el correo electrónico.');
+      Alert.alert(t('global.error'), t('change_password.email'));
       return;
     }
     try {
@@ -23,53 +25,53 @@ const ChangePasswordScreen = () => {
       setSolicitudEnviada(true);
       setTokenValidado(false);
       Alert.alert(
-        'Éxito',
-        'El correo fue enviado correctamente. Ahora ingresa el token recibido.',
+        t('global.success'),
+        t('send_email.alerts.email_sent'),
         [
           {
-            text: 'Aceptar',
+            text: t('send_email.send'),
           },
         ]
       );
     } catch (err) {
-      Alert.alert('Error', err.mensaje || 'Error al solicitar el cambio de contraseña');
+      Alert.alert('Error', err.mensaje || t('change_password.alerts.request_error'));
     }
   };
 
   const validarTokenHandler = async (token) => {
     try {
-      console.log('Validando token:', { correo, token });
+      console.log(t('token.verification_title'), { correo, token });
       const tokenIngresado = token;
       const resValidacion = await dispatch(
         validarTokenCambioContrasenia({ correo, tokenIngresado })
       ).unwrap();
-      Alert.alert('Éxito', resValidacion.mensaje);
+      Alert.alert(t('global.success'), resValidacion.mensaje);
       setTokenValidado(true);
     } catch (err) {
-      Alert.alert('Error', err.mensaje || 'Token inválido');
+      Alert.alert('Error', err.mensaje || t('token.alerts.default_error'));
     }
   };
 
   const guardarNuevaContrasenia = async () => {
     if (!nuevaContrasenia || !repetirContrasenia) {
-      Alert.alert('Error', 'Completa ambos campos de contraseña.');
+      Alert.alert('Error', t('change_password.alerts.no_email_error'));
       return;
     }
     if (nuevaContrasenia !== repetirContrasenia) {
-      Alert.alert('Error', 'Las contraseñas no coinciden.');
+      Alert.alert('Error', t('change_password.alerts.emails_notMatch'));
       return;
     }
     try {
       await dispatch(cambiarContrasenia({ correo, nuevaContrasenia })).unwrap();
-      Alert.alert('Éxito', 'Contraseña cambiada correctamente.');
+      Alert.alert(t('global.success'), t('token.alerts.success'));
     } catch (err) {
-      Alert.alert('Error', err.mensaje || 'Error al cambiar la contraseña');
+      Alert.alert('Error', err.mensaje || t('change_password.alerts.chage_error'));
     }
   };
 
   return (
     <View className="flex-1 justify-center items-center p-5 bg-gray-100">
-      <Text className="text-2xl font-bold mb-5 text-gray-800">Cambiar contraseña</Text>
+      <Text className="text-2xl font-bold mb-5 text-gray-800">{t('change_password.title')}</Text>
 
       {!tokenValidado && (
         <>
@@ -90,7 +92,7 @@ const ChangePasswordScreen = () => {
                   await cambiarContraseniaHandler();
                 }}
               >
-                <Text className="text-white text-base font-bold">Solicitar token</Text>
+                <Text className="text-white text-base font-bold">{t('token.request')}</Text>
               </TouchableOpacity>
             </>
           )}
@@ -98,7 +100,7 @@ const ChangePasswordScreen = () => {
             <>
               <TextInput
                 className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-4 bg-white"
-                placeholder="Token recibido"
+                placeholder={t('token.alerts.token_received')}
                 value={token}
                 onChangeText={setToken}
                 keyboardType="default"
@@ -108,7 +110,7 @@ const ChangePasswordScreen = () => {
                 className="w-full h-12 bg-blue-500 rounded-lg justify-center items-center mb-3"
                 onPress={() => validarTokenHandler(token)}
               >
-                <Text className="text-white text-base font-bold">Validar token</Text>
+                <Text className="text-white text-base font-bold">{t('token.verify_button')}</Text>
               </TouchableOpacity>
             </>
           )}
@@ -119,14 +121,14 @@ const ChangePasswordScreen = () => {
         <>
           <TextInput
             className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-4 bg-white"
-            placeholder="Nueva contraseña"
+            placeholder={t('change_password.new_password_placeholder')}
             value={nuevaContrasenia}
             onChangeText={setNuevaContrasenia}
             secureTextEntry={true}
           />
           <TextInput
             className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-4 bg-white"
-            placeholder="Repetir nueva contraseña"
+            placeholder={t('change_password.repeat_password_placeholder')}
             value={repetirContrasenia}
             onChangeText={setRepetirContrasenia}
             secureTextEntry={true}
@@ -135,7 +137,7 @@ const ChangePasswordScreen = () => {
             className="w-full h-12 bg-green-600 rounded-lg justify-center items-center mb-3"
             onPress={guardarNuevaContrasenia}
           >
-            <Text className="text-white text-base font-bold">Guardar nueva contraseña</Text>
+            <Text className="text-white text-base font-bold">{t('change_password.save_button')}</Text>
           </TouchableOpacity>
         </>
       )}

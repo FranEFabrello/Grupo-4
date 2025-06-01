@@ -11,6 +11,7 @@ import QuickActions from '../components/QuickActions';
 import AppointmentCard from '../components/AppointmentCard';
 import DoctorCard from '../components/DoctorCard';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { useTranslation } from 'react-i18next';
 
 export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -20,6 +21,8 @@ export default function HomeScreen({ navigation }) {
   const { professionals, status: professionalsStatus } = useSelector((state) => state.professionals);
   const usuario = useSelector((state) => state.user.usuario);
   const specialities = useSelector((state) => state.medicalSpecialities.specialities);
+  const { t } = useTranslation();
+
 
   useEffect(() => {
     if (!professionals || professionals.length === 0) {
@@ -37,8 +40,8 @@ export default function HomeScreen({ navigation }) {
   }, [dispatch]);
 
   const quickActions = [
-    { icon: 'calendar-plus', label: t('home.quick_actions.book'), screen: 'BookAppointment' },
-    { icon: 'calendar-alt', label: t('home.quick_actions.appointments'), screen: 'Appointments' },
+    { icon: 'calendar-plus', label: t('book_appointment.title'), screen: 'BookAppointment' },
+    { icon: 'calendar-alt', label: t('appointments.Mytitle'), screen: 'Appointments' },
     { icon: 'file-medical', label: t('home.quick_actions.results'), screen: 'Results' },
     { icon: 'hospital-user', label: t('home.quick_actions.insurance'), screen: 'Insurance' },
   ];
@@ -47,14 +50,12 @@ export default function HomeScreen({ navigation }) {
   const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
   const endOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 6, 23, 59, 59, 999);
 
-
-
   // Ajuste: considerar la zona horaria y formato de fecha
   const upcomingAppointments = (appointments || [])
     .filter((appt) => {
       const apptDate = new Date(appt.fecha);
       return (
-        (appt.estado === 'PENDIENTE' || appt.estado === 'CONFIRMADO') &&
+        (appt.estado === 'CONFIRMADO') &&
         apptDate >= startOfToday &&
         apptDate < endOfWeek &&
         appt.cuentaActiva
@@ -70,12 +71,14 @@ export default function HomeScreen({ navigation }) {
   const primaryButtonClass = colorScheme === 'light' ? 'bg-blue-600' : 'bg-blue-700';
   const linkClass = colorScheme === 'light' ? 'text-blue-600' : 'text-blue-400';
 
+
+
   return (
     <AppContainer navigation={navigation} screenTitle="MediBook">
-      <ScrollView className={`p-5 ${containerClass}`}>
+      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 64 }} className={containerClass}>
         <View className={`rounded-lg p-4 mb-4 shadow-md ${cardClass}`}>
           <Text className={`text-lg font-semibold ${textClass}`}>
-            Hola, {usuario?.nombre || 'Usuario'}
+            {t('home.greeting', { name: usuario?.nombre || 'Usuario' })}
           </Text>
           <Text className={`text-sm ${secondaryTextClass} mt-1`}>
             {t('home.question')}
@@ -85,7 +88,7 @@ export default function HomeScreen({ navigation }) {
 
         <View className="flex-row justify-between items-center mb-4">
           <Text className={`text-lg font-semibold ${textClass}`}>
-            {t('home.next_appointment.title')}
+            {t('home.next_appointment.ur_next_appointment')}
           </Text>
           <Text
             className={`text-sm ${linkClass}`}
@@ -97,14 +100,14 @@ export default function HomeScreen({ navigation }) {
 
         <View className={`rounded-lg p-4 mb-4 shadow-md ${cardClass}`}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View className="flex-row items-center px-2 h-full">
+            <View className="flex-row items-center px-2">
               {appointmentsStatus === 'loading' ? (
                 <Text className={`text-sm ${secondaryTextClass}`}>{t('global.alert.loading')}</Text>
               ) : upcomingAppointments.length > 0 ? (
                 upcomingAppointments.map((appt) => (
                   <View key={appt.id} className="mr-3">
                     <AppointmentCard
-                      day={new Date(appt.fecha).toLocaleDateString('es-AR', {
+                      day={new Date(appt.fecha).toLocaleDateString(i18n.language, {
                         weekday: 'short',
                         day: 'numeric',
                         month: 'short',
@@ -129,13 +132,13 @@ export default function HomeScreen({ navigation }) {
 
         <View className="flex-row justify-between items-center mb-4">
           <Text className={`text-lg font-semibold ${textClass}`}>
-            {t('home.feature_doctors.title')}
+            {t('home.featured_doctors.title')}
           </Text>
           <Text
             className={`text-sm ${linkClass}`}
             onPress={() => navigation.navigate('Professionals')}
           >
-            {t('home.feature_doctors.view_all')}
+            {t('home.featured_doctors.view_all')}
           </Text>
         </View>
         <View className={`rounded-lg p-4 pb-1 mb-4 shadow-md ${cardClass}`}>
@@ -173,11 +176,10 @@ export default function HomeScreen({ navigation }) {
             onPress={() => navigation.navigate('HealthTips')}
           >
             <Icon name="heart" size={20} color="#ffffff" className="mr-2" />
-            <Text className="text-white text-sm font-semibold">{t('home.medical_news.button')}</Text>
+            <Text className="text-white text-sm font-semibold">{t('home.medical_news.title')}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
     </AppContainer>
   );
 }
-

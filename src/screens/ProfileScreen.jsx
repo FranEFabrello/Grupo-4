@@ -39,7 +39,7 @@ export default function ProfileScreen({ navigation }) {
   ];
 
   return (
-    <AppContainer navigation={navigation} screenTitle={t('profile.screen_title')}>
+    <AppContainer navigation={navigation} screenTitle={t('profile.title')}>
       <ScrollView
         className="p-5"
         contentContainerStyle={{ paddingBottom: insets.bottom + 20 }}
@@ -86,7 +86,7 @@ export default function ProfileScreen({ navigation }) {
         {/* Acerca de la app */}
         <View className="bg-white rounded-lg p-4 shadow-md">
           <Text className="text-base font-semibold text-gray-800 mb-2">{t('profile.about_title')}</Text>
-          <Text className="text-sm text-gray-600 mb-2">{t('profile.about_version')} 1.0.0</Text>
+          <Text className="text-sm text-gray-600 mb-2">{t('profile.about_version')}</Text>
           <Text className="text-sm text-gray-600">{t('profile.about')}</Text>
         </View>
       </ScrollView>

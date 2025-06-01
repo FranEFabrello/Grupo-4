@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useRoute } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 export default function AppFooter({ navigation, colorScheme }) {
   const insets = useSafeAreaInsets();
@@ -12,13 +13,14 @@ export default function AppFooter({ navigation, colorScheme }) {
   const bgClass = colorScheme === 'dark' ? 'bg-gray-800' : 'bg-white';
   const textInactiveClass = colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-600';
   const textActiveClass = colorScheme === 'dark' ? 'text-blue-400' : 'text-blue-600';
-  const borderClass = colorScheme === 'dark' ? 'border-t border-t-2 border-blue-800' : 'border-t border-t-2 border-blue-500';
+  const borderClass = colorScheme === 'dark' ? 'border-t border-t-2 border-blue-800' : 'border-t border-t-2 border-gray-200';
+  const { t } = useTranslation();
 
   const navItems = [
-    { name: 'Home', icon: 'home', label: 'Inicio' },
-    { name: 'Appointments', icon: 'calendar-alt', label: 'Turnos' },
-    { name: 'Professionals', icon: 'user-md', label: 'Profesionales' },
-    { name: 'Profile', icon: 'user', label: 'Perfil' },
+    { name: 'Home', icon: 'home', label: t('navigator.home') },
+    { name: 'Appointments', icon: 'calendar-alt', label: t('navigator.appointments') },
+    { name: 'Professionals', icon: 'user-md', label: t('navigator.professionals') },
+    { name: 'Profile', icon: 'user', label: t('navigator.profile') },
   ];
 
   return (

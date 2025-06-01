@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useColorScheme } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AppContainer from '../components/AppContainer';
+import { rescheduleAppointment, cancelAppointment } from "~/store/slices/appointmentsSlice";
+import { useTranslation } from "react-i18next";
 
 // Utilidad para parsear fecha local (YYYY-MM-DD o YYYY-MM-DDTHH:mm:ss±hh:mm)
 function parseLocalDate(fechaStr) {
@@ -16,16 +18,19 @@ function parseLocalDate(fechaStr) {
 }
 
 export default function AppointmentDetailScreen({ route, navigation }) {
-  const { appointment } = route.params;
   const dispatch = useDispatch();
   const colorScheme = useColorScheme();
   const { status, error } = useSelector((state) => state.appointments);
+  const { t, i18n } = useTranslation();
 
   const containerClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-800';
   const textClass = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
   const labelClass = colorScheme === 'light' ? 'text-blue-600' : 'text-blue-400';
   const cardClass = colorScheme === 'light' ? 'bg-gray-50' : 'bg-gray-700';
   const borderClass = colorScheme === 'light' ? 'border-gray-100' : 'border-gray-600';
+
+  const notificacion = route.params?.notificacion;
+  const appointment = notificacion?.turno || route.params?.appointment;
 
   // Navega a la pantalla de reprogramación, pasando los datos del turno y doctor
   const handleReschedule = () => {
@@ -38,7 +43,7 @@ export default function AppointmentDetailScreen({ route, navigation }) {
       currentStart: appointment.horaInicio,
       currentEnd: appointment.horaFin,
     });
-
+  };
 
   const getStatusConfig = (estado) => {
     switch (estado) {
@@ -48,7 +53,7 @@ export default function AppointmentDetailScreen({ route, navigation }) {
           bgColor: colorScheme === 'light' ? 'bg-green-100' : 'bg-green-900',
           textColor: colorScheme === 'light' ? 'text-green-800' : 'text-green-200',
           borderColor: colorScheme === 'light' ? 'border-green-200' : 'border-green-700',
-          label: 'Confirmado'
+          label: t('appointments.type.approved')
         };
       case 'CANCELADO':
         return {
@@ -56,7 +61,7 @@ export default function AppointmentDetailScreen({ route, navigation }) {
           bgColor: colorScheme === 'light' ? 'bg-red-100' : 'bg-red-900',
           textColor: colorScheme === 'light' ? 'text-red-800' : 'text-red-200',
           borderColor: colorScheme === 'light' ? 'border-red-200' : 'border-red-700',
-          label: 'Cancelado'
+          label: t('appointments.type.Cancelled')
         };
       default:
         return {
@@ -83,11 +88,11 @@ export default function AppointmentDetailScreen({ route, navigation }) {
             dispatch(cancelAppointment(appointment.id))
               .unwrap()
               .then(() => {
-                Alert.alert(t('global.alert.success'),  t('appointments.alerts.cancel'));
+                Alert.alert(t('global.alert.success'), t('appointments.alerts.cancel'));
                 navigation.goBack();
               })
               .catch((err) => {
-                Alert.alert(t('global.alert.error'), err || t('appointments.alerts.cancel_error'));
+                Alert.alert('Error', err || t('appointments.alerts.cancel_error'));
               });
           },
         },
@@ -96,7 +101,7 @@ export default function AppointmentDetailScreen({ route, navigation }) {
   };
 
   return (
-    <AppContainer navigation={navigation} screenTitle="Detalle del Turno">
+    <AppContainer navigation={navigation} screenTitle={t('appointments.details')}>
       <ScrollView className={`flex-1 ${containerClass}`}>
         <View className="p-5">
           {/* Cabecera */}
@@ -105,15 +110,14 @@ export default function AppointmentDetailScreen({ route, navigation }) {
               <Text className={`text-2xl font-bold ${textClass}`}>
                 {t('appointments.medic_book')}
               </Text>
-
               {/* Badge de estado */}
               <View className={`flex-row items-center ${statusConfig.bgColor} border ${statusConfig.borderColor} px-3 py-2 rounded-full`}>
                 <Icon
                   name={statusConfig.icon}
                   size={16}
-                  color={colorScheme === 'light' ?
-                    (appointment.estado === 'CONFIRMADO' ? '#065f46' : '#991b1b') :
-                    (appointment.estado === 'CONFIRMADO' ? '#6ee7b7' : '#fca5a5')}
+                  color={colorScheme === 'light'
+                    ? (appointment.estado === 'CONFIRMADO' ? '#065f46' : '#991b1b')
+                    : (appointment.estado === 'CONFIRMADO' ? '#6ee7b7' : '#fca5a5')}
                 />
                 <Text className={`ml-2 font-medium ${statusConfig.textColor}`}>
                   {statusConfig.label}
@@ -129,7 +133,7 @@ export default function AppointmentDetailScreen({ route, navigation }) {
               <Text className={`ml-2 ${labelClass}`}>{t('appointments.info.date_time')}</Text>
             </View>
             <Text className={`text-lg font-medium ${textClass}`}>
-              {parseLocalDate(appointment.fecha).toLocaleDateString('es-AR', {
+              {parseLocalDate(appointment.fecha).toLocaleDateString(i18n.language, {
                 weekday: 'long',
                 day: 'numeric',
                 month: 'long',
@@ -145,15 +149,15 @@ export default function AppointmentDetailScreen({ route, navigation }) {
           <View className={`mb-4 rounded-xl p-4 ${cardClass}`}>
             <View className="flex-row items-center mb-3">
               <Icon name="user-md" size={18} color={colorScheme === 'light' ? '#2563EB' : '#60A5FA'} />
-              <Text className={`ml-2 ${labelClass}`}>Profesional</Text>
+              <Text className={`ml-2 ${labelClass}`}>{t('appointments.info.professional')}</Text>
             </View>
             <Text className={`text-lg font-medium ${textClass}`}>
               {appointment.doctorInfo
                 ? `Dr. ${appointment.doctorInfo.nombre} ${appointment.doctorInfo.apellido}`
-                : 'Sin asignar'}
+                : t('appointments.alerts.no_assign')}
             </Text>
             <Text className={`text-base ${textClass}`}>
-              {appointment.especialidadInfo?.descripcion || 'Sin especialidad'}
+              {appointment.especialidadInfo?.descripcion || t('professionals.alerts.no_especiality')}
             </Text>
           </View>
 
@@ -164,11 +168,11 @@ export default function AppointmentDetailScreen({ route, navigation }) {
               <Text className={`ml-2 ${labelClass}`}>{t('medical_note.reason')}</Text>
             </View>
             <Text className={`text-base ${textClass}`}>
-              {appointment.nota || 'Sin motivo especificado'}
+              {appointment.nota || t('medical_note.no_reason')}
             </Text>
           </View>
 
-          {/* Botón de cancelar */}
+          {/* Botón de cancelar y reprogramar */}
           {status === 'loading' ? (
             <ActivityIndicator size="large" color={colorScheme === 'light' ? '#2563EB' : '#60A5FA'} />
           ) : appointment.estado === 'CONFIRMADO' ? (
@@ -179,7 +183,7 @@ export default function AppointmentDetailScreen({ route, navigation }) {
               >
                 <Icon name="times-circle" size={20} color="white" />
                 <Text className="text-white text-base font-medium ml-2">
-                  {t('appointments.type.cancel')}
+                  {t('global.button.cancel')}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -188,7 +192,7 @@ export default function AppointmentDetailScreen({ route, navigation }) {
               >
                 <Icon name="calendar-plus" size={20} color="white" />
                 <Text className="text-white text-base font-medium ml-2">
-                  Reprogramar
+                  {t('appointments.reschedule')}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -197,5 +201,4 @@ export default function AppointmentDetailScreen({ route, navigation }) {
       </ScrollView>
     </AppContainer>
   );
-}
 }

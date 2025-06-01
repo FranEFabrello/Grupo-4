@@ -1,17 +1,16 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
 
-export default function AppointmentCard({
-                                          day,
-                                          time,
-                                          doctor,
-                                          specialty,
-                                          status,
-                                          onPress,
-                                          bgColor = 'bg-blue-100',
-                                          colorScheme,
-                                        }) {
+export default function AppointmentCardFullWidth({
+                                                   day,
+                                                   time,
+                                                   doctor,
+                                                   specialty,
+                                                   status,
+                                                   onPress,
+                                                   bgColor = 'bg-blue-100',
+                                                   colorScheme,
+                                                 }) {
   const cardBgClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-800';
   const dateBgClass = colorScheme === 'light' ? bgColor : 'bg-blue-900';
   const dateTextClass = colorScheme === 'light' ? 'text-blue-600' : 'text-blue-300';
@@ -19,8 +18,8 @@ export default function AppointmentCard({
   const specialtyTextClass = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-400';
 
   return (
-    <TouchableOpacity onPress={onPress} className="w-64">
-      <View className={`rounded-lg p-4 shadow-md ${cardBgClass}`}>
+    <TouchableOpacity onPress={onPress} className="w-full">
+      <View className={`rounded-lg p-4 shadow-md ${cardBgClass} w-full`}>
         <View className="flex-row items-center">
           <View className={`w-20 ${dateBgClass} rounded-lg p-2 items-center`}>
             <Text className={`text-xs ${dateTextClass}`}>{day}</Text>

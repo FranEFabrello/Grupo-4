@@ -27,18 +27,18 @@ export default function DoctorProfileScreen({ navigation, route }) {
 
   if (professionalsStatus === 'loading' || !doctor) {
     return (
-      <AppContainer navigation={navigation} screenTitle={t('doctor_profile.screen_title')}>
+      <AppContainer navigation={navigation} screenTitle={t('doctor_profile.title')}>
         <View className="p-5">
           <Text className="text-sm text-gray-600">{t('global.loading')}</Text>
         </View>
       </AppContainer>
     );
   }
-
+  //Acá iría la traducción de la especialidad
   const specialty = especialidades.find((esp) => esp.id === doctor.idEspecialidad)?.descripcion || t('doctor_profile.no_specialty');
 
   return (
-    <AppContainer navigation={navigation} screenTitle={t('doctor_profile.screen_title')}>
+    <AppContainer navigation={navigation} screenTitle={t('doctor_profile.title')}>
       <ScrollView className="p-5">
         <View className="bg-white rounded-lg p-4 shadow-md">
           <View className="flex-row items-center mb-4">
@@ -61,7 +61,7 @@ export default function DoctorProfileScreen({ navigation, route }) {
             </View>
           </View>
           <View className="border-t border-gray-200 pt-4">
-            <Text className="text-lg font-semibold text-gray-800 mb-2">Información Adicional</Text>
+            <Text className="text-lg font-semibold text-gray-800 mb-2">{t('doctor_card.additional_info')}</Text>
             <Text className="text-sm text-gray-600">{doctor.informacionAdicional || t('doctor_profile.no_additional_info')}</Text>
           </View>
           <TouchableOpacity

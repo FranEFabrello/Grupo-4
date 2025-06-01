@@ -5,7 +5,7 @@ export const fetchAppointments = createAsyncThunk(
   'appointments/fetchAppointments',
   async (usuarioId) => {
     const response = await api.get(`/turnos/usuario/${usuarioId}/todos`);
-    console.log('Response de turnos:', response.data);
+    //console.log('Response de turnos:', response.data);
     return response.data;
   }
 );
@@ -121,7 +121,7 @@ const appointmentsSlice = createSlice({
           ...appt,
           fecha: appt.fecha ? `${appt.fecha}T00:00:00${localOffset}` : appt.fecha
         }));
-        console.log('Turnos por usuario TURNOSSLICE:', state.appointmentsByUser);
+        //console.log('Turnos por usuario TURNOSSLICE:', state.appointmentsByUser);
       })
       .addCase(confirmAppointment.fulfilled, (state, action) => {
         state.appointmentsByUser = state.appointmentsByUser.map((appointment) =>

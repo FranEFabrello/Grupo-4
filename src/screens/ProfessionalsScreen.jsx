@@ -7,6 +7,7 @@ import { fetchSpecialities } from "~/store/slices/medicalSpecialitiesSlice";
 import AppContainer from "../components/AppContainer";
 import DoctorCard from "../components/DoctorCard";
 import FilterButton from "../components/FilterButton";
+import { useTranslation } from 'react-i18next';
 
 import { fetchProfessionals } from "~/store/slices/professionalsSlice";
 
@@ -17,6 +18,7 @@ export default function ProfessionalsScreen({ navigation }) {
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [selectedStars, setSelectedStars] = useState(null);
   const [selectedEspecialidades, setSelectedEspecialidades] = useState([]);
+  const { t} = useTranslation();
 
   const especialidades = useSelector((state) => state.medicalSpecialities.specialities);
 
@@ -47,7 +49,7 @@ export default function ProfessionalsScreen({ navigation }) {
     );
 
   return (
-    <AppContainer navigation={navigation} screenTitle="Profesionales">
+    <AppContainer navigation={navigation} screenTitle={t('professionals.title')}>
       <ScrollView className="p-5">
         <View className="bg-white rounded-lg p-4 mb-4 shadow-md">
           <Text className="text-lg font-semibold text-gray-800 mb-4">
@@ -87,7 +89,7 @@ export default function ProfessionalsScreen({ navigation }) {
             </View>
           )}
           {status === "loading" ? (
-            <Text className="text-sm text-gray-600">Cargando...</Text>
+            <Text className="text-sm text-gray-600">{t('global.alert.loading')}</Text>
           ) : filteredProfessionals.length > 0 ? (
             <View className="flex-row flex-wrap justify-between gap-y-4">
               {filteredProfessionals.map((prof) => (
@@ -97,7 +99,7 @@ export default function ProfessionalsScreen({ navigation }) {
                   specialty={
                     especialidades.find(
                       (esp) => esp.id === prof.idEspecialidad
-                    )?.descripcion || "Sin especialidad"
+                    )?.descripcion || t('professionals.alerts.no_specialty')
                   }
                   stars={prof.calificacionPromedio > 0 ? prof.calificacionPromedio : null}
                   noRating={prof.calificacionPromedio === 0}
@@ -112,7 +114,7 @@ export default function ProfessionalsScreen({ navigation }) {
             </View>
           ) : (
             <Text className="text-sm text-gray-600">
-              No hay profesionales disponibles
+              t('professionals.alerts.empty')
             </Text>
           )}
         </View>
@@ -127,7 +129,7 @@ export default function ProfessionalsScreen({ navigation }) {
       >
         <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.2)', justifyContent: 'center', alignItems: 'center' }}>
           <View style={{ backgroundColor: '#fff', borderRadius: 16, padding: 20, width: '90%' }}>
-            <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 10 }}>Filtrar por especialidad</Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 10 }}>{t('professionals.filter_especiality')}</Text>
             {/* Barra de búsqueda de especialidad */}
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
               <Icon
@@ -181,7 +183,7 @@ export default function ProfessionalsScreen({ navigation }) {
             </ScrollView>
             <View style={{ height: 2, backgroundColor: '#2563EB', marginBottom: 20 }} />
 
-            <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 10 }}>Filtrar por estrellas</Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 10 }}>{t('professionals.filter_star')}</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {[1, 2, 3, 4, 5].map((star) => (
                 <TouchableOpacity
@@ -212,7 +214,7 @@ export default function ProfessionalsScreen({ navigation }) {
               }}
               onPress={() => setShowFilterModal(false)}
             >
-              <Text style={{ color: '#fff', fontWeight: 'bold' }}>Aplicar filtros</Text>
+              <Text style={{ color: '#fff', fontWeight: 'bold' }}>{t('professionals.aplly_filter')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
@@ -225,7 +227,7 @@ export default function ProfessionalsScreen({ navigation }) {
                 setShowFilterModal(false);
               }}
             >
-              <Text style={{ color: '#2563EB', fontWeight: 'bold' }}>Limpiar filtros</Text>
+              <Text style={{ color: '#2563EB', fontWeight: 'bold' }}>{t('professionals.clear_filter')}</Text>
             </TouchableOpacity>
           </View>
         </View>

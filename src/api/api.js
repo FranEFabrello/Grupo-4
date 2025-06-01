@@ -2,9 +2,10 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const api = axios.create({
-  baseURL: 'http://localhost:4002',
+  baseURL: 'https://app3-0.onrender.com/',
   timeout: 10000,
 });
+//baseURL: 'http://localhost:4002/', // Para pruebas locales
 
 // Interceptor para agregar token automáticamente
 api.interceptors.request.use(

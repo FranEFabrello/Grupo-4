@@ -4,16 +4,18 @@ import { enviarMensajeAyuda } from "~/store/slices/userSlice";
 import { Alert, TextInput, TouchableOpacity, View, Text } from 'react-native';
 import AppContainer from "~/components/AppContainer";
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from "react-i18next";
 
 export default function HelpNeeded() {
   const navigation = useNavigation();
   const [mensaje, setMensaje] = useState('');
   const dispatch = useDispatch();
   const usuario = useSelector(state => state.user.usuario);
+  const { t } = useTranslation();
 
   const handleEnviar = () => {
     if (!mensaje.trim()) {
-      Alert.alert('Por favor, escribe tu problema.');
+      Alert.alert(t('help.problem_description'));
       return;
     }
     dispatch(enviarMensajeAyuda({
@@ -24,11 +26,11 @@ export default function HelpNeeded() {
   };
 
   return (
-    <AppContainer navigation={navigation} screenTitle="Ayuda">
+    <AppContainer navigation={navigation} screenTitle={t("help.title")}>
       <View className="flex-1 justify-center items-center bg-gray-50 p-4">
         <TextInput
           className="w-full max-w-[400px] border border-gray-300 rounded-lg p-4 mb-6 min-h-[120px] text-base bg-white text-top"
-          placeholder="Describe tu problema aquí..."
+          placeholder={t('help.problem_placeholder')}
           value={mensaje}
           onChangeText={setMensaje}
           multiline
@@ -39,7 +41,7 @@ export default function HelpNeeded() {
           activeOpacity={0.8}
           onPress={handleEnviar}
         >
-          <Text className="text-white text-base">Enviar</Text>
+          <Text className="text-white text-base">{t('global.button.send')}</Text>
         </TouchableOpacity>
       </View>
     </AppContainer>

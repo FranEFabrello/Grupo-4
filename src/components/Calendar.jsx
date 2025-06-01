@@ -25,13 +25,13 @@ export default function Calendar({ availableDays = [], onSelectDate, selectedDat
   const normalizedFirstDay = (firstDayOfMonth + 6) % 7;
 
   const weekDays = [
-    t('appointments.calendar.days.mon'),
-    t('appointments.calendar.days.tue'),
-    t('appointments.calendar.days.wed'),
-    t('appointments.calendar.days.thu'),
-    t('appointments.calendar.days.fri'),
-    t('appointments.calendar.days.sat'),
-    t('appointments.calendar.days.sun'),
+    { day: t('filter.calendar.days.mon'), isHeader: true },
+    { day: t('filter.calendar.days.tue'), isHeader: true },
+    { day: t('filter.calendar.days.wed'), isHeader: true },
+    { day: t('filter.calendar.days.thu'), isHeader: true },
+    { day: t('filter.calendar.days.fri'), isHeader: true },
+    { day: t('filter.calendar.days.sat'), isHeader: true },
+    { day: t('filter.calendar.days.sun'), isHeader: true },
   ];
 
   const dayCells = [
@@ -88,7 +88,7 @@ export default function Calendar({ availableDays = [], onSelectDate, selectedDat
         <View className="py-12 items-center justify-center">
           <ActivityIndicator size="large" color={colorScheme === 'light' ? '#2563eb' : '#60a5fa'} />
           <Text className={`mt-4 text-base ${colorScheme === 'dark' ? 'text-gray-200' : 'text-gray-600'}`}>
-            Cargando calendario...
+            {t('filter.calendar.loading')}
           </Text>
         </View>
       ) : (
@@ -98,7 +98,7 @@ export default function Calendar({ availableDays = [], onSelectDate, selectedDat
               onPress={handlePrevMonth}
               className={`px-3 py-2 rounded-lg ${colorScheme === 'dark' ? 'hover:bg-gray-600' : 'hover:bg-blue-50'}`}
             >
-              <Text className="text-blue-500 font-semibold">{t('appointments.calendar.prev')}</Text>
+              <Text className="text-blue-500 font-semibold">{t('filter.calendar.prev')}</Text>
             </TouchableOpacity>
             <Text className={`text-lg font-semibold capitalize ${colorScheme === 'dark' ? 'text-gray-100' : 'text-gray-900'}`}>
               {new Date(currentYear, currentMonth).toLocaleDateString(i18n.language, {
@@ -110,13 +110,13 @@ export default function Calendar({ availableDays = [], onSelectDate, selectedDat
               onPress={handleNextMonth}
               className={`px-3 py-2 rounded-lg ${colorScheme === 'dark' ? 'hover:bg-gray-600' : 'hover:bg-blue-50'}`}
             >
-              <Text className="text-blue-500 font-semibold">{t('appointments.calendar.next')}</Text>
+              <Text className="text-blue-500 font-semibold">{t('filter.calendar.next')}</Text>
             </TouchableOpacity>
           </View>
           <View className={`flex-row mb-3 rounded-lg overflow-hidden border ${borderHeader}`}>
             {weekDays.map((wd, i) => (
               <View key={i} className={`w-[14.28%] items-center py-2 ${bgHeader}`}>
-                <Text className={`text-sm font-semibold ${textHeader}`}>{wd}</Text>
+                <Text className={`text-sm font-semibold ${textHeader}`}>{wd.day}</Text>
               </View>
             ))}
           </View>
