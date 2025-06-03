@@ -41,7 +41,7 @@ export default function HomeScreen({ navigation }) {
 
   const quickActions = [
     { icon: 'calendar-plus', label: t('book_appointment.title'), screen: 'BookAppointment' },
-    { icon: 'calendar-alt', label: t('appointments.Mytitle'), screen: 'Appointments' },
+    { icon: 'calendar-alt', label: t('appointments.my_appointments'), screen: 'Appointments' },
     { icon: 'file-medical', label: t('home.quick_actions.results'), screen: 'Results' },
     { icon: 'hospital-user', label: t('home.quick_actions.insurance'), screen: 'Insurance' },
   ];

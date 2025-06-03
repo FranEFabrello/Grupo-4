@@ -3,7 +3,6 @@ import { View, ScrollView, Text, TouchableOpacity, Modal, Pressable } from 'reac
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAppointments } from '~/store/slices/appointmentsSlice';
 import AppContainer from '../components/AppContainer';
-import AppointmentCard from '../components/AppointmentCard';
 import FilterButton from '../components/FilterButton';
 import TabButton from '../components/TabButton';
 import AppointmentsCalendar from '~/components/AppointmentsCalendar';
@@ -183,7 +182,7 @@ export default function AppointmentsScreen({ navigation }) {
             upcomingAppointments.length > 0 ? (
               upcomingAppointments.map((appt) => (
                 <View key={appt.id} className="mb-4">
-                  <AppointmentCard
+                  <AppointmentCardFullWidth
                     day={new Date(appt.fecha).toLocaleDateString(i18n.language, {
                       weekday: 'short',
                       day: 'numeric',
@@ -205,7 +204,7 @@ export default function AppointmentsScreen({ navigation }) {
             pastAppointments.length > 0 ? (
               pastAppointments.map((appt) => (
                 <View key={appt.id} className="mb-4">
-                  <AppointmentCard
+                  <AppointmentCardFullWidth
                     day={new Date(appt.fecha).toLocaleDateString(i18n.language, {
                       day: 'numeric',
                       month: 'short',
@@ -233,7 +232,7 @@ export default function AppointmentsScreen({ navigation }) {
           ) : cancelledAppointments.length > 0 ? (
             cancelledAppointments.map((appt) => (
               <View key={appt.id} className="mb-4">
-                <AppointmentCard
+                <AppointmentCardFullWidth
                   day={new Date(appt.fecha).toLocaleDateString(i18n.language, {
                     weekday: 'short',
                     day: 'numeric',
