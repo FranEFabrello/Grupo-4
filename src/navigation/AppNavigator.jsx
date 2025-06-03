@@ -43,7 +43,7 @@ export default function AppNavigator() {
       <Stack.Screen name="Help" component={HelpNeeded} options={{ headerShown: false }} />
       <Stack.Screen name="SecurityPolicy" component={SecurityPolicyScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="ConfirmarToken" component={ConfirmTokenRegisterScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ConfirmarToken" component={ConfirmTokenRegisterScreen} options={{headerShown: false}} />
       <Stack.Screen name="CambioContrasenia" component={ChangePasswordScreen} options={{ headerShown: false }} />
       <Stack.Screen name="AppointmentDetail" component={AppointmentDetailScreen} options={{ headerShown: false }} />
     </Stack.Navigator>

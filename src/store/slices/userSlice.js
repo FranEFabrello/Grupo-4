@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "~/api/api";
+import { create } from "axios";
 
 // Thunks para las operaciones asincrónicas
 export const fetchUsuarios = createAsyncThunk(
@@ -26,7 +27,7 @@ export const fetchUserByToken = createAsyncThunk(
           Authorization: `Bearer ${token}`,
         },
       });
-      //console.log('Respuesta de /usuario/info:', response.data);
+      console.log('Respuesta de /usuario/info:', response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al obtener el usuario por token');
@@ -92,7 +93,7 @@ export const actualizarConfiguraciones = createAsyncThunk(
   'user/actualizarConfiguraciones',
   async ({ id, configuraciones }, { rejectWithValue }) => {
     try {
-      const response = await api.patch(`/usuario/${id}/configuraciones`, configuraciones);
+      const response = await api.patch(`/Usuario/usuario/${id}/configuraciones`, configuraciones);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al actualizar las configuraciones');
@@ -138,14 +139,30 @@ export const desactivarCuenta = createAsyncThunk(
   }
 );
 
+
+export const guardarSuscripcionWebPush = createAsyncThunk(
+  'user/guardarSuscripcionWebPush',
+  async (subscription, { rejectWithValue }) => {
+    try {
+      const response = await api.put('/api/user/webpush/subscribe', subscription);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Error al guardar la suscripción');
+    }
+  }
+);
+
 // Slice
 const userSlice = createSlice({
   name: 'user',
   initialState: {
     usuarios: [],
     usuario: null,
+    modoOscuro: false,
     loading: false,
     error: null,
+    webPushStatus: 'idle',
+    webPushError: null,
   },
   reducers: {
     setUsuario(state, action) {
@@ -153,6 +170,11 @@ const userSlice = createSlice({
     },
     clearUsuario(state) {
       state.usuario = null;
+    },
+    setModoOscuro(state, action) {
+      if (state.usuario) {
+        state.usuario.modoOscuro = action.payload;
+      }
     },
   },
   extraReducers: (builder) => {
@@ -178,8 +200,20 @@ const userSlice = createSlice({
       .addCase(fetchUserByToken.fulfilled, (state, action) => {
       state.usuario = action.payload;
       //console.log('action.payload del usuario: ', state.usuario);
-    })
+      })
+      .addCase(guardarSuscripcionWebPush.pending, (state) => {
+        state.webPushStatus = 'loading';
+        state.webPushError = null;
+      })
+      .addCase(guardarSuscripcionWebPush.fulfilled, (state) => {
+        state.webPushStatus = 'succeeded';
+      })
+      .addCase(guardarSuscripcionWebPush.rejected, (state, action) => {
+        state.webPushStatus = 'failed';
+        state.webPushError = action.payload;
+      });
   },
 });
 
+export const { setModoOscuro } = userSlice.actions;
 export default userSlice.reducer;

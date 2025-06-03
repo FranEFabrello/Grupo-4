@@ -5,7 +5,9 @@ import { useColorScheme } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AppContainer from '../components/AppContainer';
 import { rescheduleAppointment, cancelAppointment } from "~/store/slices/appointmentsSlice";
+import AppointmentCardFullWidth from "~/components/ApptCardForApptScreen";
 import { useTranslation } from "react-i18next";
+import '../i18n'; // Import your i18n configuration
 
 // Utilidad para parsear fecha local (YYYY-MM-DD o YYYY-MM-DDTHH:mm:ss±hh:mm)
 function parseLocalDate(fechaStr) {
@@ -61,7 +63,7 @@ export default function AppointmentDetailScreen({ route, navigation }) {
           bgColor: colorScheme === 'light' ? 'bg-red-100' : 'bg-red-900',
           textColor: colorScheme === 'light' ? 'text-red-800' : 'text-red-200',
           borderColor: colorScheme === 'light' ? 'border-red-200' : 'border-red-700',
-          label: t('appointments.type.Cancelled')
+          label: t('appointments.type.cancelled')
         };
       default:
         return {
@@ -178,7 +180,7 @@ export default function AppointmentDetailScreen({ route, navigation }) {
           ) : appointment.estado === 'CONFIRMADO' ? (
             <View className="flex-row">
               <TouchableOpacity
-                className="bg-red-600 rounded-xl p-4 flex-row justify-center items-center shadow-sm mr-2"
+                className="flex-1 bg-red-600 rounded-xl p-4 flex-row justify-center items-center shadow-sm mr-2"
                 onPress={handleCancel}
               >
                 <Icon name="times-circle" size={20} color="white" />
@@ -187,7 +189,7 @@ export default function AppointmentDetailScreen({ route, navigation }) {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className="bg-blue-600 rounded-xl p-4 flex-row justify-center items-center shadow-sm"
+                className="flex-1 bg-blue-600 rounded-xl p-4 flex-row justify-center items-center shadow-sm"
                 onPress={handleReschedule}
               >
                 <Icon name="calendar-plus" size={20} color="white" />

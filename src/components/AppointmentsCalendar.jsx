@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'react-native';
+import '~/i18n'; // Import your i18n configuration
 
 export default function AppointmentsCalendar({ selectedDate, endDate, onSelectDate }) {
-  const { t, i18n } = useTranslation();
   const colorScheme = useColorScheme();
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
-
+  const { t,i18n } = useTranslation();
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
   const normalizedFirstDay = (firstDayOfMonth + 6) % 7;

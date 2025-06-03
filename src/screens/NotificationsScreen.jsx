@@ -60,8 +60,16 @@ const NotificationsScreen = ({ navigation }) => {
                     {item.tipoNotificacion === "CONFIRMACION_TURNO"
                       ? t('notification.book_confirmation')
                       : item.tipoNotificacion === "CANCELACION_TURNO"
-                        ? t('notification.cancel_confirmation')
-                        : item.tipoNotificacion}
+                      ? t('notification.cancel_confirmation')
+                      : item.tipoNotificacion === "ESTUDIOS_ENVIADOS"
+                      ? t('notification.test_send')
+                      : item.tipoNotificacion === "REPROGRAMACION_TURNO"
+                      ? t('notification.rescheduel_appointment')
+                      : item.tipoNotificacion === "RECETA_MEDICA"
+                      ? t('notification.medical_note')
+                      : item.tipoNotificacion === "RECETA_ENVIADA"
+                      ? t('notification.medical_note_send')
+                      : item.tipoNotificacion}
                   </Text>
                   <Text className="text-gray-700">{item.mensaje}</Text>
                   <View className="flex-row items-center mt-1">
@@ -71,11 +79,11 @@ const NotificationsScreen = ({ navigation }) => {
                         onPress={() => marcarNotificacionLeidaHandler(item.id)}
                       >
                         <MaterialCommunityIcons name="check" size={18} color="#22c55e" />
-                        <Text className="ml-1 text-green-600 text-xs">Marcar como leída</Text>
+                        <Text className="ml-1 text-green-600 text-xs">{t('notification.read_button')}</Text>
                       </TouchableOpacity>
                     ) : item.estado?.toLowerCase() === "no_leída" ? (
                       <>
-                        <Text className="text-xs text-blue-600">No leído</Text>
+                        <Text className="text-xs text-blue-600">{t('notification.type.unread')}</Text>
                         <TouchableOpacity
                           className="ml-2"
                           onPress={() => setSelectedNotificationId(item.id)}
@@ -84,7 +92,7 @@ const NotificationsScreen = ({ navigation }) => {
                         </TouchableOpacity>
                       </>
                     ) : (
-                      <Text className="text-xs text-gray-400">Leído</Text>
+                      <Text className="text-xs text-gray-400">{t('notification.type.read')}</Text>
                     )}
                   </View>
                 </View>

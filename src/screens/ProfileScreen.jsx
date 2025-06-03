@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import {
   View,
   ScrollView,
@@ -11,9 +11,13 @@ import AppContainer from '../components/AppContainer';
 import QuickActions from '../components/QuickActions';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useTranslation } from 'react-i18next';
-
 import Modal from 'react-native-modal';
-// import { AuthContext } from '../context/AuthContext';
+import { useSelector } from "react-redux";
+import { actualizarConfiguraciones } from "~/store/slices/userSlice";
+import { useDispatch } from "react-redux";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
+
 
 export default function ProfileScreen({ navigation }) {
   const insets = useSafeAreaInsets();
@@ -21,13 +25,37 @@ export default function ProfileScreen({ navigation }) {
   const [showSettingsModal, setShowSettingsModal] = React.useState(false);
   const [selectedTheme, setSelectedTheme] = React.useState('light');
   const [selectedLanguage, setSelectedLanguage] = React.useState('es');
-  // const { user } = useContext(AuthContext);
+  const user = useSelector(state => state.user.usuario);
+  const dispatch = useDispatch();
 
   const { t } = useTranslation();
 
-  const user = {
-    name: 'Usuario',
-    email: 'correo@ejemplo.com',
+  useEffect(() => {
+    (async () => {
+      const lang = await AsyncStorage.getItem('language');
+      if (user && user.idioma) {
+        setSelectedLanguage(user.idioma);
+      } else if (lang) {
+        setSelectedLanguage(lang);
+      }
+    })();
+  }, [user]);
+
+  // Cargar configuraciones guardadas al iniciar
+  useEffect(() => {
+    (async () => {
+      const theme = await AsyncStorage.getItem('theme');
+      const lang = await AsyncStorage.getItem('language');
+      if (theme) setSelectedTheme(theme);
+      if (lang) setSelectedLanguage(lang);
+    })();
+  }, []);
+
+  // Guardar configuraciones cuando cambian
+  const saveSettings = async () => {
+    await AsyncStorage.setItem('theme', selectedTheme);
+    await AsyncStorage.setItem('language', selectedLanguage);
+    setShowSettingsModal(false);
   };
 
   const moreActions = [
@@ -138,7 +166,15 @@ export default function ProfileScreen({ navigation }) {
                   borderRadius: 6,
                   marginRight: 10,
                 }}
-                onPress={() => setSelectedTheme('light')}
+                onPress={() => {
+                  setSelectedTheme('light');
+                  AsyncStorage.setItem('theme', 'light');
+                  if (user) {
+                    dispatch(actualizarConfiguraciones({ id: user.id, configuraciones: { modoOscuro: false } }));
+                    dispatch({ type: 'user/setModoOscuro', payload: false });
+                  }
+                  console.log('Tema cambiado a: light');
+                }}
               >
                 <Text style={{ color: selectedTheme === 'light' ? '#fff' : '#2563EB' }}>{t('profile.menu.settings.theme_light')}</Text>
               </TouchableOpacity>
@@ -148,7 +184,15 @@ export default function ProfileScreen({ navigation }) {
                   padding: 10,
                   borderRadius: 6,
                 }}
-                onPress={() => setSelectedTheme('dark')}
+                onPress={() => {
+                  setSelectedTheme('dark');
+                  AsyncStorage.setItem('theme', 'dark');
+                  if (user) {
+                    dispatch(actualizarConfiguraciones({ id: user.id, configuraciones: { modoOscuro: true } }));
+                    dispatch({ type: 'user/setModoOscuro', payload: true });
+                  }
+                  console.log('Tema cambiado a: dark');
+                }}
               >
                 <Text style={{ color: selectedTheme === 'dark' ? '#fff' : '#2563EB' }}>{t('profile.menu.settings.theme_dark')}</Text>
               </TouchableOpacity>
@@ -164,9 +208,13 @@ export default function ProfileScreen({ navigation }) {
                 }}
                 onPress={() => {
                   setSelectedLanguage('es');
+                  AsyncStorage.setItem('language', 'es');
                   import('../i18n').then(({ default: i18n }) => {
                     i18n.changeLanguage('es');
                   });
+                  if (user) {
+                    dispatch(actualizarConfiguraciones({ id: user.id, configuraciones: { idioma: 'es' } }));
+                  }
                 }}
               >
                 <Text style={{ color: selectedLanguage === 'es' ? '#fff' : '#2563EB' }}>{t('profile.menu.settings.language_es')}</Text>
@@ -179,9 +227,13 @@ export default function ProfileScreen({ navigation }) {
                 }}
                 onPress={() => {
                   setSelectedLanguage('en');
+                  AsyncStorage.setItem('language', 'en');
                   import('../i18n').then(({ default: i18n }) => {
                     i18n.changeLanguage('en');
                   });
+                  if (user) {
+                    dispatch(actualizarConfiguraciones({ id: user.id, configuraciones: { idioma: 'en' } }));
+                  }
                 }}
               >
                 <Text style={{ color: selectedLanguage === 'en' ? '#fff' : '#2563EB' }}>{t('profile.menu.settings.language_en')}</Text>
@@ -194,7 +246,7 @@ export default function ProfileScreen({ navigation }) {
                 borderRadius: 8,
                 alignItems: 'center',
               }}
-              onPress={() => setShowSettingsModal(false)}
+              onPress={saveSettings}
             >
               <Text style={{ color: '#fff', fontWeight: 'bold' }}>{t('profile.menu.settings.save_button')}</Text>
             </TouchableOpacity>

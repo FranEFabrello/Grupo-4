@@ -45,6 +45,10 @@
       "es": "Seleccionar fecha",
       "en": "Select date"
     },
+    "choose_date": {
+      "es": "Elegir fecha",
+      "en": "Choose date"
+    },
     "available_times": {
       "es": "Horarios disponibles",
       "en": "Available time slots"
@@ -171,6 +175,10 @@
       "expiration": {
         "es": "Vencimiento",
         "en": "Expiration"
+      },
+      "type": {
+        "es": "Tipo de Obra Social",
+        "en": "Type of Health Insurance"
       }
     },
     "credential_button": {
@@ -184,6 +192,10 @@
     "coverage_title": {
       "es": "Cobertura médica",
       "en": "Medical coverage"
+    },
+    "info_loading": {
+      "es": "Cargando información de obra social...",
+      "en": "Loading health insurance information..."
     }
   },
 
@@ -238,6 +250,10 @@
     "search": {
       "es": "Buscar profesional...",
       "en": "Search professional..."
+    },
+    "specialty_search": {
+      "es": "Buscar por especialidad...",
+      "en": "Search by specialty..."
     },
     "filter": {
       "es": "Filtrar profesionales",
@@ -353,29 +369,30 @@
       "en": "MediBook is an app for managing medical appointments, designed to make access to healthcare services easier."
     }
   },
+
   "register": {
     "title": {
       "es": "Crear Cuenta",
       "en": "Create Account"
     },
     "placeholders": {
-      "nombre": {
+      "name": {
         "es": "Nombre",
         "en": "First Name"
       },
-      "apellido": {
+      "lastName": {
         "es": "Apellido",
         "en": "Last Name"
       },
-      "correo": {
+      "email": {
         "es": "Correo electrónico",
         "en": "Email"
       },
-      "contrasenia": {
+      "password": {
         "es": "Contraseña",
         "en": "Password"
       },
-      "repetir_contrasenia": {
+      "repeat_password": {
         "es": "Repetir contraseña",
         "en": "Repeat password"
       },
@@ -387,16 +404,20 @@
         "es": "Fecha de nacimiento (AAAA-MM-DD)",
         "en": "Birth date (YYYY-MM-DD)"
       },
-      "edad": {
+      "age": {
         "es": "Edad",
         "en": "Age"
       },
-      "celular": {
+      "phone": {
         "es": "Celular (11 1234 5678)",
         "en": "Phone (11 1234 5678)"
+      },
+      "genero": {
+        "es": "Género",
+        "en": "Gender"
       }
     },
-    "genero": {
+    "gender": {
       "M": {
         "es": "Masculino",
         "en": "Male"
@@ -411,23 +432,23 @@
       }
     },
     "buttons": {
-      "siguiente": {
+      "next": {
         "es": "Siguiente",
         "en": "Next"
       },
-      "atras": {
+      "back": {
         "es": "Atrás",
         "en": "Back"
       },
-      "registrarme": {
+      "register": {
         "es": "Registrarme",
         "en": "Register"
       },
-      "cambiar_imagen": {
+      "change_img": {
         "es": "Cambiar imagen de perfil",
         "en": "Change profile image"
       },
-      "agregar_imagen": {
+      "add_img": {
         "es": "Agregar imagen de perfil (opcional)",
         "en": "Add profile image (optional)"
       }
@@ -490,6 +511,10 @@
       "default_error": {
         "es": "Error en el registro",
         "en": "Error registering"
+      },
+      "register_error": {
+        "es": "Error al registrar el usuario",
+        "en": "Error registering user"
       }
     }
   },
@@ -509,7 +534,7 @@
     },
     "section_title": {
       "es": "Estudios recientes",
-      "en": "Recent studies"
+      "en": "Recent Tests"
     },
     "filter_alert": {
       "es": "Filtrar resultados",
@@ -518,6 +543,14 @@
     "empty": {
       "es": "No hay resultados disponibles",
       "en": "No results available"
+    },
+    "tests": {
+        "es": "Estudio",
+        "en": "Test"
+    },
+    "prescription": {
+        "es": "Receta",
+        "en": "Prescription"
     },
     "download": {
       "button": {
@@ -528,8 +561,23 @@
         "es": "Descargando {{file}}",
         "en": "Downloading {{file}}"
       }
+    },
+    "info": {
+      "patient": {
+        "es": "Paciente: ",
+        "en": "Patient: "
+      },
+      "date": {
+        "es": "Fecha: ",
+        "en": "Date: "
+      },
+      "test_name": {
+        "es": "Nombre del estudio: ",
+        "en": "Test name: "
+      }
     }
   },
+
   "user_profile": {
     "screen_title": {
       "es": "Mi Perfil",
@@ -540,11 +588,11 @@
       "en": "Edit Personal Information"
     },
     "fields": {
-      "nombre": {
+      "name": {
         "es": "Nombre",
         "en": "First Name"
       },
-      "apellido": {
+      "lastName": {
         "es": "Apellido",
         "en": "Last Name"
       },
@@ -552,25 +600,27 @@
         "es": "DNI",
         "en": "ID Number"
       },
-      "celular": {
+      "phone": {
         "es": "Celular",
         "en": "Phone"
       },
-      "genero": {
-        "es": "Género",
-        "en": "Gender"
-      },
-      "genero_masculino": {
-        "es": "Masculino",
-        "en": "Male"
-      },
-      "genero_femenino": {
-        "es": "Femenino",
-        "en": "Female"
-      },
-      "genero_otros": {
-        "es": "Otros",
-        "en": "Other"
+      "gender": {
+        "title": {
+          "es": "Género",
+          "en": "Gender"
+        },
+        "M": {
+          "es": "Masculino",
+          "en": "Male"
+        },
+        "F": {
+          "es": "Femenino",
+          "en": "Female"
+        },
+        "O": {
+          "es": "Otros",
+          "en": "Other"
+        }
       }
     },
     "buttons": {
@@ -693,8 +743,8 @@
         "en": "Loading..."
       },
       "load_error": {
-        "es": "Error al cargar el perfil",
-        "en": "Failed to load profile"
+        "es": "Error al cargar el perfil: ",
+        "en": "Failed to load profile: "
       },
       "success": {
         "es": "Éxito",
@@ -715,6 +765,54 @@
       "no_selected_image": {
         "es": "No se pudo seleccionar la imagen",
         "en": "Could not select image"
+      },
+      "no_autentification": {
+        "es": "Error al autenticar el usuario",
+        "en": "Error authenticating user"
+      },
+      "verify_token_error": {
+        "es": "Error al validar token de registro",
+        "en": "Error verifying registration token"
+      },
+      "change_password_error": {
+        "es": "Error al cambiar la contraseña",
+        "en": "Error changing password"
+      },
+      "obtain_guys_error": {
+        "es": "Error al obtener los usuarios",
+        "en": "Error fetching users"
+      },
+      "fetch_profile_token_error": {
+        "es": "Error al obtener el usuario por token",
+        "en": "Error fetching user by token"
+      },
+      "updating_profile_error": {
+        "es": "Error al actualizar el perfil",
+        "en": "Error updating profile"
+      },
+      "request_": {
+        "es": "Error al solicitar el cambio de contraseña",
+        "en": "Error requesting password change"
+      },
+      "error_updating": {
+        "es": "Error al actualizar el token FCM",
+        "en": "Error updating FCM token"
+      },
+      "error_config": {
+        "es": "Error al actualizar las configuraciones",
+        "en": "Error updating configurations"
+      },
+      "error_help_msj": {
+        "es": "Error al enviar el mensaje de ayuda",
+        "en": "Error sending help message"
+      },
+      "error_close_session": {
+        "es": "Error al cerrar la sesión",
+        "en": "Error logging out"
+      },
+      "error_deactivating": {
+        "es": "Error al desactivar la cuenta",
+        "en": "Error deactivating account"
       }
     }
   },
@@ -723,6 +821,16 @@
     "available_time": {
         "es": "Horarios disponibles",
         "en": "Available time slots"
+    },
+    "status": {
+      "title": {
+        "es": "Estado: ",
+        "en": "Status: "
+      },
+      "status": {
+        "confirmado": "Confirmed",
+        "cancelado": "Cancelled"
+      }
     },
     "success": {
         "es": "Turno reservado exitosamente",
@@ -834,6 +942,10 @@
       "no_time": {
         "es": "Sin horario disponible",
         "en": "No available time"
+      },
+      "confirmation": {
+        "es": "¡Turno confirmado exitosamente!",
+        "en": "Appointment successfully confirmed!"
       }
     }
   },
@@ -842,6 +954,10 @@
     "title": {
       "es": "Filtrar",
       "en": "Filter"
+    },
+    "till": {
+        "es": "al",
+        "en": "to"
     },
     "filter_dates": {
       "title": {
@@ -1011,6 +1127,9 @@
   },
 
   "token": {
+    "instructions": {
+      "es": "Por favor, ingresa el token que recibiste por correo electrónico.",
+      "en": "Please enter the token you received via email."},
     "placeholder": {
       "es": "Ingresar token",
       "en": "Enter token"
@@ -1187,6 +1306,34 @@
       "es": "Cancelación de turno",
       "en": "Your appointment cancellation"
     },
+    "test_send":{
+        "es": "Resultados de estudios enviados",
+        "en": "Test results sent"
+    },
+    "rescheduel_appointment": {
+      "es": "Reprogramación de turno",
+      "en": "Appointment rescheduling"
+    },
+    "medical_note": {
+      "es": "Receta médica",
+      "en": "Medical prescription"
+    },
+    "medical_note_send": {
+      "es": "Receta médica recivida",
+      "en": "Medical prescription received"
+    },
+    "studies_sent": {
+        "es": "Resultados de estudios enviados",
+        "en": "Test results have been sent"
+    },
+    "prescription_sent": {
+        "es": "Receta médica enviada",
+        "en": "Medical prescription has been sent"
+    },
+    "reschedule": {
+        "es": "Reprogramación de turno",
+        "en": "Appointment rescheduled"
+    },
     "type": {
       "read": {
         "es": "Leído",
@@ -1196,6 +1343,88 @@
         "es": "No leído",
         "en": "Unread"
       }
+    },
+    "read_button": {
+      "es": "Marcar como leído",
+      "en": "Mark as read"
+    }
+  },
+
+  "policy": {
+    "title": {
+      "es": "Política de Seguridad",
+        "en": "Security Policy"
+    },
+    "sub_1": {
+      "es": "En nuestra aplicación, la seguridad y privacidad de tus datos es nuestra máxima prioridad. Nos comprometemos a proteger tu información personal y a garantizar que tus datos estén seguros en todo momento.",
+      "en": "In our application, the security and privacy of your data is our top priority. We are committed to protecting your personal information and ensuring that your data is secure at all times."
+    },
+    "how": {
+      "title": {
+        "es": "¿Cómo protegemos tus datos?",
+        "en": "How do we protect your data?"
+      },
+      "sub_1":{
+        "es": "- Utilizamos cifrado de extremo a extremo para proteger la transmisión de datos.",
+        "en": "- We use end-to-end encryption to protect data transmission."
+      },
+      "sub_2": {
+        "es": "- Tus contraseñas se almacenan de forma segura y nunca se comparten con terceros.",
+        "en": "- Your passwords are stored securely and never shared with third parties."
+      },
+      "sub_3": {
+        "es": "- Solo el personal autorizado puede acceder a tu información, y únicamente para fines estrictamente necesarios.",
+        "en": "- Only authorized personnel can access your information, and only for strictly necessary purposes."
+      }
+    },
+    "rights": {
+      "title": {
+        "es": "Tus Derechos",
+        "en": "Your Rights"
+      },
+      "sub_1": {
+        "es": "- Puedes solicitar la eliminación o modificación de tus datos personales en cualquier momento.",
+        "en": "- You can request the deletion or modification of your personal data at any time."
+      },
+      "sub_2": {
+        "es": "- Tienes derecho a conocer qué información almacenamos sobre ti y cómo la utilizamos.",
+        "en": "- You have the right to know what information we store about you and how we use it."
+      }
+    },
+    "tips": {
+      "title": {
+        "es": "Consejos de seguridad",
+        "en": "Security Tips"
+      },
+      "sub_1": {
+        "es": "- No compartas tu contraseña con nadie.",
+        "en": "- Do not share your password with anyone."
+      },
+      "sub_2": {
+        "es": "- Cambia tu contraseña periódicamente.",
+        "en": "- Change your password periodically."
+      },
+      "sub_3": {
+        "es": "- Si detectas actividad sospechosa, contáctanos de inmediato.",
+        "en": "- If you detect suspicious activity, contact us immediately."
+      }
+    },
+    "contact": {
+      "title": {
+        "es": "Contacto",
+        "en": "Contact"
+      },
+      "email": {
+        "es": "Si tienes dudas o inquietudes sobre nuestra política de seguridad, puedes escribirnos a:  ",
+        "en": "If you have questions or concerns about our security policy, you can write to us at: "
+      }
+    }
+  },
+
+  "splash": {
+    "title": {
+      "es": "Tu app médica favorita",
+      "en": "Your favorite medical app"
     }
   }
 }

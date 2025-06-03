@@ -3,7 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useColorScheme } from 'react-native';
 import { fetchProfessionals } from '~/store/slices/professionalsSlice';
-import { fetchUserByToken } from '~/store/slices/userSlice';
+import { actualizarFcmToken, fetchUserByToken } from "~/store/slices/userSlice";
 import { fetchAppointments } from '~/store/slices/appointmentsSlice';
 import { fetchSpecialities } from '~/store/slices/medicalSpecialitiesSlice';
 import AppContainer from '../components/AppContainer';
@@ -12,6 +12,8 @@ import AppointmentCard from '../components/AppointmentCard';
 import DoctorCard from '../components/DoctorCard';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useTranslation } from 'react-i18next';
+import i18n from '../i18n';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -21,7 +23,7 @@ export default function HomeScreen({ navigation }) {
   const { professionals, status: professionalsStatus } = useSelector((state) => state.professionals);
   const usuario = useSelector((state) => state.user.usuario);
   const specialities = useSelector((state) => state.medicalSpecialities.specialities);
-  const { t } = useTranslation();
+  const { t,i18n } = useTranslation();
 
 
   useEffect(() => {
@@ -38,6 +40,17 @@ export default function HomeScreen({ navigation }) {
       dispatch(fetchSpecialities());
     }
   }, [dispatch]);
+
+  // Sincroniza idioma y tema con AsyncStorage cuando cambia el usuario
+  useEffect(() => {
+    (async () => {
+      if (usuario && usuario.idioma) await AsyncStorage.setItem('language', usuario.idioma);
+      if (usuario && typeof usuario.modoOscuro === 'boolean') {
+        await AsyncStorage.setItem('theme', usuario.modoOscuro ? 'dark' : 'light');
+      }
+    })();
+  }, [usuario]);
+
 
   const quickActions = [
     { icon: 'calendar-plus', label: t('book_appointment.title'), screen: 'BookAppointment' },

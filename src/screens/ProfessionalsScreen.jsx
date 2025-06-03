@@ -18,7 +18,7 @@ export default function ProfessionalsScreen({ navigation }) {
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [selectedStars, setSelectedStars] = useState(null);
   const [selectedEspecialidades, setSelectedEspecialidades] = useState([]);
-  const { t} = useTranslation();
+  const { t } = useTranslation();
 
   const especialidades = useSelector((state) => state.medicalSpecialities.specialities);
 
@@ -53,7 +53,7 @@ export default function ProfessionalsScreen({ navigation }) {
       <ScrollView className="p-5">
         <View className="bg-white rounded-lg p-4 mb-4 shadow-md">
           <Text className="text-lg font-semibold text-gray-800 mb-4">
-            Profesionales
+            {t('professionals.title')}
           </Text>
           <View className="flex-row items-center mb-4">
             <View className="flex-1 relative">
@@ -65,7 +65,7 @@ export default function ProfessionalsScreen({ navigation }) {
               />
               <TextInput
                 className="bg-gray-100 rounded-full pl-10 pr-4 py-2"
-                placeholder="Buscar profesional..."
+                placeholder={t('professionals.search')}
                 value={searchQuery}
                 onChangeText={setSearchQuery}
               />
@@ -129,7 +129,7 @@ export default function ProfessionalsScreen({ navigation }) {
       >
         <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.2)', justifyContent: 'center', alignItems: 'center' }}>
           <View style={{ backgroundColor: '#fff', borderRadius: 16, padding: 20, width: '90%' }}>
-            <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 10 }}>{t('professionals.filter_especiality')}</Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 10 }}>{t('book_appointment.fields.specialty')}</Text>
             {/* Barra de búsqueda de especialidad */}
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
               <Icon
@@ -146,7 +146,7 @@ export default function ProfessionalsScreen({ navigation }) {
                   paddingVertical: 6,
                   flex: 1,
                 }}
-                placeholder="Buscar especialidad..."
+                placeholder={t('professionals.specialty_search')}
                 value={especialidadSearchQuery}
                 onChangeText={setEspecialidadSearchQuery}
               />

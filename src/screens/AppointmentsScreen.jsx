@@ -11,6 +11,9 @@ import { useColorScheme } from 'react-native';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { BlurView } from 'expo-blur';
 import AppointmentCardFullWidth from "~/components/ApptCardForApptScreen";
+import { useTranslation } from "react-i18next";
+import { useFocusEffect } from "@react-navigation/native";
+
 
 // Utilidad para obtener un Date con la hora deseada
 function getDateWithTime(fecha, hora) {
@@ -30,6 +33,9 @@ export default function AppointmentsScreen({ navigation }) {
   const [activeTab, setActiveTab] = useState('upcoming');
   const appointments = useSelector((state) => state.appointments.appointmentsByUser);
   const usuarioId = useSelector((state) => state.user.usuario?.id);
+  const usuario = useSelector((state) => state.user.usuario);
+
+  const { t, i18n } = useTranslation();
 
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [startDate, setStartDate] = useState(null);
@@ -40,6 +46,13 @@ export default function AppointmentsScreen({ navigation }) {
       dispatch(fetchAppointments(usuarioId));
     }
   }, [dispatch, usuarioId]);
+
+
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch(fetchAppointments(usuario?.id)); // o el action que uses para obtener turnos
+    }, [dispatch, usuario?.id])
+  );
 
   const handleSelectDate = (date) => {
     if (!startDate || (startDate && endDate)) {
@@ -138,7 +151,7 @@ export default function AppointmentsScreen({ navigation }) {
             <View className="mb-2">
               <Text className={`text-sm ${textAccentClass}`}>
                 Filtrando por: {startDate ? startDate.toLocaleDateString(i18n.language) : '-'}
-                {endDate ? ` al ${endDate.toLocaleDateString(i18n.language)}` : ''}
+                {endDate ? t('filter.till') + ' ' + endDate.toLocaleDateString(i18n.language) : ''}
               </Text>
             </View>
           )}
@@ -172,8 +185,8 @@ export default function AppointmentsScreen({ navigation }) {
             upcomingAppointments.length > 0 ? (
               upcomingAppointments.map((appt) => (
                 <View key={appt.id} className="mb-4">
-                  <AppointmentCard
-                    day={new Date(appt.fecha).toLocaleDateString('es-AR', {
+                  <AppointmentCardFullWidth
+                    day={new Date(appt.fecha).toLocaleDateString(i18n.language, {
                       weekday: 'short',
                       day: 'numeric',
                       month: 'short',
@@ -194,7 +207,7 @@ export default function AppointmentsScreen({ navigation }) {
             pastAppointments.length > 0 ? (
               pastAppointments.map((appt) => (
                 <View key={appt.id} className="mb-4">
-                  <AppointmentCard
+                  <AppointmentCardFullWidth
                     day={new Date(appt.fecha).toLocaleDateString(i18n.language, {
                       day: 'numeric',
                       month: 'short',
@@ -207,10 +220,10 @@ export default function AppointmentsScreen({ navigation }) {
                     colorScheme={colorScheme}
                   />
                   <TouchableOpacity
-                    className={`${buttonSecondaryClass} rounded-lg p-2 mt-2`}
-                    onPress={() => navigation.navigate('MedicalNotes', { appointmentId: appt.id })}
+                    className={`${buttonSecondaryClass} rounded-lg p-3 mt-2 items-center`}
+                    onPress={() => navigation.navigate('MedicalNotes', { appointment: appt })}
                   >
-                    <Text className={`text-sm ${textAccentClass}`}>
+                    <Text className={`text-base font-bold ${textAccentClass} text-center`}>
                       {t('appointments.view_medical_notes')}
                     </Text>
                   </TouchableOpacity>
@@ -222,7 +235,7 @@ export default function AppointmentsScreen({ navigation }) {
           ) : cancelledAppointments.length > 0 ? (
             cancelledAppointments.map((appt) => (
               <View key={appt.id} className="mb-4">
-                <AppointmentCard
+                <AppointmentCardFullWidth
                   day={new Date(appt.fecha).toLocaleDateString(i18n.language, {
                     weekday: 'short',
                     day: 'numeric',

@@ -10,6 +10,8 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Picker } from '@react-native-picker/picker';
 import { fetchUserByToken } from "~/store/slices/userSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useTranslation } from 'react-i18next';
+import * as SecureStore from "expo-secure-store";
 
 export default function UserProfileScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -25,6 +27,7 @@ export default function UserProfileScreen({ navigation }) {
   const [genero, setGenero] = useState('');
   const [edad, setEdad] = useState('');
   const [foto, setFoto] = useState('');
+  const { t } = useTranslation();
 
   const [editable, setEditable] = useState(false);
 
@@ -61,7 +64,7 @@ export default function UserProfileScreen({ navigation }) {
     }
 
     if (!usuario || !usuario.correo) {
-      alert("No se pudo identificar al usuario.");
+      alert(t('user_profile.alerts.not_identified'));
       return;
     }
 
@@ -75,17 +78,17 @@ export default function UserProfileScreen({ navigation }) {
 
     if (Object.keys(updates).length === 0) {
       setEditable(false);
-      alert("No se hicieron cambios.");
+      alert(t('user_profile.alerts.no_changes'));
       return;
     }
 
     dispatch(updateProfile({ correo: usuario.correo, updates }))
       .unwrap()
       .then(() => {
-        alert("Información actualizada");
+        alert(t('user_profile.alerts.updated'));
         setEditable(false);
       })
-      .catch(() => alert("Error al actualizar la información"));
+      .catch(() => alert(t('user_profile.alerts.update_error')));
   };
 
   /*const handleEdit = () => {
@@ -114,16 +117,16 @@ export default function UserProfileScreen({ navigation }) {
   };
 
   return (
-    <AppContainer navigation={navigation} screenTitle="Mi Perfil">
+    <AppContainer navigation={navigation} screenTitle={t('user_profile.screen_title')}>
       <ScrollView
         className="p-5"
         contentContainerStyle={{ paddingBottom: insets.bottom + 20 }}
       >
         {status === 'loading' ? (
-          <Text className="text-sm text-gray-600">Cargando...</Text>
+          <Text className="text-sm text-gray-600">{t('global.alert.loading')}</Text>
         ) : status === 'failed' ? (
           <View>
-            <Text className="text-sm text-red-600">Error al cargar el perfil: {error || 'Network error'}</Text>
+            <Text className="text-sm text-red-600">{t('global.alert.load_error')} {error || 'Network error'}</Text>
           </View>
         ) : usuario ? (
           <>
@@ -136,9 +139,9 @@ export default function UserProfileScreen({ navigation }) {
             </View>
 
             <View className="bg-white rounded-lg p-4 mb-4 shadow-md">
-              <Text className="text-base font-semibold text-gray-800 mb-4">Editar Información Personal</Text>
+              <Text className="text-base font-semibold text-gray-800 mb-4">{t('user_profile.edit_section_title')}</Text>
 
-              <Text className="text-sm text-gray-800 mt-2">Nombre</Text>
+              <Text className="text-sm text-gray-800 mt-2">{t('user_profile.fields.name')}</Text>
               <TextInput
                 className="border-b border-gray-300 mb-2"
                 value={nombre}
@@ -147,7 +150,7 @@ export default function UserProfileScreen({ navigation }) {
                 style={{ color: editable ? '#1a202c' : '#a0aec0' }}
               />
 
-              <Text className="text-sm text-gray-800">Apellido</Text>
+              <Text className="text-sm text-gray-800">{t('user_profile.fields.lastName')}</Text>
               <TextInput
                 className="border-b border-gray-300 mb-2"
                 value={apellido}
@@ -156,7 +159,7 @@ export default function UserProfileScreen({ navigation }) {
                 style={{ color: editable ? '#1a202c' : '#a0aec0' }}
               />
 
-              <Text className="text-sm text-gray-800">DNI</Text>
+              <Text className="text-sm text-gray-800">{t('user_profile.fields.dni')}</Text>
               <TextInput
                 className="border-b border-gray-300 mb-2"
                 value={dni}
@@ -165,7 +168,7 @@ export default function UserProfileScreen({ navigation }) {
                 style={{ color: editable ? '#1a202c' : '#a0aec0' }}
               />
 
-              <Text className="text-sm text-gray-800">Celular</Text>
+              <Text className="text-sm text-gray-800">{t('user_profile.fields.phone')}</Text>
               <TextInput
                 className="border-b border-gray-300 mb-2"
                 value={celular}
@@ -174,7 +177,7 @@ export default function UserProfileScreen({ navigation }) {
                 style={{ color: editable ? '#1a202c' : '#a0aec0' }}
               />
 
-              <Text className="text-sm text-gray-800">Género</Text>
+              <Text className="text-sm text-gray-800">{t('user_profile.fields.gender.title')}</Text>
               <View className="border-b border-gray-300 mb-2">
                 <Picker
                   selectedValue={genero}
@@ -186,9 +189,9 @@ export default function UserProfileScreen({ navigation }) {
                   }}
                   enabled={editable}
                 >
-                  <Picker.Item label="Masculino" value="masculino" />
-                  <Picker.Item label="Femenino" value="femenino" />
-                  <Picker.Item label="Otros" value="otros" />
+                  <Picker.Item label={t('user_profile.fields.gender.M')} value="masculino" />
+                  <Picker.Item label={t('user_profile.fields.gender.F')} value="femenino" />
+                  <Picker.Item label={t('user_profile.fields.gender.O')} value="otros" />
                 </Picker>
               </View>
 
@@ -196,17 +199,24 @@ export default function UserProfileScreen({ navigation }) {
                 className="bg-blue-600 rounded-lg p-3 flex-row justify-center mt-4"
                 onPress={handleEdit}
               >
-                <Text className="text-white text-sm">{editable ? "Guardar cambios" : "Editar perfil"}</Text>
+                <Text className="text-white text-sm">{editable ? t('user_profile.buttons.save') : t('user_profile.buttons.edit')}</Text>
               </TouchableOpacity>
             </View>
 
             <View className="bg-white rounded-lg p-4 shadow-md">
               <TouchableOpacity
                 className="bg-red-500 rounded-lg p-3 flex-row justify-center"
-                onPress={() => {handleLogout()}}
+                onPress={async () => {
+                  // Elimina el token seguro antes de cerrar sesión
+                  await SecureStore.deleteItemAsync('token');
+                  if (user && user.correo) {
+                    dispatch(cerrarSesion({ correo: user.correo }));
+                  } else {
+                    dispatch(cerrarSesion());
+                  }
+                }}
               >
-                <Text className="text-white text-sm">Cerrar sesión</Text>
-
+                <Text className="text-white text-sm">{t('user_profile.buttons.logout')}</Text>
               </TouchableOpacity>
             </View>
           </>

@@ -14,15 +14,13 @@ import ProfileField from '../components/ProfileField';
 import Calendar from '../components/Calendar';
 import TimeSlot from '../components/TimeSlot';
 import { fetchSpecialities } from "~/store/slices/medicalSpecialitiesSlice";
-import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from 'react-i18next';
 
-export default function BookAppointmentScreen({ route }) {
-  const navigation = useNavigation(); // Usa el hook en lugar de la prop
-  const { t } = useTranslation();
+export default function BookAppointmentScreen({ navigation, route }) {
   const { professionalId } = route.params || {};
   const dispatch = useDispatch();
   const colorScheme = useColorScheme();
+  const { t,i18n} = useTranslation();
 
   const professionals = useSelector((state) => state.professionals.professionals);
   const { availableDays, availableTimeSlots, status } = useSelector((state) => state.appointments);
@@ -98,6 +96,7 @@ export default function BookAppointmentScreen({ route }) {
   };
 
   const handleConfirm = () => {
+    console.log('handleConfirm called', { specialty, professional, selectedDate, selectedTime });
     if (specialty && professional && selectedDate && selectedTime) {
       setLoading(true);
       const payload = {
@@ -110,21 +109,28 @@ export default function BookAppointmentScreen({ route }) {
         archivoAdjunto: null,
         estado: 'PENDIENTE',
       };
+      console.log('Dispatching bookAppointment', payload);
       dispatch(bookAppointment(payload))
         .unwrap()
         .then(() => {
-          setModalMessage(t('appointments.success'));
+          setModalMessage(t('appontmets.alerts.confirmation'));
           setModalSuccess(true);
           setModalVisible(true);
-          navigation.navigate('Appointments'); // Navega directamente
+          setTimeout(() => {
+            setModalVisible(false);
+            navigation.navigate('Appointments');
+          }, 2000); // espera 2 segundos y navega
         })
-        .catch(() => {
+
+        .catch((err) => {
+          console.log('Error en bookAppointment:', err);
           setModalMessage(t('book_appointment.alerts.error'));
           setModalSuccess(false);
           setModalVisible(true);
         })
         .finally(() => setLoading(false));
     } else {
+      console.log('Campos faltantes en handleConfirm');
       setModalMessage(t('book_appointment.alerts.missing_fields'));
       setModalSuccess(false);
       setModalVisible(true);
@@ -137,12 +143,12 @@ export default function BookAppointmentScreen({ route }) {
   const primaryButtonClass = colorScheme === 'light' ? 'bg-blue-500 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700';
 
   return (
-    <AppContainer navigation={navigation} screenTitle={t('book_appointment.title')}>
+    <AppContainer navigation={navigation} screenTitle={t('home.quick_actions.book')}>
       <Animated.View style={{ opacity: fadeAnim, flex: 1 }}>
         <View style={{ flex: 1 }}>
           <ScrollView className="p-6" contentContainerStyle={{ paddingBottom: 100 }} keyboardShouldPersistTaps="handled">
             <View className={`rounded-2xl p-8 w-full ${cardClass}`}>
-              <Text className={`text-xl font-bold mb-6 ${textClass}`}>{t('book_appointment.title')}</Text>
+              <Text className={`text-xl font-bold mb-6 ${textClass}`}>{t('home.quick_actions.book')}</Text>
               <ProfileField
                 label={t('book_appointment.fields.specialty')}
                 type="picker"
@@ -174,7 +180,7 @@ export default function BookAppointmentScreen({ route }) {
                     <Text
                       className={`text-base ${selectedDate ? (colorScheme === 'light' ? 'text-blue-900 font-semibold' : 'text-white font-semibold') : 'text-gray-400'} text-center`}
                     >
-                      {selectedDate ? selectedDate : t('book_appointment.select_date')}
+                      {selectedDate ? selectedDate : t('book_appointment.choose_date')}
                     </Text>
                   </TouchableOpacity>
                   <Modal
@@ -205,7 +211,7 @@ export default function BookAppointmentScreen({ route }) {
                       </View>
                     </View>
                   </Modal>
-                  <Text className={`text-lg font-semibold mt-8 mb-3 ${textClass}`}>{t('book_appointment.available_time')}</Text>
+                  <Text className={`text-lg font-semibold mt-8 mb-3 ${textClass}`}>{t('book_appointment.available_times')}</Text>
                   <View className="mb-8">
                     {status === 'loading' ? (
                       <ActivityIndicator size="large" color={colorScheme === 'light' ? '#2563eb' : '#60a5fa'} />
@@ -223,7 +229,7 @@ export default function BookAppointmentScreen({ route }) {
                         />
                       ))
                     ) : (
-                      <Text className={`text-base ${secondaryTextClass}`}>{t('appointments.alerts.no_time')}</Text>
+                      <Text className={`text-base ${secondaryTextClass}`}>{t('book_appointment.no_times')}</Text>
                     )}
                   </View>
                 </View>
@@ -256,22 +262,19 @@ export default function BookAppointmentScreen({ route }) {
             animationType="fade"
             onRequestClose={() => {
               setModalVisible(false);
-              if (modalSuccess) {
-                navigation.navigate('Appointments');
-              }
+              if (modalSuccess) navigation.navigate('Appointments');
             }}
           >
             <View className="flex-1 justify-center items-center bg-black/50">
               <View className={`w-80 p-6 rounded-2xl ${cardClass} items-center shadow-2xl`}>
-                <Text className={`text-lg font-semibold mb-4 ${modalSuccess ? 'text-green-500' : 'text-red-500'}`}>
-                  {modalMessage}
-                </Text>
+                <Text className={`text-lg font-semibold mb-4 ${modalSuccess ? 'text-green-500' : 'text-red-500'}`}>{modalMessage}</Text>
                 <TouchableOpacity
                   className={`px-6 py-3 rounded-xl ${primaryButtonClass}`}
                   onPress={() => {
                     setModalVisible(false);
                     if (modalSuccess) {
-                      navigation.navigate('Appointments'); // Usa navigation del hook
+                      console.log('Navigating to Appointments (modal OK)');
+                      navigation.navigate('Appointments');
                     }
                   }}
                 >

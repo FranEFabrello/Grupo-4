@@ -4,6 +4,7 @@ import { useColorScheme } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AppContainer from '../components/AppContainer';
 import { useTranslation } from 'react-i18next';
+import '../i18n'; // Import your i18n configuration
 
 export default function MedicalNotesScreen({ route, navigation }) {
   const { appointment } = route.params;

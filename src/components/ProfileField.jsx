@@ -29,7 +29,7 @@ export default function ProfileField({ label, type = 'text', value, onChange, it
               fontSize: 16,
             }}
           >
-            <Picker.Item label={`${t('global.select')} ${label.toLowerCase()}...`} value="" color={isDark ? '#9ca3af' : '#6b7280'} />
+            <Picker.Item label={`${t('global.button.select')} ${label.toLowerCase()}...`} value="" color={isDark ? '#9ca3af' : '#6b7280'} />
             {items.map((item) => (
               <Picker.Item key={item.value} label={item.label} value={item.value} color={isDark ? '#ffffff' : '#1f2937'} />
             ))}
