@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Modal, ScrollView, Text, TextInput, TouchableOpacity, View, useColorScheme } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchSpecialities } from "~/store/slices/medicalSpecialitiesSlice";
-
 import AppContainer from "../components/AppContainer";
 import DoctorCard from "../components/DoctorCard";
 import FilterButton from "../components/FilterButton";
 import { useTranslation } from 'react-i18next';
-
 import { fetchProfessionals } from "~/store/slices/professionalsSlice";
 
 export default function ProfessionalsScreen({ navigation }) {
@@ -19,9 +17,23 @@ export default function ProfessionalsScreen({ navigation }) {
   const [selectedStars, setSelectedStars] = useState(null);
   const [selectedEspecialidades, setSelectedEspecialidades] = useState([]);
   const { t } = useTranslation();
-
   const especialidades = useSelector((state) => state.medicalSpecialities.specialities);
+  const colorScheme = useColorScheme();
 
+  // Theme variables
+  const containerBg = colorScheme === 'light' ? 'bg-white' : 'bg-gray-600';
+  const cardBg = colorScheme === 'light' ? 'bg-white' : 'bg-gray-600';
+  const primaryText = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
+  const secondaryText = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-400';
+  const inputBg = colorScheme === 'light' ? 'bg-gray-100' : 'bg-gray-700';
+  const modalBg = colorScheme === 'light' ? 'bg-white' : 'bg-gray-800';
+  const modalDivider = colorScheme === 'light' ? 'bg-blue-600' : 'bg-blue-600';
+  const buttonBg = colorScheme === 'light' ? 'bg-gray-300' : 'bg-gray-500';
+  const selectedButtonBg = colorScheme === 'light' ? 'bg-blue-500' : 'bg-blue-700';
+  const buttonText = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
+  const selectedButtonText = 'text-white';
+  const starColor = colorScheme === 'light' ? 'text-yellow-500' : 'text-yellow-400';
+  const starInactiveColor = colorScheme === 'light' ? 'text-gray-400' : 'text-gray-300';
 
   useEffect(() => {
     dispatch(fetchProfessionals());
@@ -51,8 +63,8 @@ export default function ProfessionalsScreen({ navigation }) {
   return (
     <AppContainer navigation={navigation} screenTitle={t('professionals.title')}>
       <ScrollView className="p-5">
-        <View className="bg-white rounded-lg p-4 mb-4 shadow-md">
-          <Text className="text-lg font-semibold text-gray-800 mb-4">
+        <View className={`${containerBg} rounded-lg p-4 mb-4 shadow-md`}>
+          <Text className={`text-lg font-semibold ${primaryText} mb-4`}>
             {t('professionals.title')}
           </Text>
           <View className="flex-row items-center mb-4">
@@ -60,36 +72,42 @@ export default function ProfessionalsScreen({ navigation }) {
               <Icon
                 name="search"
                 size={16}
-                color="#6c757d"
+                color={colorScheme === 'light' ? '#6c757d' : '#9CA3AF'}
                 className="absolute left-3 top-3"
               />
               <TextInput
-                className="bg-gray-100 rounded-full pl-10 pr-4 py-2"
+                className={`${inputBg} rounded-full pl-10 pr-4 py-2 ${primaryText}`}
                 placeholder={t('professionals.search')}
                 value={searchQuery}
                 onChangeText={setSearchQuery}
+                placeholderTextColor={colorScheme === 'light' ? '#6B7280' : '#9CA3AF'}
               />
             </View>
-            <FilterButton onPress={() => setShowFilterModal(true)} />
+            <FilterButton
+              onPress={() => setShowFilterModal(true)}
+              className={`${selectedButtonBg} rounded-full px-4 py-2.5 ml-2 flex-row items-center`}
+              textClassName={`${selectedButtonText} font-semibold text-sm`}
+              iconColor="#FFFFFF"
+            />
           </View>
           {/* Filtros seleccionados */}
           {(selectedEspecialidades.length > 0 || selectedStars) && (
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: 10 }}>
+            <View className="flex-row flex-wrap mb-2.5">
               {selectedEspecialidades.map((esp) => (
-                <View key={esp.id} style={{ backgroundColor: '#2563EB', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 4, marginRight: 6, marginBottom: 6 }}>
-                  <Text style={{ color: '#fff', fontSize: 12 }}>{esp.descripcion}</Text>
+                <View key={esp.id} className={`${selectedButtonBg} rounded-xl px-2.5 py-1 mr-1.5 mb-1.5`}>
+                  <Text className={`${selectedButtonText} text-xs`}>{esp.descripcion}</Text>
                 </View>
               ))}
               {selectedStars && (
-                <View style={{ backgroundColor: '#2563EB', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 4, marginRight: 6, marginBottom: 6, flexDirection: 'row', alignItems: 'center' }}>
-                  <Text style={{ color: '#fff', fontSize: 12, marginRight: 4 }}>{selectedStars}</Text>
-                  <Text style={{ color: '#FFD700', fontSize: 12 }}>★</Text>
+                <View className={`${selectedButtonBg} rounded-xl px-2.5 py-1 mr-1.5 mb-1.5 flex-row items-center`}>
+                  <Text className={`${selectedButtonText} text-xs mr-1`}>{selectedStars}</Text>
+                  <Text className={`${starColor} text-xs`}>★</Text>
                 </View>
               )}
             </View>
           )}
           {status === "loading" ? (
-            <Text className="text-sm text-gray-600">{t('global.alert.loading')}</Text>
+            <Text className={`text-sm ${secondaryText}`}>{t('global.alert.loading')}</Text>
           ) : filteredProfessionals.length > 0 ? (
             <View className="flex-row flex-wrap justify-between gap-y-4">
               {filteredProfessionals.map((prof) => (
@@ -113,8 +131,8 @@ export default function ProfessionalsScreen({ navigation }) {
               ))}
             </View>
           ) : (
-            <Text className="text-sm text-gray-600">
-              t('professionals.alerts.empty')
+            <Text className={`text-sm ${secondaryText}`}>
+              {t('professionals.alerts.empty')}
             </Text>
           )}
         </View>
@@ -127,31 +145,28 @@ export default function ProfessionalsScreen({ navigation }) {
         transparent
         onRequestClose={() => setShowFilterModal(false)}
       >
-        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.2)', justifyContent: 'center', alignItems: 'center' }}>
-          <View style={{ backgroundColor: '#fff', borderRadius: 16, padding: 20, width: '90%' }}>
-            <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 10 }}>{t('professionals.filter_especiality')}</Text>
+        <View className="flex-1 bg-black/20 justify-center items-center">
+          <View className={`${modalBg} rounded-xl p-5 w-[90%]`}>
+            <Text className={`font-bold text-lg mb-2.5 ${primaryText}`}>
+              {t('professionals.filter_especiality')}
+            </Text>
             {/* Barra de búsqueda de especialidad */}
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+            <View className="flex-row items-center mb-2.5">
               <Icon
                 name="search"
                 size={16}
-                color="#6c757d"
-                style={{ marginRight: 8 }}
+                color={colorScheme === 'light' ? '#6c757d' : '#9CA3AF'}
+                className="mr-2"
               />
               <TextInput
-                style={{
-                  backgroundColor: '#F3F4F6',
-                  borderRadius: 20,
-                  paddingHorizontal: 12,
-                  paddingVertical: 6,
-                  flex: 1,
-                }}
+                className={`${inputBg} rounded-xl px-3 py-1.5 flex-1 ${primaryText}`}
                 placeholder={t('professionals.specialty_search')}
                 value={especialidadSearchQuery}
                 onChangeText={setEspecialidadSearchQuery}
+                placeholderTextColor={colorScheme === 'light' ? '#6B7280' : '#9CA3AF'}
               />
             </View>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 10 }}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-2.5">
               {especialidades
                 .filter((esp) =>
                   esp.descripcion
@@ -161,12 +176,7 @@ export default function ProfessionalsScreen({ navigation }) {
                 .map((esp) => (
                   <TouchableOpacity
                     key={esp.id}
-                    style={{
-                      padding: 10,
-                      backgroundColor: selectedEspecialidades.some(e => e.id === esp.id) ? '#2563EB' : '#E5E7EB',
-                      borderRadius: 20,
-                      marginRight: 10,
-                    }}
+                    className={`px-2.5 py-1.5 ${selectedEspecialidades.some(e => e.id === esp.id) ? selectedButtonBg : buttonBg} rounded-xl mr-2.5`}
                     onPress={() => {
                       setSelectedEspecialidades((prev) =>
                         prev.some(e => e.id === esp.id)
@@ -175,59 +185,46 @@ export default function ProfessionalsScreen({ navigation }) {
                       );
                     }}
                   >
-                    <Text style={{ color: selectedEspecialidades.some(e => e.id === esp.id) ? '#fff' : '#1F2937' }}>
+                    <Text className={`${selectedEspecialidades.some(e => e.id === esp.id) ? selectedButtonText : buttonText}`}>
                       {esp.descripcion}
                     </Text>
                   </TouchableOpacity>
                 ))}
             </ScrollView>
-            <View style={{ height: 2, backgroundColor: '#2563EB', marginBottom: 20 }} />
+            <View className={`${modalDivider} h-0.5 mb-5`} />
 
-            <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 10 }}>{t('professionals.filter_star')}</Text>
+            <Text className={`font-bold text-lg mb-2.5 ${primaryText}`}>
+              {t('professionals.filter_star')}
+            </Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {[1, 2, 3, 4, 5].map((star) => (
                 <TouchableOpacity
                   key={star}
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    padding: 10,
-                    backgroundColor: selectedStars === star ? '#2563EB' : '#E5E7EB',
-                    borderRadius: 20,
-                    marginRight: 10,
-                  }}
+                  className={`flex-row items-center px-2.5 py-1.5 ${selectedStars === star ? selectedButtonBg : buttonBg} rounded-xl mr-2.5`}
                   onPress={() => setSelectedStars(selectedStars === star ? null : star)}
                 >
-                  <Text style={{ color: selectedStars === star ? '#fff' : '#1F2937', marginRight: 5 }}>{star}</Text>
-                  <Text style={{ color: selectedStars === star ? '#FFD700' : '#A0AEC0' }}>★</Text>
+                  <Text className={`${selectedStars === star ? selectedButtonText : buttonText} mr-1`}>{star}</Text>
+                  <Text className={`${selectedStars === star ? starColor : starInactiveColor}`}>★</Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>
-            <View style={{ height: 2, backgroundColor: '#2563EB', marginVertical: 20 }} />
+            <View className={`${modalDivider} h-0.5 my-5`} />
 
             <TouchableOpacity
-              style={{
-                backgroundColor: '#2563EB',
-                padding: 15,
-                borderRadius: 10,
-                alignItems: 'center',
-              }}
+              className={`${selectedButtonBg} py-3 rounded-lg items-center`}
               onPress={() => setShowFilterModal(false)}
             >
-              <Text style={{ color: '#fff', fontWeight: 'bold' }}>{t('professionals.aplly_filter')}</Text>
+              <Text className={`${selectedButtonText} font-bold`}>{t('professionals.aplly_filter')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={{
-                marginTop: 10,
-                alignItems: 'center',
-              }}
+              className="mt-2.5 items-center"
               onPress={() => {
                 setSelectedEspecialidades([]);
                 setSelectedStars(null);
                 setShowFilterModal(false);
               }}
             >
-              <Text style={{ color: '#2563EB', fontWeight: 'bold' }}>{t('professionals.clear_filter')}</Text>
+              <Text className={`${selectedButtonText} font-bold`}>{t('professionals.clear_filter')}</Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -3,6 +3,7 @@ import { View, ScrollView, Text, TouchableOpacity, Linking, ActivityIndicator, I
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AppContainer from '../components/AppContainer';
 import { useTranslation } from 'react-i18next';
+import i18n from '../i18n';
 
 // Reemplaza con tu clave API de NewsAPI
 const API_KEY = '4c9dab8cf2f24d3287780a7250edbd50';
@@ -15,6 +16,7 @@ export default function HealthTipsScreen({ navigation }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const { t } = useTranslation();
+
 
   const fetchHealthTips = async (page) => {
     try {

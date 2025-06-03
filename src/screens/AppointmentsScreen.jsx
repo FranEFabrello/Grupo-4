@@ -10,8 +10,8 @@ import AppointmentsCalendar from '~/components/AppointmentsCalendar';
 import { useColorScheme } from 'react-native';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { BlurView } from 'expo-blur';
-import AppointmentCardFullWidth from "~/components/ApptCardForApptScreen";
 import { useTranslation } from 'react-i18next';
+import { colorScheme } from "nativewind";
 
 // Utilidad para obtener un Date con la hora deseada
 function getDateWithTime(fecha, hora) {
@@ -105,6 +105,11 @@ export default function AppointmentsScreen({ navigation }) {
   const textAccentClass = colorScheme === 'light' ? 'text-blue-600' : 'text-blue-400';
   const textWhiteClass = 'text-white';
 
+
+  const selectedButtonBg = colorScheme === 'light' ? 'bg-blue-600' : 'bg-blue-700';
+  const selectedButtonText = colorScheme === 'light' ? 'text-white' : 'text-gray-200';
+
+
   // Botones
   const buttonPrimaryClass = colorScheme === 'light'
     ? 'bg-blue-600'
@@ -121,6 +126,7 @@ export default function AppointmentsScreen({ navigation }) {
     ? 'bg-white rounded-xl p-6 w-[90%]'
     : 'bg-gray-700 rounded-xl p-6 w-[90%]';
 
+
   return (
     <AppContainer navigation={navigation} screenTitle={t('appointments.Mytitle')} className={screenContainerClass}>
       <ScrollView className={scrollContainerClass}>
@@ -130,7 +136,12 @@ export default function AppointmentsScreen({ navigation }) {
           {/* Header */}
           <View className="flex-row justify-between items-center mb-4">
             <Text className={`text-lg font-semibold ${textPrimaryClass}`}>{t('appointments.Mytitle')}</Text>
-            <FilterButton onPress={() => setShowFilterModal(true)} />
+            <FilterButton
+              onPress={() => setShowFilterModal(true)}
+              className={`${selectedButtonBg} rounded-full px-4 py-2.5 ml-2 flex-row items-center`}
+              textClassName={`${selectedButtonText} font-semibold text-sm`}
+              iconColor="#FFFFFF"
+            />
           </View>
 
           {/* Filtro activo */}

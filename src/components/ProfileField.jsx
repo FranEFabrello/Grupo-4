@@ -4,39 +4,68 @@ import { Picker } from '@react-native-picker/picker';
 import { useColorScheme } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-export default function ProfileField({ label, type = 'text', value, onChange, items = [], disabled, colorScheme }) {
-  const isDark = colorScheme === 'dark';
+export default function ProfileField({
+                                       label,
+                                       type = 'text',
+                                       value,
+                                       onChange,
+                                       items = [],
+                                       disabled,
+                                       className,
+                                       labelClassName,
+                                       valueClassName,
+                                     }) {
+  const colorScheme = useColorScheme();
   const { t } = useTranslation();
 
+  // Theme variables
+  const primaryText = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
+  const secondaryText = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-400';
+  const inputBg = colorScheme === 'light' ? 'bg-gray-100' : 'bg-gray-700';
+  const pickerBg = colorScheme === 'light' ? 'bg-gray-100' : 'bg-gray-900';
+  const borderColor = colorScheme === 'light' ? 'border-gray-300' : 'border-gray-700';
+  const selectedButtonBg = colorScheme === 'light' ? 'bg-blue-500' : 'bg-blue-400';
+
   return (
-    <View className="mb-6 w-full">
-      <Text className={`text-base font-semibold mb-2 ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>{label}</Text>
+    <View className={`mb-6 w-full ${className}`}>
+      <Text className={`text-base font-semibold mb-2 ${primaryText} ${labelClassName}`}>{label}</Text>
       {type === 'picker' ? (
-        <View className={`rounded-xl border ${isDark ? 'border-gray-600 bg-gray-900' : 'border-gray-200 bg-gray-100'} px-4 py-3 ${disabled ? 'opacity-50' : ''} shadow-sm`}>
+        <View className={`rounded-xl border ${borderColor} ${pickerBg} px-4 py-3 ${disabled ? 'opacity-50' : ''} shadow-sm`}>
           <Picker
             selectedValue={value}
             onValueChange={onChange}
             enabled={!disabled}
             style={{
-              color: isDark ? '#ffffff' : '#1f2937',
+              color: colorScheme === 'light' ? '#1f2937' : '#e5e7eb',
               fontSize: 16,
-              backgroundColor: isDark ? '#1f2937' : '#f9fafb',
+              backgroundColor: colorScheme === 'light' ? '#f9fafb' : '#1f2937',
             }}
-            dropdownIconColor={isDark ? '#60a5fa' : '#2563eb'}
+            dropdownIconColor={colorScheme === 'light' ? '#3b82f6' : '#60a5fa'}
             itemStyle={{
-              color: isDark ? '#ffffff' : '#1f2937',
-              backgroundColor: isDark ? '#374151' : '#ffffff',
+              color: colorScheme === 'light' ? '#1f2937' : '#e5e7eb',
+              backgroundColor: colorScheme === 'light' ? '#ffffff' : '#374151',
               fontSize: 16,
             }}
           >
-            <Picker.Item label={`${t('global.button.select')} ${label.toLowerCase()}...`} value="" color={isDark ? '#9ca3af' : '#6b7280'} />
+            <Picker.Item
+              label={`${t('global.button.select')} ${label.toLowerCase()}...`}
+              value=""
+              color={colorScheme === 'light' ? '#6b7280' : '#9ca3af'}
+            />
             {items.map((item) => (
-              <Picker.Item key={item.value} label={item.label} value={item.value} color={isDark ? '#ffffff' : '#1f2937'} />
+              <Picker.Item
+                key={item.value}
+                label={item.label}
+                value={item.value}
+                color={colorScheme === 'light' ? '#1f2937' : '#e5e7eb'}
+              />
             ))}
           </Picker>
         </View>
       ) : (
-        <Text className="bg-gray-100 rounded-lg p-3 text-sm text-gray-600">{value}</Text>
+        <Text className={`${inputBg} rounded-xl p-3 text-sm ${secondaryText} ${valueClassName}`}>
+          {value}
+        </Text>
       )}
     </View>
   );

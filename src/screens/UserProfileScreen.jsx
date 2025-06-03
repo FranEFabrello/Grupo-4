@@ -1,39 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import { View, ScrollView, Text, TouchableOpacity, Switch, TextInput } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProfile, updateProfile } from "~/store/slices/profileSlice";
+import { updateProfile } from "~/store/slices/profileSlice";
 import { cerrarSesion } from "~/store/slices/userSlice";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AppContainer from '../components/AppContainer';
-import ProfileField from '../components/ProfileField';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Picker } from '@react-native-picker/picker';
-import { fetchUserByToken } from "~/store/slices/userSlice";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from 'react-i18next';
+import { useColorScheme } from 'react-native';
 
 export default function UserProfileScreen({ navigation }) {
   const dispatch = useDispatch();
-  //const { usuario, status, error } = useSelector((state) => state.user);
-  const [notifications, setNotifications] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
   const insets = useSafeAreaInsets();
+  const colorScheme = useColorScheme();
+  const { t } = useTranslation();
 
   const [nombre, setNombre] = useState('');
   const [apellido, setApellido] = useState('');
   const [dni, setDni] = useState('');
   const [celular, setCelular] = useState('');
   const [genero, setGenero] = useState('');
-  const [edad, setEdad] = useState('');
-  const [foto, setFoto] = useState('');
-  const { t } = useTranslation();
-
   const [editable, setEditable] = useState(false);
 
-  const {status, error} = useSelector((state) => state.user.usuario);
+  const { status, error } = useSelector((state) => state.user);
   const usuario = useSelector((state) => state.user.usuario);
 
-
+  // Theme variables
+  const containerBg = colorScheme === 'light' ? 'bg-white' : 'bg-gray-700';
+  const inputBg = colorScheme === 'light' ? 'bg-gray-100' : 'bg-gray-700';
+  const avatarBg = colorScheme === 'light' ? 'bg-blue-50' : 'bg-gray-700';
+  const primaryText = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-400';
+  const secondaryText = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-200';
+  const borderColor = colorScheme === 'light' ? 'border-gray-300' : 'border-blue-600';
+  const selectedButtonBg = colorScheme === 'light' ? 'bg-blue-600' : 'bg-blue-700';
+  const selectedButtonText = 'text-white';
+  const dangerButtonBg = colorScheme === 'light' ? 'bg-red-500' : 'bg-red-600';
 
   useEffect(() => {
     if (!usuario) {
@@ -41,7 +43,6 @@ export default function UserProfileScreen({ navigation }) {
       return;
     }
     console.log('Usuario desde el store:', usuario);
-    // Aquí puedes usar usuario.id o cualquier otra propiedad necesaria
   }, [usuario]);
 
   useEffect(() => {
@@ -55,7 +56,6 @@ export default function UserProfileScreen({ navigation }) {
     }
   }, [usuario]);
 
-
   const handleEdit = () => {
     if (!editable) {
       setEditable(true);
@@ -67,7 +67,6 @@ export default function UserProfileScreen({ navigation }) {
       return;
     }
 
-    // Detectar cambios para enviar sólo los campos actualizados
     const updates = {};
     if (nombre !== usuario.nombre) updates.nombre = nombre;
     if (apellido !== usuario.apellido) updates.apellido = apellido;
@@ -90,29 +89,12 @@ export default function UserProfileScreen({ navigation }) {
       .catch(() => alert(t('user_profile.alerts.update_error')));
   };
 
-  /*const handleEdit = () => {
-    dispatch(updateProfile({ notifications, darkMode }));
-    alert('Información actualizada');
-  };*/
-
-  // Handler para cerrar sesión
   const handleLogout = () => {
     if (usuario && usuario.correo) {
       dispatch(cerrarSesion({ correo: usuario.correo }));
     } else {
       dispatch(cerrarSesion());
     }
-  }
-
-  const fallbackProfile = {
-    name: 'Usuario de Prueba',
-    email: 'usuario@prueba.com',
-    dob: '01/01/1990',
-    dni: '12345678',
-    phone: '+54 9 11 1234-5678',
-    address: 'Calle Falsa 123, Buenos Aires',
-    notifications: true,
-    darkMode: false,
   };
 
   return (
@@ -122,71 +104,67 @@ export default function UserProfileScreen({ navigation }) {
         contentContainerStyle={{ paddingBottom: insets.bottom + 20 }}
       >
         {status === 'loading' ? (
-          <Text className="text-sm text-gray-600">{t('global.alert.loading')}</Text>
+          <Text className={`text-sm ${secondaryText}`}>{t('global.alert.loading')}</Text>
         ) : status === 'failed' ? (
           <View>
-            <Text className="text-sm text-red-600">{t('global.alert.load_error')} {error || 'Network error'}</Text>
+            <Text className={`text-sm text-red-600`}>{t('global.alert.load_error')} {error || 'Network error'}</Text>
           </View>
         ) : usuario ? (
           <>
             <View className="items-center mb-4">
-              <View className="w-24 h-24 bg-blue-100 rounded-full justify-center items-center mb-2">
-                <Icon name="user" size={40} color="#4a6fa5" />
+              <View className={`w-24 h-24 ${avatarBg} rounded-full justify-center items-center mb-2`}>
+                <Icon name="user" size={40} color={colorScheme === 'light' ? '#4a6fa5' : '#60a5fa'} />
               </View>
-              <Text className="text-lg font-semibold text-gray-800">{`${nombre} ${apellido}`}</Text>
-              <Text className="text-sm text-gray-600">{usuario.correo}</Text>
+              <Text className={`text-lg font-semibold ${primaryText}`}>{`${nombre} ${apellido}`}</Text>
+              <Text className={`text-sm ${secondaryText}`}>{usuario.correo}</Text>
             </View>
 
-            <View className="bg-white rounded-lg p-4 mb-4 shadow-md">
-              <Text className="text-base font-semibold text-gray-800 mb-4">{t('user_profile.edit_section_title')}</Text>
+            <View className={`${containerBg} rounded-xl p-4 mb-4 shadow-md`}>
+              <Text className={`text-base font-semibold ${primaryText} mb-4`}>{t('user_profile.edit_section_title')}</Text>
 
-              <Text className="text-sm text-gray-800 mt-2">{t('user_profile.fields.name')}</Text>
+              <Text className={`text-sm ${primaryText} mb-1`}>{t('user_profile.fields.name')}</Text>
               <TextInput
-                className="border-b border-gray-300 mb-2"
+                className={`rounded-xl ${inputBg} ${borderColor} border p-3 mb-2 text-sm ${editable ? primaryText : secondaryText}`}
                 value={nombre}
                 onChangeText={setNombre}
                 editable={editable}
-                style={{ color: editable ? '#1a202c' : '#a0aec0' }}
               />
 
-              <Text className="text-sm text-gray-800">{t('user_profile.fields.lastName')}</Text>
+              <Text className={`text-sm ${primaryText} mb-1`}>{t('user_profile.fields.lastName')}</Text>
               <TextInput
-                className="border-b border-gray-300 mb-2"
+                className={`rounded-xl ${inputBg} ${borderColor} border p-3 mb-2 text-sm ${editable ? primaryText : secondaryText}`}
                 value={apellido}
                 onChangeText={setApellido}
                 editable={editable}
-                style={{ color: editable ? '#1a202c' : '#a0aec0' }}
               />
 
-              <Text className="text-sm text-gray-800">{t('user_profile.fields.dni')}</Text>
+              <Text className={`text-sm ${primaryText} mb-1`}>{t('user_profile.fields.dni')}</Text>
               <TextInput
-                className="border-b border-gray-300 mb-2"
+                className={`rounded-xl ${inputBg} ${borderColor} border p-3 mb-2 text-sm ${editable ? primaryText : secondaryText}`}
                 value={dni}
                 onChangeText={setDni}
                 editable={editable}
-                style={{ color: editable ? '#1a202c' : '#a0aec0' }}
               />
 
-              <Text className="text-sm text-gray-800">{t('user_profile.fields.phone')}</Text>
+              <Text className={`text-sm ${primaryText} mb-1`}>{t('user_profile.fields.phone')}</Text>
               <TextInput
-                className="border-b border-gray-300 mb-2"
+                className={`rounded-xl ${inputBg} ${borderColor} border p-3 mb-2 text-sm ${editable ? primaryText : secondaryText}`}
                 value={celular}
                 onChangeText={setCelular}
                 editable={editable}
-                style={{ color: editable ? '#1a202c' : '#a0aec0' }}
               />
 
-              <Text className="text-sm text-gray-800">{t('user_profile.fields.gender.title')}</Text>
-              <View className="border-b border-gray-300 mb-2">
+              <Text className={`text-sm ${primaryText} mb-1`}>{t('user_profile.fields.gender.title')}</Text>
+              <View className={`rounded-xl ${inputBg} ${borderColor} border p-2 mb-2`}>
                 <Picker
                   selectedValue={genero}
                   onValueChange={setGenero}
+                  enabled={editable}
                   style={{
                     height: 40,
-                    color: editable ? '#1a202c' : '#a0aec0',
-                    backgroundColor: 'transparent'
+                    color: colorScheme === 'light' ? '#1f2937' : '#e5e7eb',
+                    backgroundColor: 'transparent',
                   }}
-                  enabled={editable}
                 >
                   <Picker.Item label={t('user_profile.fields.gender.M')} value="masculino" />
                   <Picker.Item label={t('user_profile.fields.gender.F')} value="femenino" />
@@ -195,20 +173,21 @@ export default function UserProfileScreen({ navigation }) {
               </View>
 
               <TouchableOpacity
-                className="bg-blue-600 rounded-lg p-3 flex-row justify-center mt-4"
+                className={`${selectedButtonBg} rounded-xl p-3 flex-row justify-center mt-4`}
                 onPress={handleEdit}
               >
-                <Text className="text-white text-sm">{editable ? t('user_profile.buttons.save') : t('user_profile.buttons.edit')}</Text>
+                <Text className={`${selectedButtonText} text-sm font-semibold`}>
+                  {editable ? t('user_profile.buttons.save') : t('user_profile.buttons.edit')}
+                </Text>
               </TouchableOpacity>
             </View>
 
-            <View className="bg-white rounded-lg p-4 shadow-md">
+            <View className={`${containerBg} rounded-xl p-4 shadow-md`}>
               <TouchableOpacity
-                className="bg-red-500 rounded-lg p-3 flex-row justify-center"
-                onPress={() => {handleLogout()}}
+                className={`${dangerButtonBg} rounded-xl p-3 flex-row justify-center`}
+                onPress={handleLogout}
               >
-                <Text className="text-white text-sm">{t('user_profile.buttons.logout')}</Text>
-
+                <Text className={`${selectedButtonText} text-sm font-semibold`}>{t('user_profile.buttons.logout')}</Text>
               </TouchableOpacity>
             </View>
           </>

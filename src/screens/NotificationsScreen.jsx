@@ -3,11 +3,10 @@ import { View, Text, FlatList, ActivityIndicator, TouchableOpacity } from "react
 import { useDispatch, useSelector } from 'react-redux';
 import AppContainer from '../components/AppContainer';
 import { fetchNotificaciones, marcarNotificacionLeida } from "~/store/slices/notificationSlice";
-import { createSelector } from 'reselect';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-//const selectNotificaciones = state => state.notificaciones?.notificaciones;
 import { useTranslation } from 'react-i18next';
+import { useColorScheme } from 'react-native';
 
 const NotificationsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -16,12 +15,30 @@ const NotificationsScreen = ({ navigation }) => {
   const usuarioId = useSelector(state => state.user.usuario?.id);
   const [selectedNotificationId, setSelectedNotificationId] = React.useState(null);
   const { t } = useTranslation();
+  const colorScheme = useColorScheme();
+
+  // Theme variables
+  const containerBg = colorScheme === 'light' ? 'bg-gray-50' : 'bg-gray-800';
+  const cardBg = colorScheme === 'light' ? 'bg-white' : 'bg-gray-700';
+  const primaryText = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
+  const secondaryText = colorScheme === 'light' ? 'text-gray-700' : 'text-gray-400';
+  const accentText = colorScheme === 'light' ? 'text-blue-600' : 'text-blue-400';
+  const successText = colorScheme === 'light' ? 'text-green-600' : 'text-green-400';
+  const errorText = colorScheme === 'light' ? 'text-red-500' : 'text-red-400';
+  const iconConfirm = colorScheme === 'light' ? '#22C55E' : '#4ADE80';
+  const iconCancel = colorScheme === 'light' ? '#EF4444' : '#F87171';
+  const iconStudy = colorScheme === 'light' ? '#3B82F6' : '#60A5FA';
+  const iconReschedule = colorScheme === 'light' ? '#F59E0B' : '#FBBF24';
+  const iconPrescription = colorScheme === 'light' ? '#A21CAF' : '#D946EF';
+  const iconDefault = colorScheme === 'light' ? '#6B7280' : '#9CA3AF';
+  const loaderColor = colorScheme === 'light' ? '#3B82F6' : '#60A5FA';
 
   useEffect(() => {
     if (usuarioId) {
       dispatch(fetchNotificaciones(usuarioId));
     }
   }, [dispatch, usuarioId]);
+
   console.log('notificaciones en screen:', notificaciones);
 
   const marcarNotificacionLeidaHandler = (id) => {
@@ -31,75 +48,75 @@ const NotificationsScreen = ({ navigation }) => {
 
   return (
     <AppContainer navigation={navigation} screenTitle={t('notification.title')}>
-      <View className="flex-1 bg-gray-50 p-4">
-        {loading && <ActivityIndicator size="large" color="#2563eb" />}
-        {error && <Text className="text-red-500 mb-4">{error}</Text>}
+      <View className={`flex-1 ${containerBg} p-5`}>
+        {loading && <ActivityIndicator size="large" color={loaderColor} />}
+        {error && <Text className={`${errorText} mb-4`}>{error}</Text>}
         {!loading && !error && (
           <FlatList
             data={notificaciones}
             keyExtractor={item => item.id?.toString()}
             renderItem={({ item }) => (
-              <View className="bg-white rounded-lg p-4 mb-3 shadow flex-row items-center">
-                <View className="mr-4">
+              <View className={`${cardBg} rounded-xl p-3 mb-4 shadow-sm flex-row items-center`}>
+                <View className="mr-1">
                   {item.logoNotificacion === "logo_confirmacion.png" ? (
-                    <MaterialCommunityIcons name="check-circle" size={40} color="#22c55e" />
+                    <MaterialCommunityIcons name="check-circle" size={40} color={iconConfirm} />
                   ) : item.logoNotificacion === "logo_cancelacion.png" ? (
-                    <MaterialCommunityIcons name="close-circle" size={40} color="#ef4444" />
+                    <MaterialCommunityIcons name="close-circle" size={40} color={iconCancel} />
                   ) : item.logoNotificacion === "logo_estudios.png" ? (
-                    <FontAwesome5 name="file-medical" size={40} color="#2563eb" />
+                    <FontAwesome5 name="file-medical" size={40} color={iconStudy} />
                   ) : item.logoNotificacion === "logo_reprogramacion.png" ? (
-                    <MaterialCommunityIcons name="calendar" size={40} color="#f59e42" />
+                    <MaterialCommunityIcons name="calendar" size={40} color={iconReschedule} />
                   ) : item.logoNotificacion === "logo_receta.png" ? (
-                    <FontAwesome5 name="notes-medical" size={40} color="#a21caf" />
+                    <FontAwesome5 name="notes-medical" size={40} color={iconPrescription} />
                   ) : (
-                    <MaterialCommunityIcons name="bell" size={40} color="#6b7280" />
+                    <MaterialCommunityIcons name="bell" size={40} color={iconDefault} />
                   )}
                 </View>
                 <View className="flex-1">
-                  <Text className="font-bold text-base mb-1">
+                  <Text className={`font-semibold text-base ${primaryText} mb-2`}>
                     {item.tipoNotificacion === "CONFIRMACION_TURNO"
                       ? t('notification.book_confirmation')
                       : item.tipoNotificacion === "CANCELACION_TURNO"
-                      ? t('notification.cancel_confirmation')
-                      : item.tipoNotificacion === "ESTUDIOS_ENVIADOS"
-                      ? t('notification.test_send')
-                      : item.tipoNotificacion === "REPROGRAMACION_TURNO"
-                      ? t('notification.rescheduel_appointment')
-                      : item.tipoNotificacion === "RECETA_MEDICA"
-                      ? t('notification.medical_note')
-                      : item.tipoNotificacion === "RECETA_ENVIADA"
-                      ? t('notification.medical_note_send')
-                      : item.tipoNotificacion}
+                        ? t('notification.cancel_confirmation')
+                        : item.tipoNotificacion === "ESTUDIOS_ENVIADOS"
+                          ? t('notification.test_send')
+                          : item.tipoNotificacion === "REPROGRAMACION_TURNO"
+                            ? t('notification.rescheduel_appointment')
+                            : item.tipoNotificacion === "RECETA_MEDICA"
+                              ? t('notification.medical_note')
+                              : item.tipoNotificacion === "RECETA_ENVIADA"
+                                ? t('notification.medical_note_send')
+                                : item.tipoNotificacion}
                   </Text>
-                  <Text className="text-gray-700">{item.mensaje}</Text>
+                  <Text className={`${secondaryText}`}>{item.mensaje}</Text>
                   <View className="flex-row items-center mt-1">
                     {item.estado?.toLowerCase() === "no_leída" && selectedNotificationId === item.id ? (
                       <TouchableOpacity
                         className="ml-2 flex-row items-center"
                         onPress={() => marcarNotificacionLeidaHandler(item.id)}
                       >
-                        <MaterialCommunityIcons name="check" size={18} color="#22c55e" />
-                        <Text className="ml-1 text-green-600 text-xs">{t('notification.read_button')}</Text>
+                        <MaterialCommunityIcons name="check" size={18} color={iconConfirm} />
+                        <Text className={`${successText} ml-1 text-xs`}>{t('notification.read_button')}</Text>
                       </TouchableOpacity>
                     ) : item.estado?.toLowerCase() === "no_leída" ? (
                       <>
-                        <Text className="text-xs text-blue-600">{t('notification.type.unread')}</Text>
+                        <Text className={`text-xs ${accentText}`}>{t('notification.type.unread')}</Text>
                         <TouchableOpacity
                           className="ml-2"
                           onPress={() => setSelectedNotificationId(item.id)}
                         >
-                          <MaterialCommunityIcons name="check" size={18} color="#22c55e" />
+                          <MaterialCommunityIcons name="check" size={18} color={iconConfirm} />
                         </TouchableOpacity>
                       </>
                     ) : (
-                      <Text className="text-xs text-gray-400">{t('notification.type.read')}</Text>
+                      <Text className={`text-xs ${secondaryText}`}>{t('notification.type.read')}</Text>
                     )}
                   </View>
                 </View>
               </View>
             )}
             ListEmptyComponent={
-              <Text className="text-center text-gray-500 mt-10">{t('notification.empty')}</Text>
+              <Text className={`text-center ${secondaryText} mt-10`}>{t('notification.empty')}</Text>
             }
           />
         )}

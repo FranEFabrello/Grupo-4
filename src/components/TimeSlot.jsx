@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TouchableOpacity, Animated } from 'react-native';
+import { Text, TouchableOpacity, Animated, StyleSheet } from 'react-native';
 
 export default function TimeSlot({ time, isSelected, onSelect, colorScheme }) {
   const [scaleAnim] = React.useState(new Animated.Value(1));
@@ -18,21 +18,76 @@ export default function TimeSlot({ time, isSelected, onSelect, colorScheme }) {
     }).start();
   };
 
+  const containerStyle = [
+    styles.container,
+    isSelected
+      ? (colorScheme === 'dark' ? styles.selectedDark : styles.selectedLight)
+      : (colorScheme === 'dark' ? styles.unselectedDark : styles.unselectedLight)
+  ];
+
+  const textStyle = [
+    styles.text,
+    isSelected ? styles.textSelected : (colorScheme === 'dark' ? styles.textDark : styles.textLight)
+  ];
+
   return (
     <Animated.View style={{ transform: [{ scale: scaleAnim }], marginVertical: 8 }}>
       <TouchableOpacity
-        className={`w-full rounded-xl px-4 py-3 items-center justify-center border-2 ${isSelected
-          ? (colorScheme === 'dark' ? 'bg-blue-600 border-blue-500 shadow-lg' : 'bg-blue-500 border-blue-400 shadow-lg')
-          : (colorScheme === 'dark' ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-200')} transition-all duration-200`}
+        style={containerStyle}
         onPress={onSelect}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         activeOpacity={0.9}
       >
-        <Text className={`text-base font-semibold ${isSelected ? 'text-white' : (colorScheme === 'dark' ? 'text-gray-100' : 'text-blue-600')}`}>
-          {time}
-        </Text>
+        <Text style={textStyle}>{time}</Text>
       </TouchableOpacity>
     </Animated.View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+  },
+  selectedLight: {
+    backgroundColor: '#3b82f6',
+    borderColor: '#60a5fa',
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  selectedDark: {
+    backgroundColor: '#2563eb',
+    borderColor: '#3b82f6',
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  unselectedLight: {
+    backgroundColor: '#fff',
+    borderColor: '#e5e7eb',
+  },
+  unselectedDark: {
+    backgroundColor: '#1f2937',
+    borderColor: '#4b5563',
+  },
+  text: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  textSelected: {
+    color: '#fff',
+  },
+  textLight: {
+    color: '#3b82f6',
+  },
+  textDark: {
+    color: '#f3f4f6',
+  },
+});
