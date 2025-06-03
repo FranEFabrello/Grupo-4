@@ -3,7 +3,6 @@ import { View, ScrollView, Text, TouchableOpacity, Modal, Pressable } from 'reac
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAppointments } from '~/store/slices/appointmentsSlice';
 import AppContainer from '../components/AppContainer';
-import AppointmentCard from '../components/AppointmentCard';
 import FilterButton from '../components/FilterButton';
 import TabButton from '../components/TabButton';
 import AppointmentsCalendar from '~/components/AppointmentsCalendar';
@@ -116,6 +115,11 @@ export default function AppointmentsScreen({ navigation }) {
   const textAccentClass = colorScheme === 'light' ? 'text-blue-600' : 'text-blue-400';
   const textWhiteClass = 'text-white';
 
+
+  const selectedButtonBg = colorScheme === 'light' ? 'bg-blue-600' : 'bg-blue-700';
+  const selectedButtonText = colorScheme === 'light' ? 'text-white' : 'text-gray-200';
+
+
   // Botones
   const buttonPrimaryClass = colorScheme === 'light'
     ? 'bg-blue-600'
@@ -133,7 +137,6 @@ export default function AppointmentsScreen({ navigation }) {
     : 'bg-gray-700 rounded-xl p-6 w-[90%]';
 
 
-
   return (
     <AppContainer navigation={navigation} screenTitle={t('appointments.Mytitle')} className={screenContainerClass}>
       <ScrollView className={scrollContainerClass}>
@@ -143,7 +146,12 @@ export default function AppointmentsScreen({ navigation }) {
           {/* Header */}
           <View className="flex-row justify-between items-center mb-4">
             <Text className={`text-lg font-semibold ${textPrimaryClass}`}>{t('appointments.Mytitle')}</Text>
-            <FilterButton onPress={() => setShowFilterModal(true)} />
+            <FilterButton
+              onPress={() => setShowFilterModal(true)}
+              className={`${selectedButtonBg} rounded-full px-4 py-2.5 ml-2 flex-row items-center`}
+              textClassName={`${selectedButtonText} font-semibold text-sm`}
+              iconColor="#FFFFFF"
+            />
           </View>
 
           {/* Filtro activo */}

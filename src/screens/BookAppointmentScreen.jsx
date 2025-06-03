@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Text, TouchableOpacity, ActivityIndicator, Modal, Animated } from "react-native";
+import { View, ScrollView, Text, TouchableOpacity, ActivityIndicator, Modal, Animated, ToastAndroid } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
 import { useColorScheme } from 'react-native';
 import { fetchProfessionals } from "~/store/slices/professionalsSlice";
@@ -14,7 +14,7 @@ import ProfileField from '../components/ProfileField';
 import Calendar from '../components/Calendar';
 import TimeSlot from '../components/TimeSlot';
 import { fetchSpecialities } from "~/store/slices/medicalSpecialitiesSlice";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 export default function BookAppointmentScreen({ navigation, route }) {
   const { professionalId } = route.params || {};
@@ -105,7 +105,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
         fecha: selectedDate,
         horaInicio: selectedTime.horaInicio.substring(0, 5),
         horaFin: selectedTime.horaFin.substring(0, 5),
-        nota: t('medical_note.general_consult'),
+        nota: 'Consulta general', //CAMBIAR
         archivoAdjunto: null,
         estado: 'PENDIENTE',
       };
@@ -113,7 +113,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
       dispatch(bookAppointment(payload))
         .unwrap()
         .then(() => {
-          setModalMessage(t('appontmets.alerts.confirmation'));
+          setModalMessage(t('appointments.alerts.confirmation'));
           setModalSuccess(true);
           setModalVisible(true);
           setTimeout(() => {
@@ -221,10 +221,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
                           key={index}
                           time={formatTimeSlot(slot)}
                           isSelected={selectedTime?.horaInicio === slot.horaInicio}
-                          onSelect={() => {
-                            console.log('Seleccionando horario:', slot);
-                            setSelectedTime(slot);
-                          }}
+                          onSelect={() => setSelectedTime(slot)}
                           colorScheme={colorScheme}
                         />
                       ))

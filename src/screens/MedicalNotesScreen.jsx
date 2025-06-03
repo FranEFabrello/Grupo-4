@@ -19,8 +19,10 @@ export default function MedicalNotesScreen({ route, navigation }) {
   const handleDownload = () => {
     if (appointment.archivoAdjunto) {
       Linking.openURL(appointment.archivoAdjunto).catch(() => {
-        Alert.alert('Error', t('medical_note.alert.no_open'));
+        Toast.error(t('medical_note.alert.no_open'));
       });
+    } else {
+      Toast.warn(t('medical_note.alert.no_file'));
     }
   };
 

@@ -3,16 +3,16 @@ import { TouchableOpacity, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useTranslation } from 'react-i18next';
 
-export default function FilterButton({ onPress }) {
+export default function FilterButton({ onPress, className, textClassName, iconColor }) {
   const { t } = useTranslation();
 
   return (
     <TouchableOpacity
-      className="border border-blue-600 rounded-lg px-3 py-2 flex-row items-center"
+      className={`rounded-full px-4 py-2.5 flex-row items-center ${className}`}
       onPress={onPress}
     >
-      <Icon name="sliders-h" size={14} color="#4a6fa5" />
-      <Text className="text-blue-600 text-sm ml-1">{t('filter.title')}</Text>
+      <Icon name="filter" size={16} color={iconColor} className="mr-1.5" />
+      <Text className={`text-sm ${textClassName}`}>{t('filter.title')}</Text>
     </TouchableOpacity>
   );
 }

@@ -8,7 +8,7 @@ import {
   Platform,
   ScrollView,
   Alert,
-  Image,
+  Image
 } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
 import { useDispatch, useSelector } from "react-redux";
