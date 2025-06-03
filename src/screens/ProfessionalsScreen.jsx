@@ -114,7 +114,7 @@ export default function ProfessionalsScreen({ navigation }) {
             </View>
           ) : (
             <Text className="text-sm text-gray-600">
-              t('professionals.alerts.empty')
+              {t('professionals.alerts.empty')}
             </Text>
           )}
         </View>

@@ -26,7 +26,7 @@ export default function QuickActions({
           <View className={`w-10 h-10 ${iconBgClass} rounded-full justify-center items-center mb-2`}>
             <Icon name={action.icon} size={18} color={iconColor} />
           </View>
-          <Text className={`text-sm font-medium ${textClass}`}>{action.label}</Text>
+          <Text className={`text-sm font-medium text-center mt-2 ${textClass}`}>{action.label}</Text>
         </TouchableOpacity>
       ))}
     </View>

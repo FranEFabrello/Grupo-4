@@ -29,7 +29,7 @@
   "book_appointment": {
     "title": {
       "es": "Reservar Turno",
-      "en": "Book Appointment"
+      "en": "Book\nAppointment"
     },
     "fields": {
       "specialty": {
@@ -271,10 +271,6 @@
       "es": "Limpiar filtros",
       "en": "Clear filters"
     },
-    "empty": {
-      "es": "No hay profesionales disponibles",
-      "en": "No professionals available"
-    },
     "filter_star": {
       "es": "Filtrar por estrellas",
       "en": "Filter by stars"
@@ -283,6 +279,10 @@
       "no_especiality": {
         "es": "Sin especialidad",
         "en": "No specialty"
+      },
+      "empty": {
+        "es": "No hay profesionales disponibles",
+        "en": "No professionals available"
       }
     }
   },
@@ -848,6 +848,10 @@
       "es": "Mis Turnos",
       "en": "My Appointments"
     },
+    "my_appointments": {
+      "es": "Mis\nTurnos",
+      "en": "My\nAppointments"
+    },
     "filter_by": {
         "es": "Filtrado por",
         "en": "Filtered by"
@@ -1176,6 +1180,18 @@
       "es": "Consejos de Salud",
       "en": "Health Tips"
     },
+    "lang": {
+      "es": "es",
+      "en": "en"
+    },
+    "query": {
+      "es": "salud+bienestar+OR+consejos+de+alimentación+OR+hábitos+saludables",
+      "en": "health+wellness+OR+nutrition+tips+OR+healthy+habits"
+    },
+    "links": {
+      "es": "clarin.com,infobae.com,lanacion.com.ar",
+      "en": "cnn.com,healthline.com,nytimes.com"
+    },
     "error_prefix": {
       "es": "Error:",
       "en": "Error:"
@@ -1260,6 +1276,10 @@
       "no_open": {
         "es": "No se pudo abrir el enlace de la receta médica.",
         "en": "Could not open the medical prescription link."
+      },
+      "no_file": {
+        "es": "No hay receta médica disponible.",
+        "en": "No medical prescription available."
       },
       "download_alert": {
         "es": "Descargando {{file}}",

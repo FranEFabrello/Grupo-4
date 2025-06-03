@@ -14,13 +14,13 @@ export default function HealthTipsScreen({ navigation }) {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const { t } = useTranslation();
+  const { t,i18n } = useTranslation();
 
   const fetchHealthTips = async (page) => {
     try {
       setLoading(true);
       setError(null);
-      const url = `https://newsapi.org/v2/everything?q=salud+bienestar+OR+consejos+de+alimentaci%C3%B3n+OR+h%C3%A1bitos+saludables&language=es&domains=clarin.com,infobae.com,lanacion.com.ar&sortBy=publishedAt&page=${page}&pageSize=10&apiKey=${API_KEY}`;
+      const url = `https://newsapi.org/v2/everything?q=${t('articles.query')}&language=${t('articles.lang')}&domains=${t('articles.links')}&sortBy=publishedAt&page=${page}&pageSize=10&apiKey=${API_KEY}`;
       const response = await fetch(url);
       const data = await response.json();
 

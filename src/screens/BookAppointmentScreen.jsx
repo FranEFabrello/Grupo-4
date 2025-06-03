@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Text, TouchableOpacity, ActivityIndicator, Modal, Animated } from "react-native";
+import { View, ScrollView, Text, TouchableOpacity, ActivityIndicator, Modal, Animated, ToastAndroid } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
 import { useColorScheme } from 'react-native';
 import { fetchProfessionals } from "~/store/slices/professionalsSlice";
@@ -104,25 +104,25 @@ export default function BookAppointmentScreen({ navigation, route }) {
         fecha: selectedDate,
         horaInicio: selectedTime.horaInicio.substring(0, 5),
         horaFin: selectedTime.horaFin.substring(0, 5),
-        nota: 'Consulta general',
+        nota: 'Consulta general', //CAMBIAR
         archivoAdjunto: null,
         estado: 'PENDIENTE',
       };
       dispatch(bookAppointment(payload))
         .unwrap()
         .then(() => {
-          setModalMessage(t('appontmets.alerts.confirmation'));
+          setModalMessage(t('appointments.alerts.confirmation'));
           setModalSuccess(true);
           setModalVisible(true);
         })
         .catch(() => {
-          setModalMessage(t('book_appontment.alerts.error'));
+          setModalMessage(t('book_appointment.alerts.error'));
           setModalSuccess(false);
           setModalVisible(true);
         })
         .finally(() => setLoading(false));
     } else {
-      setModalMessage(t('book_appontment.alerts.missing_fields'));
+      setModalMessage(t('book_appointment.alerts.missing_fields'));
       setModalSuccess(false);
       setModalVisible(true);
     }
