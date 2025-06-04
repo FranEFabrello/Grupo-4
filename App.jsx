@@ -6,17 +6,20 @@ import * as SplashScreen from 'expo-splash-screen';
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform, StatusBar } from "react-native";
-import api from '~/api/api'; // Asegúrate de que esta importación sea correcta
+import api from '~/api/api';
 
 import AppNavigator from '~/navigation/AppNavigator';
 import store from '~/store';
 import { setToken } from '~/store/slices/authSlice';
+import ToastProvider from '~/components/ToastProvider'; // Importa el nuevo componente
 
 import './global.css';
 import './src/i18n';
 
-
 import CustomStatusBar from "~/components/CustomStatusBar";
+
+import 'react-native-gesture-handler';
+
 
 SplashScreen.preventAutoHideAsync();
 
@@ -48,7 +51,6 @@ const linking = {
   },
 };
 
-// Función auxiliar para leer el token
 const getToken = async () => {
   try {
     if (Platform.OS === 'web') {
@@ -62,7 +64,6 @@ const getToken = async () => {
   }
 };
 
-// Función auxiliar para eliminar el token
 const removeToken = async () => {
   try {
     if (Platform.OS === 'web') {
@@ -84,19 +85,18 @@ function AppWrapper() {
       try {
         const token = await getToken();
         if (token) {
-          // Validar el token con el backend
           const response = await api.get('/Auth/validate', {
             headers: { Authorization: `Bearer ${token}` },
           });
           if (response.data.isValid) {
             dispatch(setToken(token));
           } else {
-            await removeToken(); // Eliminar token inválido
+            await removeToken();
           }
         }
       } catch (e) {
         console.error('Error al inicializar la app:', e);
-        await removeToken(); // Eliminar token en caso de error
+        await removeToken();
       } finally {
         setIsReady(true);
       }
@@ -114,12 +114,12 @@ function AppWrapper() {
   if (!isReady) return null;
 
   return (
-    <>
+    <ToastProvider>
       <CustomStatusBar />
-        <NavigationContainer linking={linking} onReady={onLayoutRootView}>
-          <AppNavigator />
-        </NavigationContainer>
-    </>
+      <NavigationContainer linking={linking} onReady={onLayoutRootView}>
+        <AppNavigator />
+      </NavigationContainer>
+    </ToastProvider>
   );
 }
 

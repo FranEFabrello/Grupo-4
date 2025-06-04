@@ -3,7 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useColorScheme } from 'react-native';
 import { fetchProfessionals } from '~/store/slices/professionalsSlice';
-import { actualizarFcmToken, fetchUserByToken } from "~/store/slices/userSlice";
+import { fetchUserByToken } from "~/store/slices/userSlice";
 import { fetchAppointments } from '~/store/slices/appointmentsSlice';
 import { fetchSpecialities } from '~/store/slices/medicalSpecialitiesSlice';
 import AppContainer from '../components/AppContainer';
@@ -12,8 +12,8 @@ import AppointmentCard from '../components/AppointmentCard';
 import DoctorCard from '../components/DoctorCard';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useTranslation } from 'react-i18next';
-import i18n from '../i18n';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import TestToastButton from "~/components/TestToastButton";
 
 export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -191,6 +191,9 @@ export default function HomeScreen({ navigation }) {
             <Icon name="heart" size={20} color="#ffffff" className="mr-2" />
             <Text className="text-white text-sm font-semibold">{t('home.medical_news.title')}</Text>
           </TouchableOpacity>
+
+          <TestToastButton />
+
         </View>
       </ScrollView>
     </AppContainer>

@@ -58,6 +58,7 @@
     "redux": "^5.0.1",
     "styled-components": "^6.1.18",
     "tailwind-extended-shadows": "^0.4.1",
+    "tailwind-variants": "^1.0.0",
     "toastify-react-native": "^7.2.0"
   },
   "devDependencies": {

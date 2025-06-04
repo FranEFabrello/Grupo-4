@@ -9,7 +9,6 @@ import AppointmentCardFullWidth from "~/components/ApptCardForApptScreen";
 import { useTranslation } from "react-i18next";
 import '../i18n'; // Import your i18n configuration
 
-// Utilidad para parsear fecha local (YYYY-MM-DD o YYYY-MM-DDTHH:mm:ss±hh:mm)
 function parseLocalDate(fechaStr) {
   if (!fechaStr) return null;
   // Si ya tiene T y zona, simplemente crea el Date

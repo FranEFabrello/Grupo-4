@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 export default function AppHeader({ navigation, screenTitle, colorScheme }) {
   const insets = useSafeAreaInsets();
   const bgClass = colorScheme === 'dark' ? 'bg-gray-700' : 'bg-lightBackground';
-  const borderClass = colorScheme === 'dark' ? 'border-gray-700' : 'border-gray-200';
+  const borderClass = colorScheme === 'dark' ? 'border-blue-700' : 'border-blue-600';
   const textClass = colorScheme === 'dark' ? 'text-darkText' : 'text-lightText';
 
   // Detectar si estamos en Home
@@ -15,10 +15,10 @@ export default function AppHeader({ navigation, screenTitle, colorScheme }) {
 
   return (
     <View
-      className={`flex-row justify-between items-center p-4 ${bgClass} border-b ${borderClass}`}
+      className={`flex-row justify-between items-center p-4 ${bgClass} border-b-2 rounded-b-lg border-double ${borderClass} `}
       style={{ paddingTop: insets.top + 10 }}
     >
-      <View className="flex-row items-center">
+      <View className={`flex-row items-center`}>
         {/* Botón de volver, solo si no es Home */}
         {!isHome && (
           <TouchableOpacity onPress={() => navigation.goBack()} className="mr-2">

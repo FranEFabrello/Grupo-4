@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { validarTokenRegistro, resetRegistroState } from "~/store/slices/tokenSlice";
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
-import {Text} from 'react-native';
+import { Text, View, TextInput, Button, Alert, useColorScheme } from 'react-native';
 import React, { useState } from 'react';
-import { Alert, View, TextInput, Button, useColorScheme } from 'react-native';
+import { twMerge } from 'tailwind-variants';
 
 const ConfirmTokenRegisterScreen = ({ route }) => {
   const [token, setToken] = useState('');
@@ -14,55 +14,43 @@ const ConfirmTokenRegisterScreen = ({ route }) => {
   const navigation = useNavigation();
   const tokenState = useSelector((state) => state.tokens);
   const { t } = useTranslation();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
 
   const enviarTokenConfirmacion = () => {
     if (!token || token.length !== 8) {
-      Alert.alert('Error', t('token.alerts.token_length_error') );
+      Alert.alert('Error', t('token.alerts.token_length_error'));
       return;
     }
 
     dispatch(validarTokenRegistro({ correo: email, tokenIngresado: token }))
       .unwrap()
       .then((res) => {
-        Alert.alert(t('global.success'), res.mensaje || t('toke.alerts.default_success'));
+        Alert.alert(t('global.success'), res.mensaje || t('token.alerts.default_success'));
         dispatch(resetRegistroState());
         navigation.replace('Login');
       })
       .catch((err) => {
-        Alert.alert('Error', err.mensaje || t('toke.alerts.default_error'));
+        Alert.alert('Error', err.mensaje || t('token.alerts.default_error'));
       });
   };
 
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
-
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: isDark ? '#18181b' : '#f6f6f6' }}>
-      <View style={{
-        width: '85%',
-        backgroundColor: isDark ? '#27272a' : '#fff',
-        borderRadius: 12,
-        padding: 24,
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 4
-      }}>
-        <Text style={{
-          fontSize: 22,
-          fontWeight: 'bold',
-          marginBottom: 16,
-          color: isDark ? '#f3f4f6' : '#333',
-          textAlign: 'center'
-        }}>
+    <View className={twMerge("flex-1 justify-center items-center", isDark ? "bg-zinc-900" : "bg-zinc-100")}>
+      <View className={twMerge(
+        "w-11/12 rounded-xl p-6 shadow-md",
+        isDark ? "bg-zinc-800" : "bg-white"
+      )}>
+        <Text className={twMerge(
+          "text-center text-2xl font-bold mb-4",
+          isDark ? "text-zinc-100" : "text-zinc-800"
+        )}>
           {t('token.verify_button')}
         </Text>
-        <Text style={{
-          fontSize: 16,
-          color: isDark ? '#a1a1aa' : '#666',
-          marginBottom: 24,
-          textAlign: 'center'
-        }}>
+        <Text className={twMerge(
+          "text-center text-base mb-6",
+          isDark ? "text-zinc-400" : "text-zinc-600"
+        )}>
           {t('token.instructions', { email })}
         </Text>
         <TextInput
@@ -70,20 +58,20 @@ const ConfirmTokenRegisterScreen = ({ route }) => {
           value={token}
           onChangeText={setToken}
           maxLength={8}
-          style={{
-            borderWidth: 1,
-            borderColor: isDark ? '#52525b' : '#ccc',
-            borderRadius: 8,
-            marginBottom: 20,
-            padding: 12,
-            fontSize: 18,
-            backgroundColor: isDark ? '#18181b' : '#fafafa',
-            color: isDark ? '#f3f4f6' : '#18181b'
-          }}
-          placeholderTextColor={isDark ? '#71717a' : '#9ca3af'}
           keyboardType="numeric"
+          placeholderTextColor={isDark ? '#71717a' : '#9ca3af'}
+          className={twMerge(
+            "border rounded-lg mb-5 px-4 py-3 text-lg",
+            isDark
+              ? "border-zinc-600 bg-zinc-900 text-zinc-100"
+              : "border-zinc-300 bg-zinc-100 text-zinc-900"
+          )}
         />
-        <Button title={t('token.submit_button')} onPress={enviarTokenConfirmacion} color={isDark ? '#2563eb' : '#1976d2'} />
+        <Button
+          title={t('token.submit_button')}
+          onPress={enviarTokenConfirmacion}
+          color={isDark ? '#2563eb' : '#1976d2'}
+        />
       </View>
     </View>
   );
