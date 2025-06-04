@@ -13,7 +13,7 @@ export default function AppFooter({ navigation, colorScheme }) {
   const bgClass = colorScheme === 'dark' ? 'bg-gray-800' : 'bg-white';
   const textInactiveClass = colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-600';
   const textActiveClass = colorScheme === 'dark' ? 'text-blue-400' : 'text-blue-600';
-  const borderClass = colorScheme === 'dark' ? 'border-t border-t-2 border-blue-800' : 'border-t border-t-2 border-gray-200';
+  const borderClass = colorScheme === 'dark' ? 'border-t border-t-2 border-blue-800' : 'border-t border-t-2 border-blue-600';
   const { t} = useTranslation();
 
   const navItems = [

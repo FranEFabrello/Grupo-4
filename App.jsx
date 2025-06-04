@@ -5,7 +5,7 @@ import { Provider, useDispatch } from 'react-redux';
 import * as SplashScreen from 'expo-splash-screen';
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Platform } from 'react-native';
+import { Platform, StatusBar } from "react-native";
 import api from '~/api/api'; // Asegúrate de que esta importación sea correcta
 
 import AppNavigator from '~/navigation/AppNavigator';
@@ -14,6 +14,9 @@ import { setToken } from '~/store/slices/authSlice';
 
 import './global.css';
 import './src/i18n';
+
+
+import CustomStatusBar from "~/components/CustomStatusBar";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -111,9 +114,12 @@ function AppWrapper() {
   if (!isReady) return null;
 
   return (
-    <NavigationContainer linking={linking} onReady={onLayoutRootView}>
-      <AppNavigator />
-    </NavigationContainer>
+    <>
+      <CustomStatusBar />
+        <NavigationContainer linking={linking} onReady={onLayoutRootView}>
+          <AppNavigator />
+        </NavigationContainer>
+    </>
   );
 }
 
