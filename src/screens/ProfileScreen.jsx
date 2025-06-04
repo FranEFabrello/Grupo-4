@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { View, ScrollView, Text, Pressable, TouchableOpacity, Animated } from "react-native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AppContainer from '../components/AppContainer';
@@ -13,6 +13,7 @@ import { useDispatch } from "react-redux";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
 import {useEffect} from "react";
+import { Image } from 'react-native';
 
 export default function ProfileScreen({ navigation }) {
   const insets = useSafeAreaInsets();
@@ -88,7 +89,18 @@ export default function ProfileScreen({ navigation }) {
         >
           {/* Bloque izquierdo: ícono + saludo + correo */}
           <View className="flex-row items-center">
-            <Icon name="user-circle" size={56} color={iconColor} />
+            <View className="w-14 h-14 rounded-full overflow-hidden justify-center items-center bg-gray-500">
+              {user.urlimagenperfil ? (
+                <Image
+                  source={{ uri: user.urlimagenperfil }}
+                  className="w-full h-full"
+                  resizeMode="cover"
+                  onError={() => console.log(t('user_profile.alerts.no_img'))}
+                />
+              ) : (
+                <Icon name="user-circle" size={56} color={iconColor} />
+              )}
+            </View>
             <View className="ml-2">
               <Text className={`text-lg font-semibold ${primaryText}`}>
                 {t('home.greeting', { name: user?.nombre || 'Usuario' })}

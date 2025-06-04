@@ -653,6 +653,10 @@
       "update_error": {
         "es": "Error al actualizar la información",
         "en": "Error updating information"
+      },
+      "no_img": {
+        "es": "Error al cargar la imagen de perfil",
+        "en": "Error loading profile image"
       }
     }
   },
@@ -1434,11 +1438,11 @@
   },
 
     "error": {
-        "title": {
+      "title": {
         "es": "Error",
         "en": "Error"
         },
-        "message": {
+      "message": {
         "es": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo más tarde.",
         "en": "An unexpected error occurred. Please try again later."
         }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useState } from 'react';
 import { View, ScrollView, Text, TouchableOpacity, Switch, TextInput } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
 import { updateProfile } from "~/store/slices/profileSlice";
@@ -9,6 +9,8 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Picker } from '@react-native-picker/picker';
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'react-native';
+import { Image } from 'react-native';
+import { useEffect } from 'react';
 
 export default function UserProfileScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -112,8 +114,17 @@ export default function UserProfileScreen({ navigation }) {
         ) : usuario ? (
           <>
             <View className="items-center mb-4">
-              <View className={`w-24 h-24 ${avatarBg} rounded-full justify-center items-center mb-2`}>
-                <Icon name="user" size={40} color={colorScheme === 'light' ? '#4a6fa5' : '#60a5fa'} />
+              <View className={`w-24 h-24 ${avatarBg} rounded-full justify-center items-center overflow-hidden mb-2`}>
+                {usuario.urlimagenperfil ? (
+                  <Image
+                    source={{ uri: usuario.urlimagenperfil }}
+                    className="w-full h-full"
+                    resizeMode="cover"
+                    onError={() => console.log(t('user_profile.alerts.no_img'))}
+                  />
+                ) : (
+                  <Icon name="user" size={40} color={colorScheme === 'light' ? '#4a6fa5' : '#60a5fa'} />
+                )}
               </View>
               <Text className={`text-lg font-semibold ${primaryText}`}>{`${nombre} ${apellido}`}</Text>
               <Text className={`text-sm ${secondaryText}`}>{usuario.correo}</Text>
