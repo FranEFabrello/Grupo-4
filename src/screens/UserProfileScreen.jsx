@@ -155,15 +155,25 @@ export default function UserProfileScreen({ navigation }) {
               />
 
               <Text className={`text-sm ${primaryText} mb-1`}>{t('user_profile.fields.gender.title')}</Text>
-              <View className={`rounded-xl ${inputBg} ${borderColor} border p-2 mb-2`}>
+              <View
+                className={`rounded-xl ${inputBg} ${borderColor} border mb-2 mt-0`}
+                style={{ padding: 0, minHeight: 48, justifyContent: 'center', marginTop: 0 }}
+              >
                 <Picker
                   selectedValue={genero}
                   onValueChange={setGenero}
                   enabled={editable}
                   style={{
-                    height: 40,
+                    minHeight: 48,
                     color: colorScheme === 'light' ? '#1f2937' : '#e5e7eb',
                     backgroundColor: 'transparent',
+                    fontSize: 14,
+                    paddingHorizontal: 12,
+                    width: '100%',
+                  }}
+                  itemStyle={{
+                    fontSize: 14,
+                    minHeight: 48,
                   }}
                 >
                   <Picker.Item label={t('user_profile.fields.gender.M')} value="masculino" />
