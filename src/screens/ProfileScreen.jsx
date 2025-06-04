@@ -7,6 +7,12 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useTranslation } from 'react-i18next';
 import Modal from 'react-native-modal';
 import { useColorScheme } from 'react-native';
+import { useSelector } from "react-redux";
+import { actualizarConfiguraciones } from "~/store/slices/userSlice";
+import { useDispatch } from "react-redux";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
+
 
 export default function ProfileScreen({ navigation }) {
   const insets = useSafeAreaInsets();
@@ -16,10 +22,36 @@ export default function ProfileScreen({ navigation }) {
   const [showSettingsModal, setShowSettingsModal] = React.useState(false);
   const [selectedTheme, setSelectedTheme] = React.useState('light');
   const [selectedLanguage, setSelectedLanguage] = React.useState('es');
+  const user = useSelector(state => state.user.usuario);
+  const dispatch = useDispatch();
 
-  const user = {
-    name: 'Usuario',
-    email: 'correo@ejemplo.com',
+
+  useEffect(() => {
+    (async () => {
+      const lang = await AsyncStorage.getItem('language');
+      if (user && user.idioma) {
+        setSelectedLanguage(user.idioma);
+      } else if (lang) {
+        setSelectedLanguage(lang);
+      }
+    })();
+  }, [user]);
+
+  // Cargar configuraciones guardadas al iniciar
+  useEffect(() => {
+    (async () => {
+      const theme = await AsyncStorage.getItem('theme');
+      const lang = await AsyncStorage.getItem('language');
+      if (theme) setSelectedTheme(theme);
+      if (lang) setSelectedLanguage(lang);
+    })();
+  }, []);
+
+  // Guardar configuraciones cuando cambian
+  const saveSettings = async () => {
+    await AsyncStorage.setItem('theme', selectedTheme);
+    await AsyncStorage.setItem('language', selectedLanguage);
+    setShowSettingsModal(false);
   };
 
   // Theme variables
@@ -95,64 +127,140 @@ export default function ProfileScreen({ navigation }) {
         </View>
       </ScrollView>
 
-      {/* Modal de configuración */}
-      <Modal
-        isVisible={showSettingsModal}
-        onBackdropPress={() => setShowSettingsModal(false)}
-        animationIn="slideInUp"
-        animationOut="slideOutDown"
-        className="justify-center items-center"
-      >
-        <View className={`${modalBg} rounded-xl p-6 w-[85%]`}>
-          <Text className={`text-lg font-bold ${primaryText} mb-4`}>{t('profile.menu.settings.title')}</Text>
-          <Text className={`font-bold ${primaryText} mb-2`}>{t('profile.menu.settings.theme')}</Text>
-          <View className="flex-row mb-4">
-            <TouchableOpacity
-              className={`py-2 px-4 rounded-lg ${selectedTheme === 'light' ? selectedButtonBg : inactiveButtonBg} mr-2`}
-              onPress={() => setSelectedTheme('light')}
-            >
-              <Text className={`${selectedTheme === 'light' ? selectedButtonText : primaryText}`}>{t('profile.menu.settings.theme_light')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className={`py-2 px-4 rounded-lg ${selectedTheme === 'dark' ? selectedButtonBg : inactiveButtonBg}`}
-              onPress={() => setSelectedTheme('dark')}
-            >
-              <Text className={`${selectedTheme === 'dark' ? selectedButtonText : primaryText}`}>{t('profile.menu.settings.theme_dark')}</Text>
-            </TouchableOpacity>
-          </View>
-          <Text className={`font-bold ${primaryText} mb-2`}>{t('profile.menu.settings.language')}</Text>
-          <View className="flex-row mb-6">
-            <TouchableOpacity
-              className={`py-2 px-4 rounded-lg ${selectedLanguage === 'es' ? selectedButtonBg : inactiveButtonBg} mr-2`}
-              onPress={() => {
-                setSelectedLanguage('es');
-                import('../i18n').then(({ default: i18n }) => {
-                  i18n.changeLanguage('es');
-                });
-              }}
-            >
-              <Text className={`${selectedLanguage === 'es' ? selectedButtonText : primaryText}`}>{t('profile.menu.settings.language_es')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className={`py-2 px-4 rounded-lg ${selectedLanguage === 'en' ? selectedButtonBg : inactiveButtonBg}`}
-              onPress={() => {
-                setSelectedLanguage('en');
-                import('../i18n').then(({ default: i18n }) => {
-                  i18n.changeLanguage('en');
-                });
-              }}
-            >
-              <Text className={`${selectedLanguage === 'en' ? selectedButtonText : primaryText}`}>{t('profile.menu.settings.language_en')}</Text>
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity
-            className={`${selectedButtonBg} py-3 rounded-lg items-center`}
-            onPress={() => setShowSettingsModal(false)}
+      {/* Modal de configuración como una opción más */}
+      {showSettingsModal && (
+        <Pressable
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0,0,0,0.3)',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 10,
+          }}
+          onPress={() => setShowSettingsModal(false)}
+        >
+          <Animated.View
+            style={{
+              backgroundColor: '#fff',
+              borderRadius: 12,
+              padding: 24,
+              width: '85%',
+              elevation: 5,
+              transform: [
+                {
+                  translateY: showSettingsModal
+                    ? 0
+                    : 400, // Aparece desde abajo
+                },
+              ],
+              opacity: showSettingsModal ? 1 : 0,
+            }}
+            entering={Animated.spring}
+            exiting={Animated.timing}
+            onStartShouldSetResponder={() => true}
+            onResponderStart={e => e.stopPropagation()}
           >
-            <Text className={`${selectedButtonText} font-bold`}>{t('profile.menu.settings.save_button')}</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
+            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 16 }}>{t('profile.menu.settings.title')}</Text>
+            <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>{t('profile.menu.settings.theme')}</Text>
+            <View style={{ flexDirection: 'row', marginBottom: 16 }}>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: selectedTheme === 'light' ? '#2563EB' : '#E2E8F0',
+                  padding: 10,
+                  borderRadius: 6,
+                  marginRight: 10,
+                }}
+                onPress={() => {
+                  setSelectedTheme('light');
+                  AsyncStorage.setItem('theme', 'light');
+                  if (user) {
+                    dispatch(actualizarConfiguraciones({ id: user.id, configuraciones: { modoOscuro: false } }));
+                    dispatch({ type: 'user/setModoOscuro', payload: false });
+                  }
+                  console.log('Tema cambiado a: light');
+                }}
+              >
+                <Text style={{ color: selectedTheme === 'light' ? '#fff' : '#2563EB' }}>{t('profile.menu.settings.theme_light')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: selectedTheme === 'dark' ? '#2563EB' : '#E2E8F0',
+                  padding: 10,
+                  borderRadius: 6,
+                }}
+                onPress={() => {
+                  setSelectedTheme('dark');
+                  AsyncStorage.setItem('theme', 'dark');
+                  if (user) {
+                    dispatch(actualizarConfiguraciones({ id: user.id, configuraciones: { modoOscuro: true } }));
+                    dispatch({ type: 'user/setModoOscuro', payload: true });
+                  }
+                  console.log('Tema cambiado a: dark');
+                }}
+              >
+                <Text style={{ color: selectedTheme === 'dark' ? '#fff' : '#2563EB' }}>{t('profile.menu.settings.theme_dark')}</Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>{t('profile.menu.settings.language')}</Text>
+            <View style={{ flexDirection: 'row', marginBottom: 24 }}>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: selectedLanguage === 'es' ? '#2563EB' : '#E2E8F0',
+                  padding: 10,
+                  borderRadius: 6,
+                  marginRight: 10,
+                }}
+                onPress={() => {
+                  setSelectedLanguage('es');
+                  AsyncStorage.setItem('language', 'es');
+                  import('../i18n').then(({ default: i18n }) => {
+                    i18n.changeLanguage('es');
+                  });
+                  if (user) {
+                    dispatch(actualizarConfiguraciones({ id: user.id, configuraciones: { idioma: 'es' } }));
+                  }
+                }}
+              >
+                <Text style={{ color: selectedLanguage === 'es' ? '#fff' : '#2563EB' }}>{t('profile.menu.settings.language_es')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: selectedLanguage === 'en' ? '#2563EB' : '#E2E8F0',
+                  padding: 10,
+                  borderRadius: 6,
+                }}
+                onPress={() => {
+                  setSelectedLanguage('en');
+                  AsyncStorage.setItem('language', 'en');
+                  import('../i18n').then(({ default: i18n }) => {
+                    i18n.changeLanguage('en');
+                  });
+                  if (user) {
+                    dispatch(actualizarConfiguraciones({ id: user.id, configuraciones: { idioma: 'en' } }));
+                  }
+                }}
+              >
+                <Text style={{ color: selectedLanguage === 'en' ? '#fff' : '#2563EB' }}>{t('profile.menu.settings.language_en')}</Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              style={{
+                backgroundColor: '#2563EB',
+                padding: 12,
+                borderRadius: 8,
+                alignItems: 'center',
+              }}
+              onPress={saveSettings}
+            >
+              <Text style={{ color: '#fff', fontWeight: 'bold' }}>{t('profile.menu.settings.save_button')}</Text>
+            </TouchableOpacity>
+          </Animated.View>
+        </Pressable>
+      )}
     </AppContainer>
   );
 }

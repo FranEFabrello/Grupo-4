@@ -7,7 +7,7 @@ export const fetchObrasSociales = createAsyncThunk(
   'socialWorks/fetchObrasSociales',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/todos`);
+      const response = await api.get(`/obrasSociales/todos`);
       console.log("debió traer todas las obras sociales -> ", response);
       return response.data;
     } catch (error) {

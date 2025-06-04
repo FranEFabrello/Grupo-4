@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator, Animated } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useColorScheme } from 'react-native';
+import '~/i18n'; // Import your i18n configuration
 
 export default function Calendar({ availableDays = [], onSelectDate, selectedDate, colorScheme: propColorScheme, isLoading }) {
   const { t, i18n } = useTranslation();

@@ -6,6 +6,8 @@ import AppContainer from '../components/AppContainer';
 import ProfileField from '../components/ProfileField';
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'react-native';
+import '../i18n'; // Import your i18n configuration
+
 
 export default function InsuranceScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -39,6 +41,8 @@ export default function InsuranceScreen({ navigation }) {
             <Text className={`text-sm ${secondaryText}`}>{t('global.alert.loading')}</Text>
           ) : insurance ? (
             <>
+              <ProfileField label={t('insurance.fields.plan')} value={insurance.plan} />
+              <ProfileField label={t('insurance.fields.type')} value={insurance.tipoObraSocial} />
               <ProfileField
                 label={t('insurance.fields.plan')}
                 value={insurance.plan}

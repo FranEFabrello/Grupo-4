@@ -5,7 +5,6 @@ const api = axios.create({
   baseURL: 'https://app3-0.onrender.com/',
   timeout: 10000,
 });
-//baseURL: 'http://localhost:4002/', // Para pruebas locales
 
 // Interceptor para agregar token automáticamente
 api.interceptors.request.use(
@@ -18,6 +17,15 @@ api.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 );
+
+// Utilidades para guardar configuraciones
+export const setLanguage = async (lang) => {
+  await AsyncStorage.setItem('language', lang);
+};
+
+export const setTheme = async (theme) => {
+  await AsyncStorage.setItem('theme', theme);
+};
 
 export default api;
 

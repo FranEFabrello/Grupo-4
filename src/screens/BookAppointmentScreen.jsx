@@ -96,6 +96,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
   };
 
   const handleConfirm = () => {
+    console.log('handleConfirm called', { specialty, professional, selectedDate, selectedTime });
     if (specialty && professional && selectedDate && selectedTime) {
       setLoading(true);
       const payload = {
@@ -108,20 +109,28 @@ export default function BookAppointmentScreen({ navigation, route }) {
         archivoAdjunto: null,
         estado: 'PENDIENTE',
       };
+      console.log('Dispatching bookAppointment', payload);
       dispatch(bookAppointment(payload))
         .unwrap()
         .then(() => {
           setModalMessage(t('appointments.alerts.confirmation'));
           setModalSuccess(true);
           setModalVisible(true);
+          setTimeout(() => {
+            setModalVisible(false);
+            navigation.navigate('Appointments');
+          }, 2000); // espera 2 segundos y navega
         })
-        .catch(() => {
+
+        .catch((err) => {
+          console.log('Error en bookAppointment:', err);
           setModalMessage(t('book_appointment.alerts.error'));
           setModalSuccess(false);
           setModalVisible(true);
         })
         .finally(() => setLoading(false));
     } else {
+      console.log('Campos faltantes en handleConfirm');
       setModalMessage(t('book_appointment.alerts.missing_fields'));
       setModalSuccess(false);
       setModalVisible(true);
@@ -260,7 +269,10 @@ export default function BookAppointmentScreen({ navigation, route }) {
                   className={`px-6 py-3 rounded-xl ${primaryButtonClass}`}
                   onPress={() => {
                     setModalVisible(false);
-                    if (modalSuccess) navigation.navigate('Appointments');
+                    if (modalSuccess) {
+                      console.log('Navigating to Appointments (modal OK)');
+                      navigation.navigate('Appointments');
+                    }
                   }}
                 >
                   <Text className="text-white text-base font-semibold">OK</Text>

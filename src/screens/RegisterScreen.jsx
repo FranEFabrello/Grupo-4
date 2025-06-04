@@ -8,8 +8,7 @@ import {
   Platform,
   ScrollView,
   Alert,
-  Image,
-  Picker
+  Image
 } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
 import { useDispatch, useSelector } from "react-redux";
@@ -17,6 +16,7 @@ import { fetchObrasSociales } from "~/store/slices/socialWorksSlice";
 import { register } from '~/store/slices/autheticationSlice';
 import { uploadImageToFirebase } from "~/api/FirebaseConfig";
 import { useTranslation } from 'react-i18next';
+import { Picker } from '@react-native-picker/picker';
 
 export default function RegisterScreen({ navigation }) {
   // Paso y estados de campos
@@ -29,15 +29,15 @@ export default function RegisterScreen({ navigation }) {
   const [dni, setDni] = useState('');
   const [genero, setGenero] = useState('');
   const [fechaNacimiento, setFechaNacimiento] = useState('');
-  const [edad, setEdad] = useState('');
   const [celular, setCelular] = useState('');
   const [obraSocial, setObraSocial] = useState('');
   const [idObraSocial, setIdObraSocial] = useState('');
-  const [urlimagenperfil, Seturlimagenperfil] = useState(null);
+  const [urlImagenPerfil, SetUrlImagenPerfil] = useState(null);
   const [errores, setErrores] = useState({});
   const { t } = useTranslation();
 
   const obrasSociales = useSelector((state) => state.socialWork.obrasSociales);
+  //console.log('obrasSociales en RegisterScreen:', obrasSociales);
   const dispatch = useDispatch();
 
   //const [mostrarPopup, setMostrarPopup] = useState(false);
@@ -49,7 +49,7 @@ export default function RegisterScreen({ navigation }) {
         const imageUri = imageResult.assets[0].uri;
         // Subir la imagen a Firebase y obtener la URL
         const url = await uploadImageToFirebase(imageUri);
-        Seturlimagenperfil(url);
+        SetUrlImagenPerfil(url);
         console.log('URL de la imagen subida:', url);
       }
     } catch (error) {
@@ -69,7 +69,6 @@ export default function RegisterScreen({ navigation }) {
     if (!dni) err.dni = t('register.errors.repeat_password');
     if (!genero) err.genero = t('register.errors.gender');
     if (!fechaNacimiento) err.fechaNacimiento = t('register.errors.birth_date');
-    if (!edad || isNaN(edad)) err.edad = t('register.errors.age');
     setErrores(err);
     return Object.keys(err).length === 0;
   };
@@ -104,10 +103,9 @@ export default function RegisterScreen({ navigation }) {
       dni,
       genero,
       fechaNacimiento,
-      edad,
       celular,
       idObraSocial,
-      urlimagenperfil,
+      urlImagenPerfil,
       rol: "PACIENTE"
     };
 
@@ -198,8 +196,6 @@ export default function RegisterScreen({ navigation }) {
                 maxLength={10}
               />
               {errores.fechaNacimiento && <Text className="text-red-500 text-xs mb-1">{errores.fechaNacimiento}</Text>}
-              <TextInput className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-2 bg-white" placeholder={t('register.placeholders.age')} value={edad} onChangeText={setEdad} keyboardType="numeric" />
-              {errores.edad && <Text className="text-red-500 text-xs mb-1">{errores.edad}</Text>}
               <TouchableOpacity className="w-full h-12 bg-blue-600 rounded-lg justify-center items-center mt-2" onPress={handleNext}>
                 <Text className="text-white text-base font-bold">{t('register.buttons.next')}</Text>
               </TouchableOpacity>
@@ -241,9 +237,9 @@ export default function RegisterScreen({ navigation }) {
                 </Picker>
               </View>
               <TouchableOpacity className="w-full h-12 border border-gray-300 rounded-lg justify-center items-center mb-2 bg-white" onPress={pickImage}>
-                <Text className="text-gray-700">{urlimagenperfil ? t('register.buttons.change_img') : t('register.buttons.add_img')}</Text>
+                <Text className="text-gray-700">{urlImagenPerfil ? t('register.buttons.change_img') : t('register.buttons.add_img')}</Text>
               </TouchableOpacity>
-              {urlimagenperfil && <Image source={{ uri: urlimagenperfil }} style={{ width: 80, height: 80, borderRadius: 40, marginBottom: 10 }} onPress={handleImageChange} />}
+              {urlImagenPerfil && <Image source={{ uri: urlImagenPerfil }} style={{ width: 80, height: 80, borderRadius: 40, marginBottom: 10 }} onPress={handleImageChange} />}
               <View className="flex-row w-full justify-between">
                 <TouchableOpacity className="h-12 flex-1 bg-gray-300 rounded-lg justify-center items-center mr-2" onPress={handleBack}>
                   <Text className="text-gray-700 font-bold">{t('register.buttons.back')}</Text>
