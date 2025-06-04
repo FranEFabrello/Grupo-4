@@ -57,19 +57,27 @@ const NotificationsScreen = ({ navigation }) => {
             keyExtractor={item => item.id?.toString()}
             renderItem={({ item }) => (
               <View className={`${cardBg} rounded-xl p-3 mb-4 shadow-sm flex-row items-center`}>
-                <View className="mr-1">
+                <View style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: 12,
+                  backgroundColor: colorScheme === 'light' ? '#fff' : '#374151',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginRight: 4,
+                }}>
                   {item.logoNotificacion === "logo_confirmacion.png" ? (
-                    <MaterialCommunityIcons name="check-circle" size={40} color={iconConfirm} />
+                    <MaterialCommunityIcons name="check-circle" size={32} color={iconConfirm} />
                   ) : item.logoNotificacion === "logo_cancelacion.png" ? (
-                    <MaterialCommunityIcons name="close-circle" size={40} color={iconCancel} />
+                    <MaterialCommunityIcons name="close-circle" size={32} color={iconCancel} />
                   ) : item.logoNotificacion === "logo_estudios.png" ? (
-                    <FontAwesome5 name="file-medical" size={40} color={iconStudy} />
+                    <FontAwesome5 name="file-medical" size={28} color={iconStudy} />
                   ) : item.logoNotificacion === "logo_reprogramacion.png" ? (
-                    <MaterialCommunityIcons name="calendar" size={40} color={iconReschedule} />
+                    <MaterialCommunityIcons name="calendar" size={32} color={iconReschedule} />
                   ) : item.logoNotificacion === "logo_receta.png" ? (
-                    <FontAwesome5 name="notes-medical" size={40} color={iconPrescription} />
+                    <FontAwesome5 name="notes-medical" size={28} color={iconPrescription} />
                   ) : (
-                    <MaterialCommunityIcons name="bell" size={40} color={iconDefault} />
+                    <MaterialCommunityIcons name="bell" size={32} color={iconDefault} />
                   )}
                 </View>
                 <View className="flex-1">

@@ -12,7 +12,7 @@ export default function DoctorCard({
                                      containerClassName = 'w-full',
                                      colorScheme,
                                    }) {
-  const cardBgClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-800';
+  const cardBgClass = colorScheme === 'light' ? 'bg-white shadow-lg shadow-gray-300' : 'bg-gray-800 shadow-lg shadow-black/40';
   const iconBgClass = colorScheme === 'light' ? 'bg-blue-100' : 'bg-blue-900';
   const iconColor = colorScheme === 'light' ? '#4a6fa5' : '#93c5fd';
   const nameTextClass = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';

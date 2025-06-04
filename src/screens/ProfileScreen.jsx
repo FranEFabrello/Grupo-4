@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { View, ScrollView, Text, Pressable, TouchableOpacity } from "react-native";
+import React, { useContext, useEffect } from "react";
+import { View, ScrollView, Text, Pressable, TouchableOpacity, Animated } from "react-native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AppContainer from '../components/AppContainer';
 import QuickActions from '../components/QuickActions';
@@ -88,7 +88,7 @@ export default function ProfileScreen({ navigation }) {
         >
           {/* Bloque izquierdo: ícono + saludo + correo */}
           <View className="flex-row items-center">
-            <Icon name="user-circle" size={40} color={iconColor} />
+            <Icon name="user-circle" size={56} color={iconColor} />
             <View className="ml-2">
               <Text className={`text-lg font-semibold ${primaryText}`}>
                 {t('home.greeting', { name: user?.nombre || 'Usuario' })}
@@ -102,7 +102,7 @@ export default function ProfileScreen({ navigation }) {
           {/* Botón Ver perfil */}
           <View className="flex-row items-center gap-x-2">
             <Icon name="eye" size={16} color={actionIconColor} />
-            <Text className={`text-sm font-medium ${primaryText}`}>
+            <Text className={`text-sm font-medium ${primaryText}`}style={{ color: colorScheme === 'light' ? '#2563EB' : '#fff' }}>
               {t('profile.view_profile')}
             </Text>
           </View>
@@ -110,7 +110,7 @@ export default function ProfileScreen({ navigation }) {
 
         {/* Acciones rápidas */}
         <View className={`${containerBg} rounded-xl p-4 mb-4 shadow-md`}>
-          <Text className={`text-lg font-semibold ${primaryText} mb-4`}>{t('profile.options_title')}</Text>
+          <Text className={`text-xl font-semibold ${primaryText} mb-2`}>{t('profile.options_title')}</Text>
           <QuickActions
             actions={moreActions}
             navigation={navigation}
@@ -120,9 +120,12 @@ export default function ProfileScreen({ navigation }) {
           />
           <TouchableOpacity
             className={`w-full ${containerBg} rounded-xl p-4 shadow-md items-center`}
+            style={{
+              backgroundColor: colorScheme === 'light' ? '#fff' : '#1F2937',
+            }}
             onPress={() => setShowSettingsModal(true)}
           >
-            <View className={`w-10 h-10 ${colorScheme === 'light' ? 'bg-blue-100' : 'bg-gray-700'} rounded-full justify-center items-center mb-2`}>
+            <View className={`w-10 h-10 ${colorScheme === 'light' ? 'bg-blue-100' : 'bg-blue-900'} rounded-full justify-center items-center mb-2`}>
               <Icon name="cog" size={18} color={colorScheme === 'light' ? '#4a6fa5' : '#60A5FA'} />
             </View>
             <Text className={`text-base font-medium ${primaryText}`}>{t('profile.menu.settings.title')}</Text>
@@ -155,7 +158,7 @@ export default function ProfileScreen({ navigation }) {
         >
           <Animated.View
             style={{
-              backgroundColor: '#fff',
+              backgroundColor: colorScheme === 'light' ? '#fff' : '#1F2937',
               borderRadius: 12,
               padding: 24,
               width: '85%',
@@ -174,12 +177,12 @@ export default function ProfileScreen({ navigation }) {
             onStartShouldSetResponder={() => true}
             onResponderStart={e => e.stopPropagation()}
           >
-            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 16 }}>{t('profile.menu.settings.title')}</Text>
-            <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>{t('profile.menu.settings.theme')}</Text>
+            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 16, color: colorScheme === 'light' ? '#1F2937' : '#fff' }}>{t('profile.menu.settings.title')}</Text>
+            <Text style={{ fontWeight: 'bold', marginBottom: 8, color: colorScheme === 'light' ? '#1F2937' : '#fff' }}>{t('profile.menu.settings.theme')}</Text>
             <View style={{ flexDirection: 'row', marginBottom: 16 }}>
               <TouchableOpacity
                 style={{
-                  backgroundColor: selectedTheme === 'light' ? '#2563EB' : '#E2E8F0',
+                  backgroundColor: selectedTheme === 'light' ? '#2563EB' : (colorScheme === 'light' ? '#E2E8F0' : '#374151'),
                   padding: 10,
                   borderRadius: 6,
                   marginRight: 10,
@@ -194,11 +197,15 @@ export default function ProfileScreen({ navigation }) {
                   console.log('Tema cambiado a: light');
                 }}
               >
-                <Text style={{ color: selectedTheme === 'light' ? '#fff' : '#2563EB' }}>{t('profile.menu.settings.theme_light')}</Text>
+                <Text style={{
+                  color: selectedTheme === 'light'
+                    ? '#fff'
+                    : (colorScheme === 'dark' ? '#fff' : '#2563EB')
+                }}>{t('profile.menu.settings.theme_light')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
-                  backgroundColor: selectedTheme === 'dark' ? '#2563EB' : '#E2E8F0',
+                  backgroundColor: selectedTheme === 'dark' ? '#2563EB' : (colorScheme === 'light' ? '#E2E8F0' : '#374151'),
                   padding: 10,
                   borderRadius: 6,
                 }}
@@ -212,14 +219,18 @@ export default function ProfileScreen({ navigation }) {
                   console.log('Tema cambiado a: dark');
                 }}
               >
-                <Text style={{ color: selectedTheme === 'dark' ? '#fff' : '#2563EB' }}>{t('profile.menu.settings.theme_dark')}</Text>
+                <Text style={{
+                  color: selectedTheme === 'dark'
+                    ? '#fff'
+                    : (colorScheme === 'dark' ? '#fff' : '#2563EB')
+                }}>{t('profile.menu.settings.theme_dark')}</Text>
               </TouchableOpacity>
             </View>
-            <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>{t('profile.menu.settings.language')}</Text>
+            <Text style={{ fontWeight: 'bold', marginBottom: 8, color: colorScheme === 'light' ? '#1F2937' : '#fff' }}>{t('profile.menu.settings.language')}</Text>
             <View style={{ flexDirection: 'row', marginBottom: 24 }}>
               <TouchableOpacity
                 style={{
-                  backgroundColor: selectedLanguage === 'es' ? '#2563EB' : '#E2E8F0',
+                  backgroundColor: selectedLanguage === 'es' ? '#2563EB' : (colorScheme === 'light' ? '#E2E8F0' : '#374151'),
                   padding: 10,
                   borderRadius: 6,
                   marginRight: 10,
@@ -235,11 +246,15 @@ export default function ProfileScreen({ navigation }) {
                   }
                 }}
               >
-                <Text style={{ color: selectedLanguage === 'es' ? '#fff' : '#2563EB' }}>{t('profile.menu.settings.language_es')}</Text>
+                <Text style={{
+                  color: selectedLanguage === 'es'
+                    ? '#fff'
+                    : (colorScheme === 'dark' ? '#fff' : '#2563EB')
+                }}>{t('profile.menu.settings.language_es')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
-                  backgroundColor: selectedLanguage === 'en' ? '#2563EB' : '#E2E8F0',
+                  backgroundColor: selectedLanguage === 'en' ? '#2563EB' : (colorScheme === 'light' ? '#E2E8F0' : '#374151'),
                   padding: 10,
                   borderRadius: 6,
                 }}
@@ -254,7 +269,11 @@ export default function ProfileScreen({ navigation }) {
                   }
                 }}
               >
-                <Text style={{ color: selectedLanguage === 'en' ? '#fff' : '#2563EB' }}>{t('profile.menu.settings.language_en')}</Text>
+                <Text style={{
+                  color: selectedLanguage === 'en'
+                    ? '#fff'
+                    : (colorScheme === 'dark' ? '#fff' : '#2563EB')
+                }}>{t('profile.menu.settings.language_en')}</Text>
               </TouchableOpacity>
             </View>
             <TouchableOpacity
