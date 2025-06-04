@@ -7,10 +7,12 @@ import {
   ActivityIndicator,
   Keyboard,
   useColorScheme,
+  StyleSheet,
 } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { authenticate } from '~/store/slices/autheticationSlice';
 import { useTranslation } from 'react-i18next';
+import LoadingOverlay from "~/components/LoadingOverlay";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -71,6 +73,7 @@ export default function LoginScreen({ navigation }) {
           onChangeText={setEmail}
           keyboardType="email-address"
           autoCapitalize="none"
+          editable={!isLoading}
         />
 
         <TextInput
@@ -80,6 +83,7 @@ export default function LoginScreen({ navigation }) {
           value={password}
           onChangeText={setPassword}
           secureTextEntry
+          editable={!isLoading}
         />
 
         <TouchableOpacity
@@ -99,18 +103,22 @@ export default function LoginScreen({ navigation }) {
           )}
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={handleRegister}>
+        <TouchableOpacity onPress={handleRegister} disabled={isLoading}>
           <Text className="text-blue-500 text-sm text-center mt-2">
             {t('login.register_prompt')}
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={handlePaswordChange}>
+        <TouchableOpacity onPress={handlePaswordChange} disabled={isLoading}>
           <Text className="text-blue-400 text-sm text-center mt-2">
             {t('login.forgot_password')}
           </Text>
         </TouchableOpacity>
       </View>
+
+
+      {isLoading &&
+        <LoadingOverlay />}
     </View>
   );
 }
