@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { View, ScrollView, Text, Pressable, TouchableOpacity, Animated } from "react-native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AppContainer from '../components/AppContainer';
@@ -12,7 +12,8 @@ import { actualizarConfiguraciones } from "~/store/slices/userSlice";
 import { useDispatch } from "react-redux";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
-
+import {useEffect} from "react";
+import { Image } from 'react-native';
 
 export default function ProfileScreen({ navigation }) {
   const insets = useSafeAreaInsets();
@@ -24,7 +25,6 @@ export default function ProfileScreen({ navigation }) {
   const [selectedLanguage, setSelectedLanguage] = React.useState('es');
   const user = useSelector(state => state.user.usuario);
   const dispatch = useDispatch();
-
 
 
   useEffect(() => {
@@ -65,6 +65,7 @@ export default function ProfileScreen({ navigation }) {
   const inactiveButtonBg = colorScheme === 'light' ? 'bg-gray-200' : 'bg-gray-600';
   const iconColor = colorScheme === 'light' ? '#4A5568' : '#9CA3AF';
   const actionIconColor = colorScheme === 'light' ? '#2563EB' : '#60A5FA';
+  const textClass = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
 
   const moreActions = [
     { icon: 'user-cog', label: t('profile.menu.edit'), screen: 'UserProfile' },
@@ -86,16 +87,36 @@ export default function ProfileScreen({ navigation }) {
           className={`flex-row justify-between items-center ${containerBg} rounded-xl p-4 mb-4 shadow-md`}
           android_ripple={{ color: '#e2e8f0' }}
         >
+          {/* Bloque izquierdo: ícono + saludo + correo */}
           <View className="flex-row items-center">
-            <Icon name="user-circle" size={56} color={iconColor} className="mr-4" />
-            <View>
-              <Text className={`text-lg font-semibold ${primaryText}`}>{user.name}</Text>
-              <Text className={`text-sm ${secondaryText}`}>{user.email}</Text>
+            <View className="w-14 h-14 rounded-full overflow-hidden justify-center items-center bg-gray-500">
+              {user.urlimagenperfil ? (
+                <Image
+                  source={{ uri: user.urlimagenperfil }}
+                  className="w-full h-full"
+                  resizeMode="cover"
+                  onError={() => console.log(t('user_profile.alerts.no_img'))}
+                />
+              ) : (
+                <Icon name="user-circle" size={56} color={iconColor} />
+              )}
+            </View>
+            <View className="ml-2">
+              <Text className={`text-lg font-semibold ${primaryText}`}>
+                {t('home.greeting', { name: user?.nombre || 'Usuario' })}
+              </Text>
+              <Text className={`text-sm italic ${secondaryText}`}>
+                {user.correo}
+              </Text>
             </View>
           </View>
-          <View className="flex-row items-center gap-x-3">
+
+          {/* Botón Ver perfil */}
+          <View className="flex-row items-center gap-x-2">
             <Icon name="eye" size={16} color={actionIconColor} />
-            <Text className={`text-sm font-medium`} style={{ color: colorScheme === 'light' ? '#2563EB' : '#fff' }}>{t('profile.view_profile')}</Text>
+            <Text className={`text-sm font-medium ${primaryText}`}style={{ color: colorScheme === 'light' ? '#2563EB' : '#fff' }}>
+              {t('profile.view_profile')}
+            </Text>
           </View>
         </Pressable>
 

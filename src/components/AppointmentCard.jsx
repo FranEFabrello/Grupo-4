@@ -21,27 +21,24 @@ export default function AppointmentCard({
   const specialtyTextClass = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-400';
 
   return (
-    <TouchableOpacity onPress={onPress} className="w-64">
-      <View className={`rounded-lg p-4 shadow-md ${cardBgClass}`}>
-        <View className="flex-row items-center">
-          <View className={`w-20 ${dateBgClass} rounded-lg p-2 items-center`}>
-            <Text className={`text-xs ${dateTextClass}`}>{day}</Text>
-            <Text className={`text-sm font-semibold ${dateTextClass}`}>{time}</Text>
-          </View>
-          <View className="ml-3 flex-1 justify-center">
-            <Text className={`text-base font-semibold ${doctorTextClass}`}>{doctor}</Text>
-            <Text className={`text-sm ${specialtyTextClass}`}>{specialty}</Text>
-            {status && (
-              <Text className={`text-xs ${specialtyTextClass}`}>
-                {t('appointments.status.title')}
-                {status === 'CANCELADO'
-                  ? i18n.language === 'es' ? 'Cancelado' : 'Cancelled'
-                  : i18n.language === 'es' ? 'Confirmado' : 'Confirmed'}
-              </Text>
-            )}
-          </View>
+    <TouchableOpacity onPress={onPress} className="self-start">
+      <View className={`rounded-lg p-4 shadow-md ${cardBgClass} flex-row items-center`}>
+        <View
+          className={`${dateBgClass} rounded-lg items-center justify-center px-3 py-2`}
+          style={{ minHeight: 70, alignSelf: 'flex-start' }}
+        >
+          <Text className={`text-xs ${dateTextClass}`}>{day}</Text>
+          <Text className={`text-sm font-semibold mt-1 ${dateTextClass}`}>{time}</Text>
         </View>
+        <View className="ml-3 justify-center">
+          <Text className={`text-base font-semibold ${doctorTextClass}`} numberOfLines={1}>
+            {doctor}
+          </Text>
+          <Text className={`text-sm ${specialtyTextClass}`}>{specialty}</Text>
+        </View>
+
       </View>
     </TouchableOpacity>
+
   );
 }
