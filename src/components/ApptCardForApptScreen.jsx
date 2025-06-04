@@ -22,7 +22,7 @@ export default function AppointmentCardFullWidth({
 
   return (
     <TouchableOpacity onPress={onPress} className="w-full">
-      <View className={`rounded-lg p-4 shadow-md ${cardBgClass} w-[320px]`}>
+      <View className={`rounded-lg p-4 shadow-md ${cardBgClass} w-full`}>
         <View className="flex-row items-center">
           <View className={`${dateBgClass} rounded-lg items-center justify-center`} style={{ width: 90, height: 70 }}>
             <Text className={`text-xs ${dateTextClass}`}>{day}</Text>

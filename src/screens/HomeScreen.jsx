@@ -30,20 +30,16 @@ export default function HomeScreen({ navigation }) {
     if (!professionals || professionals.length === 0) {
       dispatch(fetchProfessionals());
     }
-    if (!usuario) {
-      dispatch(fetchUserByToken()).then((action) => {
-        const usuarioId = action.payload?.id;
-        if (usuarioId) {
-          dispatch(fetchAppointments(usuarioId));
-        }
-      });
-    } else if (usuario.id) {
-      dispatch(fetchAppointments(usuario.id));
-    }
+    dispatch(fetchUserByToken()).then((action) => {
+      const usuarioId = action.payload?.id;
+      if (usuarioId) {
+        dispatch(fetchAppointments(usuarioId));
+      }
+    });
     if (specialities.length === 0) {
       dispatch(fetchSpecialities());
     }
-  }, [dispatch, usuario]);
+  }, [dispatch]);
 
   // Sincroniza idioma y tema con AsyncStorage cuando cambia el usuario
   useEffect(() => {

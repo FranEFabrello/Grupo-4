@@ -21,13 +21,13 @@ export const fetchUserByToken = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const token = await AsyncStorage.getItem('bearerToken');
-      console.log('Token obtenido de AsyncStorage:', token);
+      //console.log('Token obtenido de AsyncStorage:', token);
       const response = await api.get('Usuario/usuario/info', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log('Respuesta de /usuario/info:', response.data);
+      //console.log('Respuesta de /usuario/info:', response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al obtener el usuario por token');
