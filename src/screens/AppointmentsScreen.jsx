@@ -216,14 +216,6 @@ export default function AppointmentsScreen({ navigation }) {
                     onPress={() => navigation.navigate('MedicalNotes', { appointment: appt })}
                     colorScheme={colorScheme}
                   />
-                  <TouchableOpacity
-                    className={`${buttonSecondaryClass} rounded-lg p-2 mt-2`}
-                    onPress={() => navigation.navigate('MedicalNotes', { appointmentId: appt.id })}
-                  >
-                    <Text className={`text-sm ${textAccentClass}`}>
-                      {t('appointments.view_medical_notes')}
-                    </Text>
-                  </TouchableOpacity>
                 </View>
               ))
             ) : (
