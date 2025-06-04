@@ -4,8 +4,9 @@ import { useDispatch } from 'react-redux';
 import { validarTokenCambioContrasenia } from '~/store/slices/tokenSlice';
 import { solicitarCambioContrasenia, cambiarContrasenia } from '~/store/slices/userSlice';
 import { useTranslation } from 'react-i18next';
+import { useColorScheme } from 'react-native';
 
-const ChangePasswordScreen = () => {
+const ChangePasswordScreen = ({navigation}) => {
   const [correo, setCorreo] = useState('');
   const [nuevaContrasenia, setNuevaContrasenia] = useState('');
   const [repetirContrasenia, setRepetirContrasenia] = useState('');
@@ -14,8 +15,12 @@ const ChangePasswordScreen = () => {
   const [solicitudEnviada, setSolicitudEnviada] = useState(false);
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  const [mostrarError, setMostrarError] = useState(false);
 
   const cambiarContraseniaHandler = async () => {
+    console.log('token.verification_title', { correo });
     if (!correo) {
       Alert.alert(t('global.error'), t('change_password.email'));
       return;
@@ -52,34 +57,66 @@ const ChangePasswordScreen = () => {
     }
   };
 
+
+
   const guardarNuevaContrasenia = async () => {
+    setMostrarError(false);
     if (!nuevaContrasenia || !repetirContrasenia) {
       Alert.alert('Error', t('change_password.alerts.no_email_error'));
       return;
     }
     if (nuevaContrasenia !== repetirContrasenia) {
+      setMostrarError(true);
       Alert.alert('Error', t('change_password.alerts.emails_notMatch'));
       return;
     }
     try {
       await dispatch(cambiarContrasenia({ correo, nuevaContrasenia })).unwrap();
-      Alert.alert(t('global.success'), t('token.alerts.success'));
+      navigation.navigate('Welcome');
     } catch (err) {
       Alert.alert('Error', err.mensaje || t('change_password.alerts.chage_error'));
     }
   };
 
   return (
-    <View className="flex-1 justify-center items-center p-5 bg-gray-100">
-      <Text className="text-2xl font-bold mb-5 text-gray-800">{t('change_password.title')}</Text>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+        backgroundColor: isDark ? '#18181b' : '#f6f6f6',
+      }}
+    >
+      <Text
+        style={{
+          fontSize: 24,
+          fontWeight: 'bold',
+          marginBottom: 20,
+          color: isDark ? '#f3f4f6' : '#333',
+        }}
+      >
+        {t('change_password.title')}
+      </Text>
 
       {!tokenValidado && (
         <>
           {!solicitudEnviada && (
             <>
               <TextInput
-                className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-4 bg-white"
+                style={{
+                  width: '100%',
+                  height: 48,
+                  borderWidth: 1,
+                  borderColor: isDark ? '#52525b' : '#ccc',
+                  borderRadius: 8,
+                  paddingHorizontal: 12,
+                  marginBottom: 16,
+                  backgroundColor: isDark ? '#27272a' : '#fff',
+                  color: isDark ? '#f3f4f6' : '#18181b',
+                }}
                 placeholder="Correo electrónico"
+                placeholderTextColor={isDark ? '#71717a' : '#9ca3af'}
                 value={correo}
                 onChangeText={setCorreo}
                 keyboardType="email-address"
@@ -87,30 +124,61 @@ const ChangePasswordScreen = () => {
                 editable={true}
               />
               <TouchableOpacity
-                className="w-full h-12 bg-blue-600 rounded-lg justify-center items-center mb-3"
-                onPress={async () => {
-                  await cambiarContraseniaHandler();
+                style={{
+                  width: '100%',
+                  height: 48,
+                  backgroundColor: isDark ? '#2563eb' : '#1976d2',
+                  borderRadius: 8,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginBottom: 12,
+                }}
+                onPress={() => {
+                  cambiarContraseniaHandler();
                 }}
               >
-                <Text className="text-white text-base font-bold">{t('token.request')}</Text>
+                <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>
+                  {t('token.request')}
+                </Text>
               </TouchableOpacity>
             </>
           )}
           {solicitudEnviada && (
             <>
               <TextInput
-                className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-4 bg-white"
+                style={{
+                  width: '100%',
+                  height: 48,
+                  borderWidth: 1,
+                  borderColor: isDark ? '#52525b' : '#ccc',
+                  borderRadius: 8,
+                  paddingHorizontal: 12,
+                  marginBottom: 16,
+                  backgroundColor: isDark ? '#27272a' : '#fff',
+                  color: isDark ? '#f3f4f6' : '#18181b',
+                }}
                 placeholder={t('token.alerts.token_received')}
+                placeholderTextColor={isDark ? '#71717a' : '#9ca3af'}
                 value={token}
                 onChangeText={setToken}
                 keyboardType="default"
                 autoCapitalize="none"
               />
               <TouchableOpacity
-                className="w-full h-12 bg-blue-500 rounded-lg justify-center items-center mb-3"
+                style={{
+                  width: '100%',
+                  height: 48,
+                  backgroundColor: isDark ? '#2563eb' : '#1976d2',
+                  borderRadius: 8,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginBottom: 12,
+                }}
                 onPress={() => validarTokenHandler(token)}
               >
-                <Text className="text-white text-base font-bold">{t('token.verify_button')}</Text>
+                <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>
+                  {t('token.verify_button')}
+                </Text>
               </TouchableOpacity>
             </>
           )}
@@ -120,24 +188,67 @@ const ChangePasswordScreen = () => {
       {tokenValidado && (
         <>
           <TextInput
-            className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-4 bg-white"
+            style={{
+              width: '100%',
+              height: 48,
+              borderWidth: 1,
+              borderColor: isDark ? '#52525b' : '#ccc',
+              borderRadius: 8,
+              paddingHorizontal: 12,
+              marginBottom: 16,
+              backgroundColor: isDark ? '#27272a' : '#fff',
+              color: isDark ? '#f3f4f6' : '#18181b',
+            }}
             placeholder={t('change_password.new_password_placeholder')}
+            placeholderTextColor={isDark ? '#71717a' : '#9ca3af'}
             value={nuevaContrasenia}
             onChangeText={setNuevaContrasenia}
             secureTextEntry={true}
           />
           <TextInput
-            className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-4 bg-white"
+            style={{
+              width: '100%',
+              height: 48,
+              borderWidth: 1,
+              borderColor: isDark ? '#52525b' : '#ccc',
+              borderRadius: 8,
+              paddingHorizontal: 12,
+              marginBottom: 16,
+              backgroundColor: isDark ? '#27272a' : '#fff',
+              color: isDark ? '#f3f4f6' : '#18181b',
+            }}
             placeholder={t('change_password.repeat_password_placeholder')}
+            placeholderTextColor={isDark ? '#71717a' : '#9ca3af'}
             value={repetirContrasenia}
             onChangeText={setRepetirContrasenia}
             secureTextEntry={true}
           />
+          {mostrarError && (
+            <Text
+              style={{
+                color: isDark ? '#f87171' : 'red',
+                marginBottom: 8,
+                textAlign: 'center',
+              }}
+            >
+              {t('change_password.passwords_not_match')}
+            </Text>
+          )}
           <TouchableOpacity
-            className="w-full h-12 bg-green-600 rounded-lg justify-center items-center mb-3"
+            style={{
+              width: '100%',
+              height: 48,
+              backgroundColor: isDark ? '#22c55e' : '#16a34a',
+              borderRadius: 8,
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginBottom: 12,
+            }}
             onPress={guardarNuevaContrasenia}
           >
-            <Text className="text-white text-base font-bold">{t('change_password.save_button')}</Text>
+            <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>
+              {t('change_password.save_button')}
+            </Text>
           </TouchableOpacity>
         </>
       )}

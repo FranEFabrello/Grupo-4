@@ -17,8 +17,10 @@ import { register } from '~/store/slices/autheticationSlice';
 import { uploadImageToFirebase } from "~/api/FirebaseConfig";
 import { useTranslation } from 'react-i18next';
 import { Picker } from '@react-native-picker/picker';
+import { useColorScheme } from 'react-native';
 
 export default function RegisterScreen({ navigation }) {
+  const colorScheme = useColorScheme();
   // Paso y estados de campos
   const [step, setStep] = useState(1);
   const [nombre, setNombre] = useState('');
@@ -155,36 +157,68 @@ export default function RegisterScreen({ navigation }) {
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} className="flex-1">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
-        <View className="flex-1 justify-center items-center p-5 bg-gray-100">
-          <Text className="text-2xl font-bold mb-5 text-gray-800">{t('register.title')}</Text>
+        <View className={`flex-1 justify-center items-center p-5 ${colorScheme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'}`}>
+          <Text className={`text-2xl font-bold mb-5 ${colorScheme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>{t('register.title')}</Text>
           {step === 1 ? (
             <>
-              <TextInput className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-2 bg-white" placeholder= {t('register.placeholders.name')} value={nombre} onChangeText={setNombre} />
+              <TextInput className={`w-full h-12 border ${colorScheme === 'dark' ? 'border-gray-700 bg-gray-800 text-gray-100' : 'border-gray-300 bg-white text-gray-900'} rounded-lg px-3 mb-2`} placeholder={t('register.placeholders.name')} placeholderTextColor={colorScheme === 'dark' ? '#9ca3af' : '#6b7280'} value={nombre} onChangeText={setNombre} />
               {errores.nombre && <Text className="text-red-500 text-xs mb-1">{errores.nombre}</Text>}
-              <TextInput className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-2 bg-white" placeholder={t('register.placeholders.lastName')} value={apellido} onChangeText={setApellido} />
+              <TextInput className={`w-full h-12 border ${colorScheme === 'dark' ? 'border-gray-700 bg-gray-800 text-gray-100' : 'border-gray-300 bg-white text-gray-900'} rounded-lg px-3 mb-2`} placeholder={t('register.placeholders.lastName')} placeholderTextColor={colorScheme === 'dark' ? '#9ca3af' : '#6b7280'} value={apellido} onChangeText={setApellido} />
               {errores.apellido && <Text className="text-red-500 text-xs mb-1">{errores.apellido}</Text>}
-              <TextInput className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-2 bg-white" placeholder={t('register.placeholders.email')} value={correo} onChangeText={setCorreo} keyboardType="email-address" autoCapitalize="none" />
+              <TextInput className={`w-full h-12 border ${colorScheme === 'dark' ? 'border-gray-700 bg-gray-800 text-gray-100' : 'border-gray-300 bg-white text-gray-900'} rounded-lg px-3 mb-2`} placeholder={t('register.placeholders.email')} placeholderTextColor={colorScheme === 'dark' ? '#9ca3af' : '#6b7280'} value={correo} onChangeText={setCorreo} keyboardType="email-address" autoCapitalize="none" />
               {errores.correo && <Text className="text-red-500 text-xs mb-1">{errores.correo}</Text>}
-              <TextInput className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-2 bg-white" placeholder={t('register.placeholders.password')} value={contrasenia} onChangeText={setContrasenia} secureTextEntry />
+              <TextInput className={`w-full h-12 border ${colorScheme === 'dark' ? 'border-gray-700 bg-gray-800 text-gray-100' : 'border-gray-300 bg-white text-gray-900'} rounded-lg px-3 mb-2`} placeholder={t('register.placeholders.password')} placeholderTextColor={colorScheme === 'dark' ? '#9ca3af' : '#6b7280'} value={contrasenia} onChangeText={setContrasenia} secureTextEntry />
               {errores.contrasenia && <Text className="text-red-500 text-xs mb-1">{errores.contrasenia}</Text>}
-              <TextInput className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-2 bg-white" placeholder={t('register.placeholders.repeat_password')} value={repetirContrasenia} onChangeText={setRepetirContrasenia} secureTextEntry />
+              <TextInput className={`w-full h-12 border ${colorScheme === 'dark' ? 'border-gray-700 bg-gray-800 text-gray-100' : 'border-gray-300 bg-white text-gray-900'} rounded-lg px-3 mb-2`} placeholder={t('register.placeholders.repeat_password')} placeholderTextColor={colorScheme === 'dark' ? '#9ca3af' : '#6b7280'} value={repetirContrasenia} onChangeText={setRepetirContrasenia} secureTextEntry />
               {errores.repetirContrasenia && <Text className="text-red-500 text-xs mb-1">{errores.repetirContrasenia}</Text>}
-              <TextInput className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-2 bg-white" placeholder={t('register.placeholders.dni')} value={dni} onChangeText={setDni} keyboardType="numeric" />
+              <TextInput className={`w-full h-12 border ${colorScheme === 'dark' ? 'border-gray-700 bg-gray-800 text-gray-100' : 'border-gray-300 bg-white text-gray-900'} rounded-lg px-3 mb-2`} placeholder={t('register.placeholders.dni')} placeholderTextColor={colorScheme === 'dark' ? '#9ca3af' : '#6b7280'} value={dni} onChangeText={setDni} keyboardType="numeric" />
               {errores.dni && <Text className="text-red-500 text-xs mb-1">{errores.dni}</Text>}
               <View className="w-full flex-row mb-2">
-                <TouchableOpacity className={`flex-1 h-12 border rounded-lg justify-center items-center mr-1 ${genero==='M'?'border-blue-500 bg-blue-100':'border-gray-300 bg-white'}`} onPress={()=>setGenero('M')}><Text>{t('register.gender.M')}</Text></TouchableOpacity>
-                <TouchableOpacity className={`flex-1 h-12 border rounded-lg justify-center items-center mx-1 ${genero==='F'?'border-pink-500 bg-pink-100':'border-gray-300 bg-white'}`} onPress={()=>setGenero('F')}><Text>{t('register.gender.F')}</Text></TouchableOpacity>
-                <TouchableOpacity className={`flex-1 h-12 border rounded-lg justify-center items-center ml-1 ${genero==='O'?'border-purple-500 bg-purple-100':'border-gray-300 bg-white'}`} onPress={()=>setGenero('O')}><Text>{t('register.gender.O')}</Text></TouchableOpacity>
+                <TouchableOpacity
+                  className={`flex-1 h-12 border rounded-lg justify-center items-center mr-1 ${
+                    genero === 'M'
+                      ? 'border-blue-500 bg-blue-200'
+                      : colorScheme === 'dark'
+                        ? 'border-gray-700 bg-gray-800'
+                        : 'border-gray-300 bg-white'
+                  }`}
+                  onPress={() => setGenero('M')}
+                >
+                  <Text className={colorScheme === 'dark' ? 'text-gray-100' : ''}>{t('register.gender.M')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  className={`flex-1 h-12 border rounded-lg justify-center items-center mx-1 ${
+                    genero === 'F'
+                      ? 'border-pink-500 bg-pink-200'
+                      : colorScheme === 'dark'
+                        ? 'border-gray-700 bg-gray-800'
+                        : 'border-gray-300 bg-white'
+                  }`}
+                  onPress={() => setGenero('F')}
+                  >
+                    <Text className={colorScheme === 'dark' ? 'text-gray-100' : ''}>{t('register.gender.F')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  className={`flex-1 h-12 border rounded-lg justify-center items-center ml-1 ${
+                    genero === 'O'
+                        ? 'border-purple-500 bg-purple-200'
+                      : colorScheme === 'dark'
+                        ? 'border-gray-700 bg-gray-800'
+                        : 'border-gray-300 bg-white'
+                  }`}
+                  onPress={() => setGenero('O')}
+                >
+                  <Text className={colorScheme === 'dark' ? 'text-gray-100' : ''}>{t('register.gender.O')}</Text>
+                </TouchableOpacity>
               </View>
               {errores.genero && <Text className="text-red-500 text-xs mb-1">{errores.genero}</Text>}
               <TextInput
-                className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-2 bg-white"
+                className={`w-full h-12 border ${colorScheme === 'dark' ? 'border-gray-700 bg-gray-800 text-gray-100' : 'border-gray-300 bg-white text-gray-900'} rounded-lg px-3 mb-2`}
                 placeholder="Fecha de nacimiento (AAAA-MM-DD)"
+                placeholderTextColor={colorScheme === 'dark' ? '#9ca3af' : '#6b7280'}
                 value={fechaNacimiento}
                 onChangeText={(text) => {
-                  // Elimina todo lo que no sea número ni guion
                   let cleaned = text.replace(/[^\d]/g, '');
-                  // Inserta los guiones automáticamente
                   if (cleaned.length > 4 && cleaned.length <= 6) {
                     cleaned = cleaned.slice(0, 4) + '-' + cleaned.slice(4);
                   } else if (cleaned.length > 6) {
@@ -203,13 +237,12 @@ export default function RegisterScreen({ navigation }) {
           ) : (
             <>
               <TextInput
-                className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-2 bg-white"
-                placeholder={f('register.placeholders.phone')}
+                className={`w-full h-12 border ${colorScheme === 'dark' ? 'border-gray-700 bg-gray-800 text-gray-100' : 'border-gray-300 bg-white text-gray-900'} rounded-lg px-3 mb-2`}
+                placeholder={t('register.placeholders.phone')}
+                placeholderTextColor={colorScheme === 'dark' ? '#9ca3af' : '#6b7280'}
                 value={celular}
                 onChangeText={(text) => {
-                  // Elimina todo lo que no sea número
                   let cleaned = text.replace(/[^\d]/g, '');
-                  // Aplica el formato 11 1234 5678
                   if (cleaned.length > 2 && cleaned.length <= 6) {
                     cleaned = cleaned.slice(0, 2) + ' ' + cleaned.slice(2);
                   } else if (cleaned.length > 6) {
@@ -219,12 +252,16 @@ export default function RegisterScreen({ navigation }) {
                 }}
                 keyboardType="phone-pad"
               />
-              <View className="w-full h-12 border border-gray-300 rounded-lg px-3 mb-3 bg-white">
+              <View className={`w-full h-12 border rounded-lg px-3 mb-3 ${colorScheme === 'dark' ? 'border-gray-700 bg-gray-800' : 'border-gray-300 bg-white'}`}>
                 <Picker
                   selectedValue={obraSocial}
                   onValueChange={(value) => {
                     setObraSocial(value);
                     setIdObraSocial(value);
+                  }}
+                  style={{
+                    color: colorScheme === 'dark' ? '#f3f4f6' : '#1f2937',
+                    backgroundColor: 'transparent',
                   }}
                 >
                   {obrasSociales.map((obra) => (
@@ -232,17 +269,18 @@ export default function RegisterScreen({ navigation }) {
                       key={obra.id}
                       label={`${obra.tipoObraSocial} - ${obra.plan}`}
                       value={obra.id}
+                      color={colorScheme === 'dark' ? '#f3f4f6' : '#1f2937'}
                     />
                   ))}
                 </Picker>
               </View>
-              <TouchableOpacity className="w-full h-12 border border-gray-300 rounded-lg justify-center items-center mb-2 bg-white" onPress={pickImage}>
-                <Text className="text-gray-700">{urlImagenPerfil ? t('register.buttons.change_img') : t('register.buttons.add_img')}</Text>
+              <TouchableOpacity className={`w-full h-12 border rounded-lg justify-center items-center mb-2 ${colorScheme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-300'}`} onPress={pickImage}>
+                <Text className={colorScheme === 'dark' ? 'text-gray-100' : 'text-gray-700'}>{urlImagenPerfil ? t('register.buttons.change_img') : t('register.buttons.add_img')}</Text>
               </TouchableOpacity>
               {urlImagenPerfil && <Image source={{ uri: urlImagenPerfil }} style={{ width: 80, height: 80, borderRadius: 40, marginBottom: 10 }} onPress={handleImageChange} />}
               <View className="flex-row w-full justify-between">
-                <TouchableOpacity className="h-12 flex-1 bg-gray-300 rounded-lg justify-center items-center mr-2" onPress={handleBack}>
-                  <Text className="text-gray-700 font-bold">{t('register.buttons.back')}</Text>
+                <TouchableOpacity className={`h-12 flex-1 rounded-lg justify-center items-center mr-2 ${colorScheme === 'dark' ? 'bg-gray-700' : 'bg-gray-300'}`} onPress={handleBack}>
+                  <Text className={colorScheme === 'dark' ? 'text-gray-100 font-bold' : 'text-gray-700 font-bold'}>{t('register.buttons.back')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity className="h-12 flex-1 bg-blue-600 rounded-lg justify-center items-center ml-2" onPress={handleRegister}>
                   <Text className="text-white font-bold">{t('register.buttons.register')}</Text>

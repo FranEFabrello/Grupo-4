@@ -23,7 +23,7 @@ export const validarTokenCambioContrasenia = createAsyncThunk(
   'tokens/validarTokenCambioContrasenia',
   async (data, { rejectWithValue }) => {
     try {
-      const response = await api.post(`/validarTokenCambioContrasenia`, data);
+      const response = await api.post(`/Tokens/validarTokenCambioContrasenia`, data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || { mensaje: 'Error al cambiar contraseña' });

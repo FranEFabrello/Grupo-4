@@ -22,7 +22,7 @@ export default function ProfessionalsScreen({ navigation }) {
 
   // Theme variables
   const containerBg = colorScheme === 'light' ? 'bg-white' : 'bg-gray-600';
-  const cardBg = colorScheme === 'light' ? 'bg-white' : 'bg-gray-600';
+  const cardBg = colorScheme === 'light' ? 'bg-white shadow-lg' : 'bg-gray-600';
   const primaryText = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
   const secondaryText = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-400';
   const inputBg = colorScheme === 'light' ? 'bg-gray-100' : 'bg-gray-700';
@@ -127,6 +127,7 @@ export default function ProfessionalsScreen({ navigation }) {
                     })
                   }
                   containerClassName="w-[48%]"
+                  colorScheme={colorScheme}
                 />
               ))}
             </View>

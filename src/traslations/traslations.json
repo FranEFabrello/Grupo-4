@@ -1106,6 +1106,10 @@
       "es": "Guardar nueva contraseña",
       "en": "Save new password"
     },
+    "passwords_not_match": {
+      "es": "Las contraseñas deben coincidir.",
+      "en": "Passwords must match."
+    },
     "alerts": {
       "emails_notMatch": {
         "es": "Las contraseñas no coinciden.",
@@ -1144,7 +1148,7 @@
       "en": "Confirm token"
     },
     "verify_button": {
-      "es": "validar token",
+      "es": "Validar token",
       "en": "Verify token"
     },
     "verification_title": {
@@ -1153,8 +1157,8 @@
     },
     "alerts": {
       "token_received": {
-        "es": "Token recibido.",
-        "en": "Token received."
+        "es": "Token recibido",
+        "en": "Token received"
       },
       "token_length_error": {
         "es": "El token debe tener 8 caracteres.",

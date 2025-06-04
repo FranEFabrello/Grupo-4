@@ -68,7 +68,8 @@ export const cambiarContrasenia = createAsyncThunk(
   'user/cambiarContrasenia',
   async ({ correo, nuevaContrasenia }, { rejectWithValue }) => {
     try {
-      const response = await api.post(`/cambiarContrasenia`, { correo, nuevaContrasenia });
+      const response = await api.post(`/Usuario/cambiarContrasenia`, { correo, nuevaContrasenia });
+      console.log('Respuesta de cambiar contraseña: ', response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al cambiar la contraseña');

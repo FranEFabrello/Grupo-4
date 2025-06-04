@@ -1,26 +1,64 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, useColorScheme } from "react-native";
 import { useTranslation } from 'react-i18next';
 
 export default function WelcomeScreen({ navigation }) {
   const { t } = useTranslation();
+  const colorScheme = useColorScheme();
+
 
   return (
-    <View className="flex-1 justify-center items-center bg-gray-100 p-5">
-      <Text className="text-3xl font-bold mb-10 text-gray-800">{t('welcome.title')}</Text>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: colorScheme === 'dark' ? '#18181b' : '#f3f4f6',
+        padding: 20,
+      }}
+    >
+      <Text
+        style={{
+          fontSize: 28,
+          fontWeight: 'bold',
+          marginBottom: 40,
+          color: colorScheme === 'dark' ? '#f3f4f6' : '#1f2937',
+        }}
+      >
+        {t('welcome.title')}
+      </Text>
 
       <TouchableOpacity
-        className="w-full h-12 bg-blue-600 rounded-lg justify-center items-center mb-4"
+        style={{
+          width: '100%',
+          height: 48,
+          backgroundColor: colorScheme === 'dark' ? '#1d4ed8' : '#2563eb',
+          borderRadius: 8,
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginBottom: 16,
+        }}
         onPress={() => navigation.navigate('Login')}
       >
-        <Text className="text-white font-bold text-base">{t('welcome.login_button')}</Text>
+        <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16 }}>
+          {t('welcome.login_button')}
+        </Text>
       </TouchableOpacity>
 
       <TouchableOpacity
-        className="w-full h-12 bg-green-600 rounded-lg justify-center items-center"
+        style={{
+          width: '100%',
+          height: 48,
+          backgroundColor: colorScheme === 'dark' ? '#15803d' : '#22c55e',
+          borderRadius: 8,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
         onPress={() => navigation.navigate('Register')}
       >
-        <Text className="text-white font-bold text-base">{t('welcome.register_button')}</Text>
+        <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16 }}>
+          {t('welcome.register_button')}
+        </Text>
       </TouchableOpacity>
     </View>
   );
