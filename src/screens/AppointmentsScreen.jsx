@@ -10,7 +10,7 @@ import { useColorScheme } from 'react-native';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { useTranslation } from 'react-i18next';
-import { colorScheme } from "nativewind";
+import AppointmentCardFullWidth from '~/components/ApptCardForApptScreen';
 
 // Utilidad para obtener un Date con la hora deseada
 function getDateWithTime(fecha, hora) {

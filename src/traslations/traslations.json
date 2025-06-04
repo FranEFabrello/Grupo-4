@@ -849,7 +849,7 @@
       "en": "My Appointments"
     },
     "my_appointments": {
-      "es": "Mis\nTurnos",
+      "es": "Mis Turnos",
       "en": "My\nAppointments"
     },
     "filter_by": {
@@ -1431,5 +1431,16 @@
       "es": "Tu app médica favorita",
       "en": "Your favorite medical app"
     }
-  }
+  },
+
+    "error": {
+        "title": {
+        "es": "Error",
+        "en": "Error"
+        },
+        "message": {
+        "es": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo más tarde.",
+        "en": "An unexpected error occurred. Please try again later."
+        }
+    }
 }
