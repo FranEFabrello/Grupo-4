@@ -5,7 +5,7 @@ export const fetchAppointments = createAsyncThunk(
   'appointments/fetchAppointments',
   async (usuarioId) => {
     const response = await api.get(`/turnos/usuario/${usuarioId}/todos`);
-    console.log('Response de turnos:', response.data);
+    //console.log('Response de turnos:', response.data);
     return response.data;
   }
 );
@@ -43,6 +43,22 @@ export const confirmAppointment = createAsyncThunk(
   'appointments/confirmAppointment',
   async (appointmentId) => {
     const response = await api.patch(`/turnos/confirmar/${appointmentId}`);
+    return response.data;
+  }
+);
+
+// Reprogramar un turno
+export const rescheduleAppointment = createAsyncThunk(
+  'appointments/rescheduleAppointment',
+  async ({ turnoId, nuevaFecha, nuevaHoraInicio, nuevaHoraFin }) => {
+    const response = await api.post(`/turnos/turnos/${turnoId}/reprogramar`,null,{
+        params: {
+          nuevaFecha,
+          nuevaHoraInicio,
+          nuevaHoraFin,
+        },
+      }
+    );
     return response.data;
   }
 );
@@ -91,8 +107,21 @@ const appointmentsSlice = createSlice({
       })
       .addCase(fetchAppointments.fulfilled, (state,action) => {
         state.status = 'succeeded';
-        state.appointmentsByUser = action.payload;
-        console.log('Turnos por usuario TURNOSSLICE:', action.payload);
+        // Ajustar fechas agregando zona horaria local
+        const getLocalOffset = () => {
+          const offset = new Date().getTimezoneOffset();
+          const absOffset = Math.abs(offset);
+          const sign = offset <= 0 ? '+' : '-';
+          const hours = String(Math.floor(absOffset / 60)).padStart(2, '0');
+          const minutes = String(absOffset % 60).padStart(2, '0');
+          return `${sign}${hours}:${minutes}`;
+        };
+        const localOffset = getLocalOffset();
+        state.appointmentsByUser = action.payload.map(appt => ({
+          ...appt,
+          fecha: appt.fecha ? `${appt.fecha}T00:00:00${localOffset}` : appt.fecha
+        }));
+        //console.log('Turnos por usuario TURNOSSLICE:', state.appointmentsByUser);
       })
       .addCase(confirmAppointment.fulfilled, (state, action) => {
         state.appointmentsByUser = state.appointmentsByUser.map((appointment) =>

@@ -1,16 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "~/api/api";
-
-const API_URL = 'http://localhost:4002/Usuario';
 
 // Thunks para las operaciones asincrónicas
 export const fetchUsuarios = createAsyncThunk(
   'user/fetchUsuarios',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${API_URL}/usuarios`);
+      const response = await api.get(`/usuarios`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al obtener los usuarios');
@@ -22,14 +19,15 @@ export const fetchUserByToken = createAsyncThunk(
   'user/fetchUserByToken',
   async (_, { rejectWithValue }) => {
     try {
-      const token = await AsyncStorage.getItem('bearerToken');
+      // Cambia la clave a 'userToken' para que coincida con el resto de la app
+      const token = await AsyncStorage.getItem('userToken');
       console.log('Token obtenido de AsyncStorage:', token);
       const response = await api.get('Usuario/usuario/info', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      //console.log('Respuesta de /usuario/info:', response.data);
+      console.log('Respuesta de /usuario/info:', response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al obtener el usuario por token');
@@ -43,7 +41,7 @@ export const actualizarUsuarioPorCorreo = createAsyncThunk(
   'user/actualizarUsuarioPorCorreo',
   async ({ correo, updates }, { rejectWithValue }) => {
     try {
-      const response = await axios.patch(`${API_URL}/actualizarPorCorreo`, updates, {
+      const response = await api.patch(`/actualizarPorCorreo`, updates, {
         params: { correo },
       });
       return response.data;
@@ -57,7 +55,8 @@ export const solicitarCambioContrasenia = createAsyncThunk(
   'user/solicitarCambioContrasenia',
   async (correo, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${API_URL}/solicitarCambioContrasenia`, { correo });
+      const response = await api.post('Usuario/solicitarCambioContrasenia', correo );
+      console.log('Respuesta de solicitar cambio contraseña: ', response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al solicitar el cambio de contraseña');
@@ -69,7 +68,8 @@ export const cambiarContrasenia = createAsyncThunk(
   'user/cambiarContrasenia',
   async ({ correo, nuevaContrasenia }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${API_URL}/cambiarContrasenia`, { correo, nuevaContrasenia });
+      const response = await api.post(`/Usuario/cambiarContrasenia`, { correo, nuevaContrasenia });
+      console.log('Respuesta de cambiar contraseña: ', response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al cambiar la contraseña');
@@ -81,7 +81,7 @@ export const actualizarFcmToken = createAsyncThunk(
   'user/actualizarFcmToken',
   async ({ id, token }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`${API_URL}/usuario/${id}/fcm-token`, { token });
+      const response = await api.put(`/usuario/${id}/fcm-token`, { token });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al actualizar el token FCM');
@@ -94,7 +94,7 @@ export const actualizarConfiguraciones = createAsyncThunk(
   'user/actualizarConfiguraciones',
   async ({ id, configuraciones }, { rejectWithValue }) => {
     try {
-      const response = await axios.patch(`${API_URL}/usuario/${id}/configuraciones`, configuraciones);
+      const response = await api.patch(`/Usuario/usuario/${id}/configuraciones`, configuraciones);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al actualizar las configuraciones');
@@ -106,7 +106,7 @@ export const enviarMensajeAyuda = createAsyncThunk(
   'user/enviarMensajeAyuda',
   async ({ correoUsuario, mensaje }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${API_URL}/ayuda`, { correoUsuario, mensaje });
+      const response = await api.post(`/ayuda`, { correoUsuario, mensaje });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al enviar el mensaje de ayuda');
@@ -130,12 +130,25 @@ export const desactivarCuenta = createAsyncThunk(
   'user/desactivarCuenta',
   async (usuarioId, { rejectWithValue }) => {
     try {
-      const response = await axios.patch(`${API_URL}/desactivarCuenta`, null, {
+      const response = await api.patch(`/desactivarCuenta`, null, {
         params: { usuarioId },
       });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al desactivar la cuenta');
+    }
+  }
+);
+
+
+export const guardarSuscripcionWebPush = createAsyncThunk(
+  'user/guardarSuscripcionWebPush',
+  async (subscription, { rejectWithValue }) => {
+    try {
+      const response = await api.put('/api/user/webpush/subscribe', subscription);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Error al guardar la suscripción');
     }
   }
 );
@@ -146,8 +159,11 @@ const userSlice = createSlice({
   initialState: {
     usuarios: [],
     usuario: null,
+    modoOscuro: false,
     loading: false,
     error: null,
+    webPushStatus: 'idle',
+    webPushError: null,
   },
   reducers: {
     setUsuario(state, action) {
@@ -155,6 +171,12 @@ const userSlice = createSlice({
     },
     clearUsuario(state) {
       state.usuario = null;
+    },
+    setModoOscuro(state, action) {
+      state.modoOscuro = action.payload;
+      if (state.usuario) {
+        state.usuario.modoOscuro = action.payload;
+      }
     },
   },
   extraReducers: (builder) => {
@@ -180,8 +202,20 @@ const userSlice = createSlice({
       .addCase(fetchUserByToken.fulfilled, (state, action) => {
       state.usuario = action.payload;
       //console.log('action.payload del usuario: ', state.usuario);
-    })
+      })
+      .addCase(guardarSuscripcionWebPush.pending, (state) => {
+        state.webPushStatus = 'loading';
+        state.webPushError = null;
+      })
+      .addCase(guardarSuscripcionWebPush.fulfilled, (state) => {
+        state.webPushStatus = 'succeeded';
+      })
+      .addCase(guardarSuscripcionWebPush.rejected, (state, action) => {
+        state.webPushStatus = 'failed';
+        state.webPushError = action.payload;
+      });
   },
 });
 
+export const { setModoOscuro } = userSlice.actions;
 export default userSlice.reducer;

@@ -18,6 +18,6 @@ module.exports = {
         primary: '#2563eb', // Color principal (botones, enlaces)
       }},
   },
-  plugins: [],
+  plugins: [require("tailwind-extended-shadows")],
   presets: [require('nativewind/preset')],
 };

@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 import api from "~/api/api";
 
 // Thunk para obtener notificaciones por ID de usuario
@@ -7,12 +6,26 @@ export const fetchNotificaciones = createAsyncThunk(
   'notificaciones/fetchNotificaciones',
   async (userId, thunkAPI) => {
     const response = await api.get(`/notificaciones/usuarios/${userId}`);
+    console.log("Notificaicones: ", response.data)
     return response.data;
   }
 );
 
+export const marcarNotificacionLeida = createAsyncThunk(
+  'notifications/marcarNotificacionLeida',
+  async (notificacionId, { rejectWithValue }) => {
+    try {
+      await api.patch(`/notificaciones/${notificacionId}/leida`);
+      return notificacionId;
+    } catch (error) {
+      return rejectWithValue(error.message || 'Error al marcar como leída');
+    }
+  }
+);
+
+
 const notificationSlice = createSlice({
-  name: 'notificaciones',
+  name: 'notifications',
   initialState: {
     notificaciones: [],
     loading: false,

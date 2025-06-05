@@ -2,7 +2,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const api = axios.create({
-  baseURL: 'http://localhost:4002',
+  baseURL: 'https://app3-0.onrender.com/',
   timeout: 10000,
 });
 
@@ -17,6 +17,15 @@ api.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 );
+
+// Utilidades para guardar configuraciones
+export const setLanguage = async (lang) => {
+  await AsyncStorage.setItem('language', lang);
+};
+
+export const setTheme = async (theme) => {
+  await AsyncStorage.setItem('theme', theme);
+};
 
 export default api;
 

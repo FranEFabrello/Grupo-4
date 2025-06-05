@@ -1,15 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import api from "~/api/api";
 
-// Endpoint base
-const API_URL = 'http://localhost:4002/obrasSociales';
 
 // Thunks para las operaciones asincrónicas
 export const fetchObrasSociales = createAsyncThunk(
   'socialWorks/fetchObrasSociales',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${API_URL}/todos`);
+      const response = await api.get(`/obrasSociales/todos`);
       console.log("debió traer todas las obras sociales -> ", response);
       return response.data;
     } catch (error) {

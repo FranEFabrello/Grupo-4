@@ -12,7 +12,7 @@ import userSlice from "~/store/slices/userSlice";
 import tokenReducer from './slices/tokenSlice.js';
 import medicalSpecialitiesReducer from './slices/medicalSpecialitiesSlice.js';
 import notificationSlice from "~/store/slices/notificationSlice";
-
+import '../i18n';
 
 export const store = configureStore({
   reducer: {

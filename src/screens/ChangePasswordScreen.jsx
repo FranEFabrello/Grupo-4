@@ -1,69 +1,258 @@
-// src/screens/CambioContraseniaScreen.js
 import React, { useState } from 'react';
-import { Alert, View, TextInput, Button, useColorScheme, StyleSheet } from 'react-native';
+import { Alert, View, TextInput, Text, TouchableOpacity } from "react-native";
 import { useDispatch } from 'react-redux';
 import { validarTokenCambioContrasenia } from '~/store/slices/tokenSlice';
-import AppContainer from '../components/AppContainer'; // Assuming you have an AppContainer component
+import { solicitarCambioContrasenia, cambiarContrasenia } from '~/store/slices/userSlice';
+import { useTranslation } from 'react-i18next';
+import { useColorScheme } from 'react-native';
 
-const ChangePasswordScreen = () => {
+const ChangePasswordScreen = ({navigation}) => {
   const [correo, setCorreo] = useState('');
   const [nuevaContrasenia, setNuevaContrasenia] = useState('');
+  const [repetirContrasenia, setRepetirContrasenia] = useState('');
+  const [token, setToken] = useState('');
+  const [tokenValidado, setTokenValidado] = useState(false);
+  const [solicitudEnviada, setSolicitudEnviada] = useState(false);
   const dispatch = useDispatch();
+  const { t } = useTranslation();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  const [mostrarError, setMostrarError] = useState(false);
 
-  const cambiarContrasenia = () => {
-    if (!correo || !nuevaContrasenia) {
-      Alert.alert('Error', 'Completa todos los campos.');
+  const cambiarContraseniaHandler = async () => {
+    console.log('token.verification_title', { correo });
+    if (!correo) {
+      Alert.alert(t('global.error'), t('change_password.email'));
       return;
     }
-
-    dispatch(validarTokenCambioContrasenia({ correo, nuevaContrasenia }))
-      .unwrap()
-      .then((res) => Alert.alert('Éxito', res.mensaje))
-      .catch((err) => Alert.alert('Error', err.mensaje));
+    try {
+      await dispatch(solicitarCambioContrasenia({ correo })).unwrap();
+      setSolicitudEnviada(true);
+      setTokenValidado(false);
+      Alert.alert(
+        t('global.success'),
+        t('send_email.alerts.email_sent'),
+        [
+          {
+            text: t('send_email.send'),
+          },
+        ]
+      );
+    } catch (err) {
+      Alert.alert('Error', err.mensaje || t('change_password.alerts.request_error'));
+    }
   };
- const colorScheme = useColorScheme();
+
+  const validarTokenHandler = async (token) => {
+    try {
+      console.log(t('token.verification_title'), { correo, token });
+      const tokenIngresado = token;
+      const resValidacion = await dispatch(
+        validarTokenCambioContrasenia({ correo, tokenIngresado })
+      ).unwrap();
+      Alert.alert(t('global.success'), resValidacion.mensaje);
+      setTokenValidado(true);
+    } catch (err) {
+      Alert.alert('Error', err.mensaje || t('token.alerts.default_error'));
+    }
+  };
+
+
+
+  const guardarNuevaContrasenia = async () => {
+    setMostrarError(false);
+    if (!nuevaContrasenia || !repetirContrasenia) {
+      Alert.alert('Error', t('change_password.alerts.no_email_error'));
+      return;
+    }
+    if (nuevaContrasenia !== repetirContrasenia) {
+      setMostrarError(true);
+      Alert.alert('Error', t('change_password.alerts.emails_notMatch'));
+      return;
+    }
+    try {
+      await dispatch(cambiarContrasenia({ correo, nuevaContrasenia })).unwrap();
+      navigation.navigate('Welcome');
+    } catch (err) {
+      Alert.alert('Error', err.mensaje || t('change_password.alerts.chage_error'));
+    }
+  };
 
   return (
-    <AppContainer>
-      <View style={[styles.container, colorScheme === 'dark' && styles.darkContainer]}>
-        <TextInput
-          style={[styles.input, colorScheme === 'dark' && styles.darkInput]}
-          placeholder="Correo"
-          placeholderTextColor={colorScheme === 'dark' ? '#ccc' : '#999'}
-          value={correo}
-          onChangeText={setCorreo}
-        />
-        <TextInput
-          style={[styles.input, colorScheme === 'dark' && styles.darkInput]}
-          placeholder="Nueva contraseña"
-          placeholderTextColor={colorScheme === 'dark' ? '#ccc' : '#999'}
-          value={nuevaContrasenia}
-          onChangeText={setNuevaContrasenia}
-          secureTextEntry
-        />
-        <Button title="Cambiar contraseña" onPress={cambiarContrasenia} color={colorScheme === 'dark' ? '#60A5FA' : '#3B82F6'} />
-      </View>
-    </AppContainer>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+        backgroundColor: isDark ? '#18181b' : '#f6f6f6',
+      }}
+    >
+      <Text
+        style={{
+          fontSize: 24,
+          fontWeight: 'bold',
+          marginBottom: 20,
+          color: isDark ? '#f3f4f6' : '#333',
+        }}
+      >
+        {t('change_password.title')}
+      </Text>
+
+      {!tokenValidado && (
+        <>
+          {!solicitudEnviada && (
+            <>
+              <TextInput
+                style={{
+                  width: '100%',
+                  height: 48,
+                  borderWidth: 1,
+                  borderColor: isDark ? '#52525b' : '#ccc',
+                  borderRadius: 8,
+                  paddingHorizontal: 12,
+                  marginBottom: 16,
+                  backgroundColor: isDark ? '#27272a' : '#fff',
+                  color: isDark ? '#f3f4f6' : '#18181b',
+                }}
+                placeholder="Correo electrónico"
+                placeholderTextColor={isDark ? '#71717a' : '#9ca3af'}
+                value={correo}
+                onChangeText={setCorreo}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                editable={true}
+              />
+              <TouchableOpacity
+                style={{
+                  width: '100%',
+                  height: 48,
+                  backgroundColor: isDark ? '#2563eb' : '#1976d2',
+                  borderRadius: 8,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginBottom: 12,
+                }}
+                onPress={() => {
+                  cambiarContraseniaHandler();
+                }}
+              >
+                <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>
+                  {t('token.request')}
+                </Text>
+              </TouchableOpacity>
+            </>
+          )}
+          {solicitudEnviada && (
+            <>
+              <TextInput
+                style={{
+                  width: '100%',
+                  height: 48,
+                  borderWidth: 1,
+                  borderColor: isDark ? '#52525b' : '#ccc',
+                  borderRadius: 8,
+                  paddingHorizontal: 12,
+                  marginBottom: 16,
+                  backgroundColor: isDark ? '#27272a' : '#fff',
+                  color: isDark ? '#f3f4f6' : '#18181b',
+                }}
+                placeholder={t('token.alerts.token_received')}
+                placeholderTextColor={isDark ? '#71717a' : '#9ca3af'}
+                value={token}
+                onChangeText={setToken}
+                keyboardType="default"
+                autoCapitalize="none"
+              />
+              <TouchableOpacity
+                style={{
+                  width: '100%',
+                  height: 48,
+                  backgroundColor: isDark ? '#2563eb' : '#1976d2',
+                  borderRadius: 8,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginBottom: 12,
+                }}
+                onPress={() => validarTokenHandler(token)}
+              >
+                <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>
+                  {t('token.verify_button')}
+                </Text>
+              </TouchableOpacity>
+            </>
+          )}
+        </>
+      )}
+
+      {tokenValidado && (
+        <>
+          <TextInput
+            style={{
+              width: '100%',
+              height: 48,
+              borderWidth: 1,
+              borderColor: isDark ? '#52525b' : '#ccc',
+              borderRadius: 8,
+              paddingHorizontal: 12,
+              marginBottom: 16,
+              backgroundColor: isDark ? '#27272a' : '#fff',
+              color: isDark ? '#f3f4f6' : '#18181b',
+            }}
+            placeholder={t('change_password.new_password_placeholder')}
+            placeholderTextColor={isDark ? '#71717a' : '#9ca3af'}
+            value={nuevaContrasenia}
+            onChangeText={setNuevaContrasenia}
+            secureTextEntry={true}
+          />
+          <TextInput
+            style={{
+              width: '100%',
+              height: 48,
+              borderWidth: 1,
+              borderColor: isDark ? '#52525b' : '#ccc',
+              borderRadius: 8,
+              paddingHorizontal: 12,
+              marginBottom: 16,
+              backgroundColor: isDark ? '#27272a' : '#fff',
+              color: isDark ? '#f3f4f6' : '#18181b',
+            }}
+            placeholder={t('change_password.repeat_password_placeholder')}
+            placeholderTextColor={isDark ? '#71717a' : '#9ca3af'}
+            value={repetirContrasenia}
+            onChangeText={setRepetirContrasenia}
+            secureTextEntry={true}
+          />
+          {mostrarError && (
+            <Text
+              style={{
+                color: isDark ? '#f87171' : 'red',
+                marginBottom: 8,
+                textAlign: 'center',
+              }}
+            >
+              {t('change_password.passwords_not_match')}
+            </Text>
+          )}
+          <TouchableOpacity
+            style={{
+              width: '100%',
+              height: 48,
+              backgroundColor: isDark ? '#22c55e' : '#16a34a',
+              borderRadius: 8,
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginBottom: 12,
+            }}
+            onPress={guardarNuevaContrasenia}
+          >
+            <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>
+              {t('change_password.save_button')}
+            </Text>
+          </TouchableOpacity>
+        </>
+      )}
+    </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: { padding: 20 },
-  darkContainer: { backgroundColor: '#1F2937' },
-  input: { borderWidth: 1, borderColor: '#ccc', padding: 10, marginBottom: 10, borderRadius: 5, color: '#000' },
-  darkInput: { borderColor: '#555', color: '#fff', backgroundColor: '#374151' },
-});
-
-
-
 export default ChangePasswordScreen;
-
-/* Para cuando falte configurar la redireccion desde la pantalla del perfil
-* dispatch(enviarSolicitudReset(correo))
-  .unwrap()
-  .then(() => {
-    navigation.navigate("CodigoResetScreen", { correo });
-  });
-
-*
-* */

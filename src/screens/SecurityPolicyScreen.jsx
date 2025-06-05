@@ -1,72 +1,72 @@
 import React from 'react';
-import { ScrollView, View, Text, Linking, useColorScheme } from 'react-native';
+import { ScrollView, View, Text, Linking } from 'react-native';
 import AppContainer from '~/components/AppContainer';
+import { useTranslation } from 'react-i18next';
+import { useColorScheme } from 'react-native';
 
 export default function SecurityPolicyScreen({ navigation }) {
+  const { t } = useTranslation();
   const colorScheme = useColorScheme();
 
-  const containerBgClass = colorScheme === 'light' ? 'bg-gray-50' : 'bg-gray-900';
-  const cardBgClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-800';
-  const titleClass = colorScheme === 'light' ? 'text-blue-700' : 'text-blue-400';
-  const subtitleClass = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
-  const textClass = colorScheme === 'light' ? 'text-gray-700' : 'text-gray-300';
-  const linkTextClass = colorScheme === 'light' ? 'text-blue-600' : 'text-blue-400';
+  // Theme variables
+  const containerBg = colorScheme === 'light' ? 'bg-gray-50' : 'bg-gray-800';
+  const sectionBg = colorScheme === 'light' ? 'bg-white' : 'bg-gray-700';
+  const primaryText = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
+  const secondaryText = colorScheme === 'light' ? 'text-gray-700' : 'text-gray-400';
+  const accentText = colorScheme === 'light' ? 'text-blue-700' : 'text-blue-400';
 
   return (
-    <AppContainer navigation={navigation} screenTitle="Política de Seguridad">
-      <ScrollView className={`flex-1 ${containerBgClass} p-5`}>
-        <View className={`${cardBgClass} rounded-lg shadow-md p-5 mb-6`}>
-          <Text className={`text-2xl font-bold ${titleClass} mb-2`}>Política de Seguridad</Text>
-          <Text className={`text-base ${textClass} mb-4`}>
-            En nuestra aplicación, la seguridad y privacidad de tus datos es nuestra máxima prioridad. Nos comprometemos a proteger tu información personal y a garantizar que tus datos estén seguros en todo momento.
+    <AppContainer navigation={navigation} screenTitle={t('policy.title')}>
+      <ScrollView className={`flex-1 ${containerBg} p-5`}>
+        <View className={`${sectionBg} rounded-xl shadow-sm p-5 mb-4`}>
+          <Text className={`text-2xl font-bold ${accentText} mb-2`}>{t('policy.title')}</Text>
+          <Text className={`text-base ${secondaryText} mb-4`}>
+            {t('policy.sub_1')}
           </Text>
         </View>
 
-        <View className={`${cardBgClass} rounded-lg shadow-md p-5 mb-6`}>
-          <Text className={`text-lg font-semibold ${subtitleClass} mb-2`}>¿Cómo protegemos tus datos?</Text>
-          <Text className={`text-base ${textClass} mb-2`}>
-            - Utilizamos cifrado de extremo a extremo para proteger la transmisión de datos.
+        <View className={`${sectionBg} rounded-xl shadow-sm p-5 mb-4`}>
+          <Text className={`text-lg font-semibold ${primaryText} mb-2`}>{t('policy.how.title')}</Text>
+          <Text className={`text-base ${secondaryText} mb-2`}>
+            {t('policy.how.sub_1')}
           </Text>
-          <Text className={`text-base ${textClass} mb-2`}>
-            - Utilizamos cifrado de extremo a extremo para proteger la transmisión de datos.
+          <Text className={`text-base ${secondaryText} mb-2`}>
+            {t('policy.how.sub_2')}
           </Text>
-          <Text className="text-base text-gray-700 mb-2">
-            - Tus contraseñas se almacenan de forma segura y nunca se comparten con terceros.
-          </Text>
-          <Text className="text-base text-gray-700 mb-2">
-            - Solo el personal autorizado puede acceder a tu información, y únicamente para fines estrictamente necesarios.
+          <Text className={`text-base ${secondaryText} mb-2`}>
+            {t('policy.how.sub_3')}
           </Text>
         </View>
 
-        <View className={`${cardBgClass} rounded-lg shadow-md p-5 mb-6`}>
-          <Text className={`text-lg font-semibold ${subtitleClass} mb-2`}>Tus derechos</Text>
-          <Text className={`text-base ${textClass} mb-2`}>
-            - Puedes solicitar la eliminación o modificación de tus datos personales en cualquier momento.
+        <View className={`${sectionBg} rounded-xl shadow-sm p-5 mb-4`}>
+          <Text className={`text-lg font-semibold ${primaryText} mb-2`}>{t('policy.rights.title')}</Text>
+          <Text className={`text-base ${secondaryText} mb-2`}>
+            {t('policy.rights.sub_1')}
           </Text>
-          <Text className={`text-base ${textClass} mb-2`}>
-            - Tienes derecho a conocer qué información almacenamos sobre ti y cómo la utilizamos.
-          </Text>{" "}
-        </View>
-
-        <View className="bg-white rounded-lg shadow-md p-5 mb-6">
-          <Text className="text-lg font-semibold text-gray-800 mb-2">Consejos de seguridad</Text>
-          <Text className="text-base text-gray-700 mb-2">
-            - No compartas tu contraseña con nadie.
-          </Text>
-          <Text className="text-base text-gray-700 mb-2">
-            - Cambia tu contraseña periódicamente.
-          </Text>
-          <Text className="text-base text-gray-700 mb-2">
-            - Si detectas actividad sospechosa, contáctanos de inmediato.
+          <Text className={`text-base ${secondaryText} mb-2`}>
+            {t('policy.rights.sub_2')}
           </Text>
         </View>
 
-        <View className={`${cardBgClass} rounded-lg shadow-md p-5`}>
-          <Text className={`text-lg font-semibold ${subtitleClass} mb-2`}>Contacto</Text>
-          <Text className={`text-base ${textClass} mb-2`}>
-            Si tienes dudas o inquietudes sobre nuestra política de seguridad, puedes escribirnos a{' '}
+        <View className={`${sectionBg} rounded-xl shadow-sm p-5 mb-4`}>
+          <Text className={`text-lg font-semibold ${primaryText} mb-2`}>{t('policy.tips.title')}</Text>
+          <Text className={`text-base ${secondaryText} mb-2`}>
+            {t('policy.tips.sub_1')}
+          </Text>
+          <Text className={`text-base ${secondaryText} mb-2`}>
+            {t('policy.tips.sub_2')}
+          </Text>
+          <Text className={`text-base ${secondaryText} mb-2`}>
+            {t('policy.tips.sub_3')}
+          </Text>
+        </View>
+
+        <View className={`${sectionBg} rounded-xl shadow-sm p-5`}>
+          <Text className={`text-lg font-semibold ${primaryText} mb-2`}>{t('policy.contact.title')}</Text>
+          <Text className={`text-base ${secondaryText} mb-2`}>
+            {t('policy.contact.email')}
             <Text
-              className="text-blue-600 underline"
+              className={`${accentText} underline`}
               onPress={() => Linking.openURL('mailto:soporte@app.com')}
             >
               soporte@app.com

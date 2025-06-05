@@ -1,29 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Text, TouchableOpacity, Modal, Pressable } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';import { useColorScheme } from 'react-native';
-import { confirmAppointment, fetchAppointments } from "~/store/slices/appointmentsSlice";
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAppointments } from '~/store/slices/appointmentsSlice';
 import AppContainer from '../components/AppContainer';
-import AppointmentCard from '../components/AppointmentCard';
 import FilterButton from '../components/FilterButton';
 import TabButton from '../components/TabButton';
-import Calendar from '../components/Calendar';
+import AppointmentsCalendar from '~/components/AppointmentsCalendar';
+import { useColorScheme } from 'react-native';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import AppointmentsCalendar from "~/components/AppointmentsCalendar";
+import { BlurView } from 'expo-blur';
 import { useTranslation } from 'react-i18next';
+import AppointmentCardFullWidth from '~/components/ApptCardForApptScreen';
 
+// Utilidad para obtener un Date con la hora deseada
+function getDateWithTime(fecha, hora) {
+  if (!fecha) return null;
+  const d = new Date(fecha);
+  if (hora) {
+    const [h, m] = hora.split(":");
+    d.setHours(Number(h), Number(m), 0, 0);
+  }
+  return d;
+}
 
 export default function AppointmentsScreen({ navigation }) {
-  const { t } = useTranslation();
-  const colorScheme = useColorScheme(); // Detecta el tema del sistema
   const dispatch = useDispatch();
+  const colorScheme = useColorScheme();
   const { status } = useSelector((state) => state.appointments);
   const [activeTab, setActiveTab] = useState('upcoming');
   const appointments = useSelector((state) => state.appointments.appointmentsByUser);
   const usuarioId = useSelector((state) => state.user.usuario?.id);
+  const { t, i18n } = useTranslation();
 
-  //console.log("Turnos traido desde la pantalla usuario: ",appointments)
-
-  // Estado para el modal de filtros por fecha
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -34,376 +42,270 @@ export default function AppointmentsScreen({ navigation }) {
     }
   }, [dispatch, usuarioId]);
 
-  // Filtrado por rango de fechas si hay filtro activo
-  const filterByDateRange = (list) => {
-    if (!startDate && !endDate) return list;
-    return list.filter((appt) => {
-      const apptDate = new Date(appt.date);
-      if (startDate && apptDate < startDate) return false;
-      return !(endDate && apptDate > endDate);
-
-    });
-  };
-
-  // Lógica para seleccionar rango en el calendario
   const handleSelectDate = (date) => {
-    console.log('Fecha seleccionada en el calendario:', date);
     if (!startDate || (startDate && endDate)) {
       setStartDate(date);
       setEndDate(null);
-      console.log('Nuevo rango:', { startDate: date, endDate: null });
     } else if (date < startDate) {
       setStartDate(date);
       setEndDate(null);
-      console.log('Nuevo rango:', { startDate: date, endDate: null });
     } else {
       setEndDate(date);
-      console.log('Nuevo rango:', { startDate, endDate: date });
     }
   };
 
-  const upcomingAppointments = (appointments || [])
-    .filter((appt) => {
-      // Filtra por estado y fecha futura
-      if (appt.estado !== 'PENDIENTE' && appt.estado !== 'CONFIRMADO') {
-        return false;
-      }
+  const filterByDateRange = (list) => {
+    if (!startDate && !endDate) return list;
+    return list.filter((appt) => {
       const apptDate = new Date(appt.fecha);
-      const today = new Date();
-      apptDate.setHours(0, 0, 0, 0);
-      today.setHours(0, 0, 0, 0);
-      return !isNaN(apptDate) && apptDate.getTime() >= today.getTime();
+      if (isNaN(apptDate)) return false;
+      if (startDate && apptDate < startDate) return false;
+      if (endDate && apptDate > endDate) return false;
+      return true;
+    });
+  };
+
+  const upcomingAppointments = filterByDateRange(
+    (appointments || []).filter((appt) => {
+      if (appt.estado !== 'PENDIENTE' && appt.estado !== 'CONFIRMADO') return false;
+      if (!appt.horaInicio) return false;
+      const apptDateTime = getDateWithTime(appt.fecha, appt.horaInicio);
+      if (isNaN(apptDateTime)) return false;
+      return apptDateTime.getTime() >= Date.now() && appt.cuentaActiva;
     })
-    .filter((appt) => {
-      // Aplica el filtro de rango de fechas (AND)
-      if (!startDate && !endDate) return true;
-      const apptDate = new Date(appt.fecha);
-      if (startDate && apptDate < startDate) return false;
-      if (endDate && apptDate > endDate) return false;
-      return true;
-    });
+  ).sort((a, b) => getDateWithTime(a.fecha, a.horaInicio) - getDateWithTime(b.fecha, b.horaInicio));
 
-  console.log('upcomingAppointments', upcomingAppointments);
-
-  const pastAppointments = (appointments || [])
-    .filter((appt) => {
-      // Filtra por estado confirmado y fecha/hora pasada
-      if (appt.estado !== 'CONFIRMADO') {
-        return false;
-      }
-      const apptDate = new Date(appt.fecha);
-      const today = new Date();
-      apptDate.setHours(0, 0, 0, 0);
-      today.setHours(0, 0, 0, 0);
-
-      // Si la fecha es anterior a hoy, es pasado
-      if (!isNaN(apptDate) && apptDate.getTime() < today.getTime()) {
-        return true;
-      }
-
-      // Si la fecha es hoy, comparar hora fin
-      if (!isNaN(apptDate) && apptDate.getTime() === today.getTime()) {
-        if (appt.horaFin) {
-          const [finHour, finMin] = appt.horaFin.split(':').map(Number);
-          const finDate = new Date(appt.fecha);
-          finDate.setHours(finHour, finMin, 0, 0);
-          return finDate.getTime() <= Date.now();
-        }
-      }
-      return false;
+  const pastAppointments = filterByDateRange(
+    (appointments || []).filter((appt) => {
+      if (!appt.horaFin) return false;
+      const apptEndDateTime = getDateWithTime(appt.fecha, appt.horaFin);
+      if (isNaN(apptEndDateTime)) return false;
+      return apptEndDateTime.getTime() <= Date.now();
     })
-    .filter((appt) => {
-      // Aplica el filtro de rango de fechas (AND)
-      if (!startDate && !endDate) return true;
-      const apptDate = new Date(appt.fecha);
-      if (startDate && apptDate < startDate) return false;
-      if (endDate && apptDate > endDate) return false;
-      return true;
-    });
+  ).sort((a, b) => getDateWithTime(b.fecha, b.horaInicio) - getDateWithTime(a.fecha, a.horaInicio));
 
-  const cancelledAppointments = (appointments || [])
-    .filter((appt) => appt.estado === 'CANCELADO')
-    .filter((appt) => {
-      // Aplica el filtro de rango de fechas (AND)
-      if (!startDate && !endDate) return true;
-      const apptDate = new Date(appt.fecha);
-      if (startDate && apptDate < startDate) return false;
-      if (endDate && apptDate > endDate) return false;
-      return true;
-    });
+  const cancelledAppointments = filterByDateRange(
+    (appointments || []).filter((appt) => {
+      return appt.estado === 'CANCELADO' && appt.cuentaActiva;
+    })
+  ).sort((a, b) => getDateWithTime(b.fecha, b.horaInicio) - getDateWithTime(a.fecha, a.horaInicio));
 
-  // Definir clases condicionales basadas en colorScheme
-  const containerClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-800';
-  const cardClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-700'; // Card background
-  const textClass = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200'; // Main text color
-  const secondaryTextClass = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-400'; // Secondary text color
-  const primaryButtonClass = colorScheme === 'light' ? 'bg-blue-600' : 'bg-blue-700'; // Primary button background
-  const linkClass = colorScheme === 'light' ? 'text-blue-600' : 'text-blue-400'; // Link text color
+  // ==================== CLASES COMPLETAS ====================
+  // Contenedores
+  const screenContainerClass = "flex-1 bg-transparent"; // Respeta el fondo de la app
+  const scrollContainerClass = "p-5 bg-transparent";
+  const contentContainerClass = colorScheme === 'light'
+    ? 'bg-white border border-gray-200 shadow-md'
+    : 'bg-gray-700 border border-gray-600 shadow-lg';
 
+  // Textos
+  const textPrimaryClass = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-100';
+  const textSecondaryClass = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-300';
+  const textAccentClass = colorScheme === 'light' ? 'text-blue-600' : 'text-blue-400';
+  const textWhiteClass = 'text-white';
+
+
+  const selectedButtonBg = colorScheme === 'light' ? 'bg-blue-600' : 'bg-blue-700';
+  const selectedButtonText = colorScheme === 'light' ? 'text-white' : 'text-gray-200';
+
+
+  // Botones
+  const buttonPrimaryClass = colorScheme === 'light'
+    ? 'bg-blue-600'
+    : 'bg-blue-500';
+
+  const buttonSecondaryClass = colorScheme === 'light'
+    ? 'border border-blue-600 bg-transparent'
+    : 'border border-blue-400 bg-transparent';
+
+  // Modal
+  const modalOverlayClass = 'flex-1 bg-black/50 justify-center items-center';
+
+  const modalContainerClass = colorScheme === 'light'
+    ? 'bg-white rounded-xl p-6 w-[90%]'
+    : 'bg-gray-700 rounded-xl p-6 w-[90%]';
 
 
   return (
-    <AppContainer navigation={navigation} screenTitle={t('appointments.title')}>
-      <ScrollView className={`p-5 ${containerClass}`}>
-        <View className={`rounded-lg p-4 mb-4 shadow-md ${cardClass}`}>
+    <AppContainer navigation={navigation} screenTitle={t('appointments.Mytitle')} className={screenContainerClass}>
+      <ScrollView className={scrollContainerClass}>
+        {/* Contenedor principal */}
+        <View className={`rounded-lg p-4 mb-4 ${contentContainerClass}`}>
+
+          {/* Header */}
           <View className="flex-row justify-between items-center mb-4">
-            <Text className={`text-lg font-semibold ${textClass}`}>{t('appointments.title')}</Text>
-            <FilterButton onPress={() => setShowFilterModal(true)} />
+            <Text className={`text-lg font-semibold ${textPrimaryClass}`}>{t('appointments.Mytitle')}</Text>
+            <FilterButton
+              onPress={() => setShowFilterModal(true)}
+              className={`${selectedButtonBg} rounded-full px-4 py-2.5 ml-2 flex-row items-center`}
+              textClassName={`${selectedButtonText} font-semibold text-sm`}
+              iconColor="#FFFFFF"
+            />
           </View>
+
+          {/* Filtro activo */}
           {(startDate || endDate) && (
             <View className="mb-2">
-              <Text className="text-blue-600 text-sm">
-                {`Filtrando por: ${startDate ? startDate.toLocaleDateString('es') : '-'}${endDate ? ' al ' + endDate.toLocaleDateString('es') : ''}`}
+              <Text className={`text-sm ${textAccentClass}`}>
+                Filtrando por: {startDate ? startDate.toLocaleDateString(i18n.language) : '-'}
+                {endDate ? t('filter.till') + ' ' + endDate.toLocaleDateString(i18n.language) : ''}
               </Text>
             </View>
           )}
+
+          {/* Pestañas */}
           <View className="mb-4 flex-row justify-between" style={{ width: '100%' }}>
             <TabButton
-              label="Próximos"
+              label={t('appointments.tabs.upcoming')}
               isActive={activeTab === 'upcoming'}
-              colorScheme={colorScheme}
               onPress={() => setActiveTab('upcoming')}
-            />
-            <TabButton
-              label="Pasados"
-              isActive={activeTab === 'past'}
               colorScheme={colorScheme}
-              onPress={() => setActiveTab('past')}
             />
             <TabButton
-              label="Cancelados"
+              label={t('appointments.tabs.past')}
+              isActive={activeTab === 'past'}
+              onPress={() => setActiveTab('past')}
+              colorScheme={colorScheme}
+            />
+            <TabButton
+              label={t('appointments.tabs.cancelled')}
               isActive={activeTab === 'cancelled'}
               onPress={() => setActiveTab('cancelled')}
               colorScheme={colorScheme}
             />
           </View>
+
+          {/* Contenido dinámico */}
           {status === 'loading' ? (
-            <Text className="text-sm text-gray-600">{t('appointments.loading')}</Text>
+            <Text className={`text-sm ${textSecondaryClass}`}>{t('global.alert.loading')}</Text>
           ) : activeTab === 'upcoming' ? (
             upcomingAppointments.length > 0 ? (
-              upcomingAppointments.map((appt, index) => (
-                <AppointmentCard
-                  key={index}
-                  day={new Date(appt.fecha).toLocaleDateString('es', { weekday: 'short', day: 'numeric', month: 'short' })}
-                  time={`${appt.horaInicio} - ${appt.horaFin}`}
-                  doctor={
-                    appt.doctorInfo
-                      ? `${appt.doctorInfo.nombre} ${appt.doctorInfo.apellido}`
-                      : appt.doctorNombre
-                        ? appt.doctorNombre
-                        : appt.doctorId
-                          ? `Dr. ${appt.doctorId}`
-                          : ''
-                  }
-                  specialty={appt.especialidadInfo?.descripcion || ''}
-                  status={appt.estado}
-                  onCancel={() => alert(t('appointments.cancel_alert'))}
-                  onConfirm={appt.estado === 'PENDIENTE' ? () => dispatch(confirmAppointment(appt.id)) : undefined}
-                  colorScheme={colorScheme}
-                />
-              ))
-            ) : (
-              <Text className="text-sm text-gray-600">{t('appointments.no_upcoming')}</Text>
-            )
-          ) : activeTab === 'past' ? (
-            pastAppointments.length > 0 ? (
-              pastAppointments.map((appt, index) => (
-                <View key={index} className="mb-6">
-                  <AppointmentCard
-                    day={new Date(appt.fecha).toLocaleDateString('es', { day: 'numeric', month: 'short' })}
+              upcomingAppointments.map((appt) => (
+                <View key={appt.id} className="mb-4">
+                  <AppointmentCardFullWidth
+                    day={new Date(appt.fecha).toLocaleDateString(i18n.language, {
+                      weekday: 'short',
+                      day: 'numeric',
+                      month: 'short',
+                    })}
                     time={`${appt.horaInicio} - ${appt.horaFin}`}
-                    doctor={appt.doctorNombre ? appt.doctorNombre : appt.doctorId ? `Dr. ${appt.doctorId}` : ''}
-                    specialty={appt.especialidad || appt.specialty || ''}
+                    doctor={`${appt.doctorInfo.nombre} ${appt.doctorInfo.apellido}`}
+                    specialty={appt.especialidadInfo.descripcion}
                     status={appt.estado}
+                    onPress={() => navigation.navigate('AppointmentDetail', { appointment: appt })}
                     colorScheme={colorScheme}
                   />
-                  <TouchableOpacity
-                    className="border border-blue-600 rounded-lg p-2 flex-row justify-center"
-                    onPress={() => navigation.navigate('MedicalNotes', { appointmentId: appt.id })}
-                  >
-                    <Text className="text-blue-600 text-sm">{t('appointments.view_medical_notes')}</Text>
-                  </TouchableOpacity>
                 </View>
               ))
             ) : (
-              <Text className="text-sm text-gray-600">{t('appointments.no_past')}</Text>
+              <Text className={`text-sm ${textSecondaryClass}`}>{t('appointments.alerts.no_upcoming')}</Text>
+            )
+          ) : activeTab === 'past' ? (
+            pastAppointments.length > 0 ? (
+              pastAppointments.map((appt) => (
+                <View key={appt.id} className="mb-4">
+                  <AppointmentCardFullWidth
+                    day={new Date(appt.fecha).toLocaleDateString(i18n.language, {
+                      day: 'numeric',
+                      month: 'short',
+                    })}
+                    time={`${appt.horaInicio} - ${appt.horaFin}`}
+                    doctor={`${appt.doctorInfo.nombre} ${appt.doctorInfo.apellido}`}
+                    specialty={appt.especialidadInfo.descripcion}
+                    status={appt.estado}
+                    onPress={() => navigation.navigate('MedicalNotes', { appointment: appt })}
+                    colorScheme={colorScheme}
+                  />
+                </View>
+              ))
+            ) : (
+              <Text className={`text-sm ${textSecondaryClass}`}>{t('appointments.alerts.no_past')}</Text>
             )
           ) : cancelledAppointments.length > 0 ? (
-            cancelledAppointments.map((appt, index) => (
-              <View key={index} className="mb-6">
-                <AppointmentCard
-                  day={new Date(appt.fecha).toLocaleDateString('es', { day: 'numeric', month: 'short' })}
+            cancelledAppointments.map((appt) => (
+              <View key={appt.id} className="mb-4">
+                <AppointmentCardFullWidth
+                  day={new Date(appt.fecha).toLocaleDateString(i18n.language, {
+                    weekday: 'short',
+                    day: 'numeric',
+                    month: 'short',
+                  })}
                   time={`${appt.horaInicio} - ${appt.horaFin}`}
-                  doctor={appt.doctorNombre ? appt.doctorNombre : appt.doctorId ? `Dr. ${appt.doctorId}` : ''}
-                  specialty={appt.especialidad || appt.specialty || ''}
-                  status="cancelled"
+                  doctor={`${appt.doctorInfo.nombre} ${appt.doctorInfo.apellido}`}
+                  specialty={appt.especialidadInfo.descripcion}
+                  status={appt.estado}
+                  onPress={() => navigation.navigate('AppointmentDetail', { appointment: appt })}
                   colorScheme={colorScheme}
                 />
               </View>
             ))
           ) : (
-            <Text className="text-sm text-gray-600">{t('appointments.no_cancelled')}</Text>
+            <Text className={`text-sm ${textSecondaryClass}`}>{t('appointments.alerts.no_cancelled')}</Text>
           )}
         </View>
       </ScrollView>
 
-      {/* Modal para filtrar por rango de fechas */}
-      <Modal
-        visible={showFilterModal}
-        animationType="slide"
-        transparent
-        onRequestClose={() => setShowFilterModal(false)}
-      >
-        <Pressable onPress={Keyboard.dismiss} style={{ flex: 1 }}>
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: 'rgba(0,0,0,0.2)',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
+      {/* Modal de filtro */}
+      {showFilterModal && (
+        <BlurView intensity={50} tint="dark" className="flex-1 justify-center items-center" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
+          <Modal
+            visible={showFilterModal}
+            animationType="slide"
+            transparent
+            onRequestClose={() => setShowFilterModal(false)}
           >
-            <KeyboardAvoidingView
-              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-              style={{ width: '90%' }}
-            >
-              <View style={{
- backgroundColor: colorScheme === 'light' ? '#fff' : '#374151', // gray-700
- borderRadius: 16,
- padding: 20,
-              }}>
- <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 20, color: colorScheme === 'light' ? '#1F2937' : '#E5E7EB' }}>
-                  {t('appointments.filter_dates.filter_title')}
-                </Text>
-
-                <View style={{ marginBottom: 20 }}>
- <Text style={{ color: colorScheme === 'light' ? '#1F2937' : '#E5E7EB', fontWeight: 'bold', marginBottom: 10 }}>
-                    {t('appointments.filter_dates.filter_range')}
+            <Pressable onPress={Keyboard.dismiss} className={modalOverlayClass} style={{ flex: 1 }}>
+              <KeyboardAvoidingView
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                className="w-full items-center"
+              >
+                <View className={modalContainerClass}>
+                  <Text className={`text-lg font-bold mb-5 ${textPrimaryClass}`}>
+                    {t('filter.filter_dates.filter_by_date')}
                   </Text>
-
                   <AppointmentsCalendar
+                    selectedDate={startDate}
+                    endDate={endDate}
                     onSelectDate={handleSelectDate}
+                    colorScheme={colorScheme}
                   />
 
-                  <View
-                    style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}
-                  >
-                    <Text style={{ color: '#2563EB' }}>
- {startDate ? `${t('appointments.filter_dates.start')}: ${startDate.toLocaleDateString('es')}` : `${t('appointments.filter_dates.start')}: -`}
+                  <View className="flex-row justify-between mt-3">
+                    <Text className={textAccentClass}>
+                      {startDate
+                        ? `${t('filter.filter_dates.start')}: ${startDate.toLocaleDateString(i18n.language)}`
+                        : `${t('filter.filter_dates.start')}: -`}
                     </Text>
-                    <Text style={{ color: '#2563EB' }}>
- {endDate ? `${t('appointments.filter_dates.end')}: ${endDate.toLocaleDateString('es')}` : `${t('appointments.filter_dates.end')}: -`}
+                    <Text className={textAccentClass}>
+                      {endDate
+                        ? `${t('filter.filter_dates.end')}: ${endDate.toLocaleDateString(i18n.language)}`
+                        : `${t('filter.filter_dates.end')}: -`}
                     </Text>
                   </View>
-                </View>
 
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: '#2563EB',
- padding: 15,
- borderRadius: 10,
-                    alignItems: 'center',
-                  }}
-                  onPress={() => {
-                    console.log('Aplicar filtro presionado', { startDate, endDate });
- setShowFilterModal(false);
-                  }}
-                >
-                  <Text style={{ color: '#fff', fontWeight: 'bold' }}>{t('appointments.filter_dates.apply_filter')}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{ marginTop: 10, alignItems: 'center' }}
-                  onPress={() => {
-                    console.log('Limpiar filtro presionado');
-                    setStartDate(null);
-                    setEndDate(null);
-                    setShowFilterModal(false);
-                  }}
-                >
-                  <Text style={{ color: '#2563EB', fontWeight: 'bold' }}>{t('appointments.filter_dates.clear_filter')}</Text>
-                </TouchableOpacity>
-              </View>
-            </KeyboardAvoidingView>
-          </View>
-        </Pressable>
-      </Modal>
+                  <TouchableOpacity
+                    className={`${buttonPrimaryClass} py-3 rounded-lg mt-5 items-center`}
+                    onPress={() => setShowFilterModal(false)}
+                  >
+                    <Text className={`text-base font-bold ${textWhiteClass}`}>{t('filter.filter_dates.apply')}</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    className="mt-3 items-center"
+                    onPress={() => {
+                      setStartDate(null);
+                      setEndDate(null);
+                      setShowFilterModal(false);
+                    }}
+                  >
+                    <Text className={`text-sm font-bold ${textAccentClass}`}>{t('filter.filter_dates.clear')}</Text>
+                  </TouchableOpacity>
+                </View>
+              </KeyboardAvoidingView>
+            </Pressable>
+          </Modal>
+        </BlurView>
+      )}
     </AppContainer>
   );
 }
-
-/*
-import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Text, TouchableOpacity, Modal } from 'react-native';
-
-export default function AppointmentsScreen({ navigation }) {
-  const [showFilterModal, setShowFilterModal] = useState(false);
-  const [selectedEspecialidad, setSelectedEspecialidad] = useState(null);
-  const [selectedStars, setSelectedStars] = useState(null);
-
-
-{/!* Modal de filtros *!/}
-<Modal
-  visible={showFilterModal}
-  animationType="slide"
-  transparent
-  onRequestClose={() => setShowFilterModal(false)}
->
-  <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.2)', justifyContent: 'center', alignItems: 'center' }}>
-    <View style={{ backgroundColor: '#fff', borderRadius: 16, padding: 20, width: '90%' }}>
-      <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 10 }}>Filtrar por especialidad</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator style={{ marginBottom: 10 }}>
-        {['Clínica', 'Pediatría', 'Cardiología', 'Dermatología', 'Traumatología', 'Oftalmología', 'Ginecología', 'Neurología'].map((esp, idx) => (
-          <TouchableOpacity
-            key={esp}
-            style={{
-              padding: 10,
-              backgroundColor: selectedEspecialidad === esp ? '#2563EB' : '#E5E7EB',
-              borderRadius: 20,
-              marginRight: 10,
-            }}
-            onPress={() => setSelectedEspecialidad(esp)}
-          >
-            <Text style={{ color: selectedEspecialidad === esp ? '#fff' : '#1F2937' }}>{esp}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-      <View style={{ height: 2, backgroundColor: '#2563EB', marginBottom: 20 }} />
-
-      <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 10 }}>Filtrar por estrellas</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator>
-        {[1, 2, 3, 4, 5].map((star) => (
-          <TouchableOpacity
-            key={star}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              padding: 10,
-              backgroundColor: selectedStars === star ? '#2563EB' : '#E5E7EB',
-              borderRadius: 20,
-              marginRight: 10,
-            }}
-            onPress={() => setSelectedStars(star)}
-          >
-            <Text style={{ color: selectedStars === star ? '#fff' : '#1F2937', marginRight: 5 }}>{star}</Text>
-            {/!* Puedes usar tu icono de estrella aquí *!/}
-            <Text style={{ color: selectedStars === star ? '#FFD700' : '#A0AEC0' }}>★</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-      <View style={{ height: 2, backgroundColor: '#2563EB', marginVertical: 20 }} />
-
-      <TouchableOpacity
-        style={{
-          backgroundColor: '#2563EB',
-          padding: 15,
-          borderRadius: 10,
-          alignItems: 'center',
-        }}
-        onPress={() => setShowFilterModal(false)}
-      >
-        <Text style={{ color: '#fff', fontWeight: 'bold' }}>Aplicar filtros</Text>
-      </TouchableOpacity>
-    </View>
-  </View>
-</Modal>
-</AppContainer>*/
