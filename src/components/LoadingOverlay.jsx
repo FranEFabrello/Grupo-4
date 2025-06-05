@@ -5,7 +5,7 @@ import * as Animatable from 'react-native-animatable';
 import { useAppTheme } from "~/providers/ThemeProvider";
 const { width } = Dimensions.get('window');
 
-import Fontisto from '@expo/vector-icons/Fontisto';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const BASE_SCALE = 2.5;
 const SIZE = width * 0.3 * BASE_SCALE;
@@ -59,7 +59,7 @@ export default function LoadingOverlay() {
             useNativeDriver
             style={styles.pulse}
           >
-            <Fontisto name="heart-alt" size={LOGO_SIZE * 0.9} color={blueTones[i]} />
+            <Ionicons name="heart-outline" size={LOGO_SIZE * 0.9} color={blueTones[i]} />
           </Animatable.View>
         ))}
 
