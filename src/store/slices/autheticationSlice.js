@@ -75,6 +75,28 @@ export const logout = createAsyncThunk(
   }
 );
 
+// Nuevo thunk para cargar el token almacenado
+export const loadStoredToken = createAsyncThunk(
+  'auth/loadStoredToken',
+  async (_, { dispatch }) => {
+    try {
+      let token = null;
+      if (Platform.OS === 'web' || Platform.OS === 'ios' || Platform.OS === 'android') {
+        token = await AsyncStorage.getItem('userToken');
+      } else {
+        token = await SecureStore.getItemAsync('userToken');
+      }
+      if (token) {
+        dispatch(setToken(token));
+      }
+      return token;
+    } catch (error) {
+      console.error('Error al cargar el token:', error);
+      return null;
+    }
+  }
+);
+
 // Slice
 const authenticationSlice = createSlice({
   name: 'auth',

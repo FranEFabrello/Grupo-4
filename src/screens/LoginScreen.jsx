@@ -10,7 +10,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { useDispatch } from 'react-redux';
-import { authenticate } from '~/store/slices/autheticationSlice';
+import { authenticate, fetchUserByToken, actualizarFcmToken } from '~/store/slices/autheticationSlice';
 import { useTranslation } from 'react-i18next';
 import LoadingOverlay from "~/components/LoadingOverlay";
 import { useAppTheme } from "~/providers/ThemeProvider";
@@ -33,24 +33,47 @@ export default function LoginScreen({ navigation }) {
     : 'bg-white text-black placeholder-gray-500 border-gray-300';
   const textColor = isDark ? 'text-white' : 'text-gray-800';
 
-  const handleLogin = () => {
-    Keyboard.dismiss();
-    setIsLoading(true);
-    dispatch(authenticate({ email, password }))
-      .unwrap()
-      .then(async (user) => {
-        navigation.navigate('Home');
-        const token = await registerForPushNotificationsAsync();
-        await dispatch(fetchUserByToken()).unwrap().then(usuario => {
-          dispatch(actualizarFcmToken({ id: usuario.id, token }));
-        });
-      })
-      .catch((error) => {
-        console.log('Error de autenticación:', error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+  const handleLogin = async () => {
+    try {
+      Keyboard.dismiss();
+      setIsLoading(true);
+
+      // 1. Autenticamos al usuario
+      const user = await dispatch(authenticate({ email, password })).unwrap();
+      console.log('Usuario autenticado:', user);
+
+      // 2. Navegamos a Home
+      navigation.navigate('Home');
+
+      // 3. Obtenemos el token de notificaciones
+      const token = await registerForPushNotificationsAsync();
+      if (!token) {
+        console.log('No se pudo obtener el token de notificaciones');
+        return;
+      }
+      console.log('Token de notificaciones obtenido:', token);
+
+      // 4. Obtenemos los datos del usuario
+      const usuario = await dispatch(fetchUserByToken()).unwrap();
+      if (!usuario || !usuario.id) {
+        console.log('No se pudo obtener la información del usuario');
+        return;
+      }
+      console.log('Datos del usuario obtenidos:', usuario);
+
+      // 5. Actualizamos el token FCM
+      await dispatch(actualizarFcmToken({
+        id: usuario.id,
+        token: token.data ?? token // dependiendo de la estructura que devuelva registerForPushNotificationsAsync
+      })).unwrap();
+      console.log('Token FCM actualizado exitosamente');
+
+    } catch (error) {
+      console.error('Error en el proceso de login:', error);
+      // Podés mostrar un toast o modal acá si querés
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleRegister = () => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider, useDispatch } from 'react-redux';
@@ -7,12 +7,15 @@ import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform, StatusBar } from "react-native";
 import api from '~/api/api';
+import * as Notifications from 'expo-notifications';
+import { registerForPushNotificationsAsync, sendPushTokenToBackend, handleNotification, handleNotificationResponse } from '~/services/notifications';
 
 import AppNavigator from '~/navigation/AppNavigator';
 import store from '~/store';
-import { setToken } from '~/store/slices/authSlice';
-import ToastProvider from '~/components/ToastProvider';
+import { setToken, loadStoredToken } from '~/store/slices/authSlice';
+import ToastProvider from '~/components/ToastProvider'; // Importa el nuevo componente
 import * as Notifications from 'expo-notifications';
+
 
 import './global.css';
 import './src/i18n';
@@ -82,6 +85,8 @@ function AppWrapper() {
   const [isReady, setIsReady] = useState(false);
   const [expoPushToken, setExpoPushToken] = useState('');
   const dispatch = useDispatch();
+  const notificationListener = useRef();
+  const responseListener = useRef();
 
   useEffect(() => {
     const prepareApp = async () => {
@@ -132,6 +137,29 @@ function AppWrapper() {
     });*/
 
 
+  }, []);
+
+  useEffect(() => {
+    dispatch(loadStoredToken());
+  }, [dispatch]);
+
+  useEffect(() => {
+    // Inicializar notificaciones
+    registerForPushNotificationsAsync().then(token => {
+      if (token) {
+        sendPushTokenToBackend(token);
+      }
+    });
+
+    // Configurar listeners de notificaciones
+    notificationListener.current = Notifications.addNotificationReceivedListener(handleNotification);
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(handleNotificationResponse);
+
+    // Limpiar listeners al desmontar
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
   }, []);
 
   const onLayoutRootView = useCallback(async () => {
