@@ -4,7 +4,7 @@
     "slug": "my-expo-app",
     "version": "1.0.0",
     "web": {
-      "favicon": "./assets/logo.png"
+      "favicon": "~/assets/logo.png"
     },
     "experiments": {
       "tsconfigPaths": true

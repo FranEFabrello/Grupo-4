@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, View, Text, TouchableOpacity, Pressable, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
 import AppointmentsCalendar from './AppointmentsCalendar';
 import { useTranslation } from 'react-i18next';
-import { useColorScheme } from 'react-native';
+import { useAppTheme } from '~/providers/ThemeProvider';
 
 export default function DateRangeFilterModal({
                                                visible,
@@ -19,7 +19,7 @@ export default function DateRangeFilterModal({
                                              }) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language.startsWith('es') ? 'es' : 'en';
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useAppTheme();
 
   // Theme variables
   const primaryText = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';

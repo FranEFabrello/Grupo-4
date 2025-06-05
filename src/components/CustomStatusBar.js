@@ -1,11 +1,11 @@
 import React from 'react';
 import { Platform, StatusBar as RNStatusBar } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { useColorScheme } from "nativewind";
+import { useAppTheme } from "~/providers/ThemeProvider";
 
 export default function CustomStatusBar() {
 
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useAppTheme();
   const darkMode = colorScheme === 'dark'
 
 

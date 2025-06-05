@@ -17,10 +17,10 @@ import { register } from '~/store/slices/autheticationSlice';
 import { uploadImageToFirebase } from "~/api/FirebaseConfig";
 import { useTranslation } from 'react-i18next';
 import { Picker } from '@react-native-picker/picker';
-import { useColorScheme } from 'react-native';
+import { useAppTheme } from '~/providers/ThemeProvider';
 
 export default function RegisterScreen({ navigation }) {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useAppTheme();
   // Paso y estados de campos
   const [step, setStep] = useState(1);
   const [nombre, setNombre] = useState('');

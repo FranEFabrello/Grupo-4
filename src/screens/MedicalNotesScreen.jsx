@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Alert, Linking } from 'react-native';
-import { useColorScheme } from 'react-native';
+import { useAppTheme } from '~/providers/ThemeProvider';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AppContainer from '../components/AppContainer';
 import { useTranslation } from 'react-i18next';
@@ -8,7 +8,7 @@ import '../i18n'; // Import your i18n configuration
 
 export default function MedicalNotesScreen({ route, navigation }) {
   const { appointment } = route.params;
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useAppTheme();
 
   const containerClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-800';
   const textClass = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';

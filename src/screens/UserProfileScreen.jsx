@@ -8,7 +8,7 @@ import AppContainer from '../components/AppContainer';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Picker } from '@react-native-picker/picker';
 import { useTranslation } from 'react-i18next';
-import { useColorScheme } from 'react-native';
+import { useAppTheme } from '~/providers/ThemeProvider';
 import { Image } from 'react-native';
 import { useEffect } from 'react';
 import * as ImagePicker from 'expo-image-picker';
@@ -20,7 +20,7 @@ import { showToast } from '~/components/ToastProvider';
 export default function UserProfileScreen({ navigation }) {
   const dispatch = useDispatch();
   const insets = useSafeAreaInsets();
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useAppTheme();
   const { t } = useTranslation();
 
   const [nombre, setNombre] = useState('');

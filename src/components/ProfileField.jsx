@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { useColorScheme } from 'react-native';
+import { useAppTheme } from '~/providers/ThemeProvider';
 import { useTranslation } from 'react-i18next';
 
 export default function ProfileField({
@@ -15,7 +15,7 @@ export default function ProfileField({
                                        labelClassName,
                                        valueClassName,
                                      }) {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useAppTheme();
   const { t } = useTranslation();
 
   // Theme variables

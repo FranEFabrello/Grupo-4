@@ -2,11 +2,11 @@ import React from 'react';
 import { ScrollView, View, Text, Linking } from 'react-native';
 import AppContainer from '~/components/AppContainer';
 import { useTranslation } from 'react-i18next';
-import { useColorScheme } from 'react-native';
+import { useAppTheme } from '~/providers/ThemeProvider';
 
 export default function SecurityPolicyScreen({ navigation }) {
   const { t } = useTranslation();
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useAppTheme();
 
   // Theme variables
   const containerBg = colorScheme === 'light' ? 'bg-gray-50' : 'bg-gray-800';

@@ -8,6 +8,7 @@ import DoctorCard from "../components/DoctorCard";
 import FilterButton from "../components/FilterButton";
 import { useTranslation } from 'react-i18next';
 import { fetchProfessionals } from "~/store/slices/professionalsSlice";
+import { useAppTheme } from "~/providers/ThemeProvider";
 
 export default function ProfessionalsScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -18,7 +19,7 @@ export default function ProfessionalsScreen({ navigation }) {
   const [selectedEspecialidades, setSelectedEspecialidades] = useState([]);
   const { t } = useTranslation();
   const especialidades = useSelector((state) => state.medicalSpecialities.specialities);
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useAppTheme();
 
   // Theme variables
   const containerBg = colorScheme === 'light' ? 'bg-white' : 'bg-gray-600';

@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { validarTokenCambioContrasenia } from '~/store/slices/tokenSlice';
 import { solicitarCambioContrasenia, cambiarContrasenia } from '~/store/slices/userSlice';
 import { useTranslation } from 'react-i18next';
-import { useColorScheme } from 'react-native';
+import { useAppTheme } from '~/providers/ThemeProvider';
 
 const ChangePasswordScreen = ({navigation}) => {
   const [correo, setCorreo] = useState('');
@@ -15,7 +15,7 @@ const ChangePasswordScreen = ({navigation}) => {
   const [solicitudEnviada, setSolicitudEnviada] = useState(false);
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useAppTheme();
   const isDark = colorScheme === 'dark';
   const [mostrarError, setMostrarError] = useState(false);
 

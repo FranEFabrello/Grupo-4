@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { useColorScheme } from 'react-native';
+import { useAppTheme } from '~/providers/ThemeProvider';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AppContainer from '../components/AppContainer';
 import { rescheduleAppointment, cancelAppointment } from "~/store/slices/appointmentsSlice";
@@ -20,7 +20,7 @@ function parseLocalDate(fechaStr) {
 
 export default function AppointmentDetailScreen({ route, navigation }) {
   const dispatch = useDispatch();
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useAppTheme();
   const { status, error } = useSelector((state) => state.appointments);
   const { t, i18n } = useTranslation();
 

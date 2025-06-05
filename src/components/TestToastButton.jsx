@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, StyleSheet, Pressable, Text, useColorScheme } from 'react-native';
-import { showToast } from '~/components/ToastProvider'; // ajustá si la ruta es distinta
+import { showToast } from '~/components/ToastProvider';
+import { useAppTheme } from "~/providers/ThemeProvider"; // ajustá si la ruta es distinta
 
 export default function TestToastButton() {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useAppTheme();
 
   const buttonStyle = (bgColor) => [
     styles.buttonBase,

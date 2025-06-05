@@ -7,7 +7,7 @@ import AppointmentCard from '../components/AppointmentCard';
 import FilterButton from '../components/FilterButton';
 import DateRangeFilterModal from '../components/DateRangeFilterModal';
 import { useTranslation } from 'react-i18next';
-import { useColorScheme } from 'react-native';
+import { useAppTheme } from '~/providers/ThemeProvider';
 import {showToast} from "~/components/ToastProvider";
 import {Platform, Linking } from 'react-native';
 
@@ -15,7 +15,7 @@ export default function ResultsScreen({ navigation }) {
   const dispatch = useDispatch();
   const { results, status } = useSelector((state) => state.results);
   const { t } = useTranslation();
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useAppTheme();
 
   // Theme variables
   const containerBg = colorScheme === 'light' ? 'bg-white' : 'bg-gray-700';

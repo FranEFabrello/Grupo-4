@@ -1,12 +1,12 @@
 import React from 'react';
-import { SafeAreaView, View, useColorScheme } from 'react-native';
+import { SafeAreaView, View } from 'react-native';
 import AppFooter from './AppFooter';
 import AppHeader from './AppHeader';
-import { useSelector } from "react-redux";
+import { useAppTheme } from "~/providers/ThemeProvider";
+
 
 export default function AppContainer({ children, navigation, screenTitle }) {
-  const modoOscuro = useSelector(state => state.user.modoOscuro);
-  const colorScheme = modoOscuro ? 'dark' : 'light';
+  const { colorScheme } = useAppTheme();
   const bgClass = colorScheme === 'dark' ? 'bg-darkBackground' : 'bg-lightBackground';
 
   return (

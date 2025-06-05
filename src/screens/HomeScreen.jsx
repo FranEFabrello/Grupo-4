@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { useColorScheme } from 'react-native';
 import { fetchProfessionals } from '~/store/slices/professionalsSlice';
 import { fetchUserByToken } from "~/store/slices/userSlice";
 import { fetchAppointments } from '~/store/slices/appointmentsSlice';
@@ -14,10 +13,11 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import TestToastButton from "~/components/TestToastButton";
+import { useAppTheme} from "~/providers/ThemeProvider";
 
 export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useAppTheme();
   const { status: appointmentsStatus } = useSelector((state) => state.appointments);
   const appointments = useSelector((state) => state.appointments.appointmentsByUser);
   const { professionals, status: professionalsStatus } = useSelector((state) => state.professionals);

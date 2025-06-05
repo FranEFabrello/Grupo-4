@@ -5,7 +5,7 @@ import { fetchInsurance } from "~/store/slices/insuranceSlice";
 import AppContainer from '../components/AppContainer';
 import ProfileField from '../components/ProfileField';
 import { useTranslation } from 'react-i18next';
-import { useColorScheme } from 'react-native';
+import { useAppTheme } from '~/providers/ThemeProvider';
 import '../i18n'; // Import your i18n configuration
 
 
@@ -15,7 +15,7 @@ export default function InsuranceScreen({ navigation }) {
   const insurance = useSelector((state) => state.insurance.insurance);
   const usuario = useSelector((state) => state.user.usuario);
   const { t, i18n } = useTranslation();
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useAppTheme();
 
   // Theme variables
   const containerBg = colorScheme === 'light' ? 'bg-white' : 'bg-gray-700';

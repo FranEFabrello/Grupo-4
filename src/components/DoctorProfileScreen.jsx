@@ -7,7 +7,6 @@ import { fetchProfessionals } from '~/store/slices/professionalsSlice';
 import { fetchSpecialities } from '~/store/slices/medicalSpecialitiesSlice';
 import { useTranslation } from 'react-i18next';
 
-
 export default function DoctorProfileScreen({ navigation, route }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();

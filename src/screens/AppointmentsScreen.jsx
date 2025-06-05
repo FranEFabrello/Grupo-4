@@ -6,7 +6,7 @@ import AppContainer from '../components/AppContainer';
 import FilterButton from '../components/FilterButton';
 import TabButton from '../components/TabButton';
 import AppointmentsCalendar from '~/components/AppointmentsCalendar';
-import { useColorScheme } from 'react-native';
+import { useAppTheme } from '~/providers/ThemeProvider';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { useTranslation } from 'react-i18next';
@@ -25,7 +25,7 @@ function getDateWithTime(fecha, hora) {
 
 export default function AppointmentsScreen({ navigation }) {
   const dispatch = useDispatch();
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useAppTheme();
   const { status } = useSelector((state) => state.appointments);
   const [activeTab, setActiveTab] = useState('upcoming');
   const appointments = useSelector((state) => state.appointments.appointmentsByUser);
