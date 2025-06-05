@@ -78,27 +78,15 @@ export default function AppointmentDetailScreen({ route, navigation }) {
   const statusConfig = getStatusConfig(appointment.estado);
 
   const handleCancel = () => {
-    Alert.alert(
-      t('appointments.cancel_button'),
-      t('appointments.cancel_confirmation'),
-      [
-        { text: 'No', style: 'cancel' },
-        {
-          text: t('global.button.yes'),
-          onPress: () => {
-            dispatch(cancelAppointment(appointment.id))
-              .unwrap()
-              .then(() => {
-                Alert.alert(t('global.alert.success'), t('appointments.alerts.cancel'));
-                navigation.goBack();
-              })
-              .catch((err) => {
-                Alert.alert('Error', err || t('appointments.alerts.cancel_error'));
-              });
-          },
-        },
-      ]
-    );
+    dispatch(cancelAppointment(appointment.id))
+      .unwrap()
+      .then(() => {
+        Alert.alert(t('global.alert.success'), t('appointments.alerts.cancel'));
+        navigation.goBack();
+      })
+      .catch((err) => {
+        Alert.alert('Error', err || t('appointments.alerts.cancel_error'));
+      });
   };
 
   return (
