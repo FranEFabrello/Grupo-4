@@ -17,7 +17,7 @@ import { useAppTheme} from "~/providers/ThemeProvider";
 
 export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
-  const colorScheme = useAppTheme();
+  const { colorScheme } = useAppTheme();
   const { status: appointmentsStatus } = useSelector((state) => state.appointments);
   const appointments = useSelector((state) => state.appointments.appointmentsByUser);
   const { professionals, status: professionalsStatus } = useSelector((state) => state.professionals);
