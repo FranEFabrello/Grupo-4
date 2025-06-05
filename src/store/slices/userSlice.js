@@ -118,7 +118,9 @@ export const cerrarSesion = createAsyncThunk(
   'user/cerrarSesion',
   async (usuarioId, { rejectWithValue }) => {
     try {
-      const response = await api.post(`/cerrarSesion`, { usuarioId });
+      console.log('Payload enviado al backend:',  usuarioId);
+      const response = await api.patch(`/Usuario/cerrarSesion`, { usuarioId });
+      console.log("Respuesta de cerrar sesión:", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al cerrar la sesión');

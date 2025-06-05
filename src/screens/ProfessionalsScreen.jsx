@@ -61,6 +61,11 @@ export default function ProfessionalsScreen({ navigation }) {
         : true,
     );
 
+
+  useEffect(() => {
+    console.log('professionals in screen:', professionals);
+  }, []);
+
   return (
     <AppContainer navigation={navigation} screenTitle={t('professionals.title')}>
       <ScrollView className="p-5">
@@ -122,6 +127,7 @@ export default function ProfessionalsScreen({ navigation }) {
                   }
                   stars={prof.calificacionPromedio > 0 ? prof.calificacionPromedio : null}
                   noRating={prof.calificacionPromedio === 0}
+                  imageUrl={prof.urlImagenDoctor}
                   onBook={() =>
                     navigation.navigate("BookAppointment", {
                       professionalId: prof.id,

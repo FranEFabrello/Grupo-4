@@ -11,6 +11,11 @@ import { useTranslation } from 'react-i18next';
 import { useAppTheme } from '~/providers/ThemeProvider';
 import { Image } from 'react-native';
 import { useEffect } from 'react';
+import * as ImagePicker from 'expo-image-picker';
+import { uploadImageToFirebase } from "~/api/FirebaseConfig";
+import { logout } from "~/store/slices/authSlice";
+import { showToast } from '~/components/ToastProvider';
+
 
 export default function UserProfileScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -23,10 +28,12 @@ export default function UserProfileScreen({ navigation }) {
   const [dni, setDni] = useState('');
   const [celular, setCelular] = useState('');
   const [genero, setGenero] = useState('');
+  const [urlImagenPerfil, SetUrlImagenPerfil] = useState('');
   const [editable, setEditable] = useState(false);
 
   const { status, error } = useSelector((state) => state.user);
   const usuario = useSelector((state) => state.user.usuario);
+  const user=useSelector((state) => state.user);
 
   // Theme variables
   const containerBg = colorScheme === 'light' ? 'bg-white' : 'bg-gray-700';
@@ -65,7 +72,11 @@ export default function UserProfileScreen({ navigation }) {
     }
 
     if (!usuario || !usuario.correo) {
-      alert(t('user_profile.alerts.not_identified'));
+      showToast(
+        'error',
+        t('user_profile.alerts.not_identified_title'),
+        t('user_profile.alerts.not_identified')
+      );
       return;
     }
 
@@ -78,24 +89,125 @@ export default function UserProfileScreen({ navigation }) {
 
     if (Object.keys(updates).length === 0) {
       setEditable(false);
-      alert(t('user_profile.alerts.no_changes'));
+      showToast(
+        'info',
+        t('user_profile.alerts.no_changes_title'),
+        t('user_profile.alerts.no_changes')
+      );
       return;
     }
 
-    dispatch(updateProfile({ correo: usuario.correo, updates }))
+    dispatch(updateProfile(updates))
       .unwrap()
       .then(() => {
-        alert(t('user_profile.alerts.updated'));
+        showToast(
+          'success',
+          t('user_profile.alerts.updated_title'),
+          t('user_profile.alerts.updated')
+        );
         setEditable(false);
       })
-      .catch(() => alert(t('user_profile.alerts.update_error')));
+      .catch(() => {
+        showToast(
+          'error',
+          t('user_profile.alerts.update_error_title'),
+          t('user_profile.alerts.update_error')
+        );
+      });
   };
 
-  const handleLogout = () => {
-    if (usuario && usuario.correo) {
-      dispatch(cerrarSesion({ correo: usuario.correo }));
+  const handleLogout = async () => {
+    const userForLogout = {
+      nombre: '',
+      apellido: '',
+      correo: '',
+      urlimagenperfil: '',
+      idioma: 'es',
+      celular: '',
+      cuentaActiva: null,
+      dni: '',
+      edad: '',
+      fcmToken: '',
+      fechaNacimiento: '',
+      genero: '',
+      id: '',
+      obraSocialId: '',
+      sesionActiva: null
+    };
+
+    // Limpiar AsyncStorage
+    try {
+      const AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
+      await AsyncStorage.clear();
+    } catch (e) {
+      console.warn('No se pudo limpiar AsyncStorage:', e);
+    }
+
+    // Limpiar usuario en redux
+    console.log('isAuthenticated antes de logout:', user?.isAuthenticated);
+    dispatch(logout());
+    console.log('isAuthenticated después de logout:', user?.isAuthenticated);
+
+// Reiniciar el stack de navegación y llevar a Welcome
+    navigation.navigate('Welcome')
+
+// Cerrar sesión en backend si corresponde
+    dispatch({ type: 'user/setIsAuthenticated', payload: false });
+    if (usuario && usuario.id) {
+      dispatch(cerrarSesion(usuario.id));
     } else {
       dispatch(cerrarSesion());
+    }
+  };
+
+  const pickImage = async () => {
+    try {
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permissionResult.granted) {
+        shotToast(
+          'error',
+          t('global-alert.denied_access_title'),
+          t('global.alert.denied_access')
+        );
+        return;
+      }
+
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.5,
+      });
+
+      await handleImageChange(result);
+    } catch (error) {
+      console.error('Error al seleccionar la imagen:', error);
+      showToast('error','Error', t('global.alert.no_selected_image'));
+    }
+  };
+
+  const handleImageChange = async (imageResult) => {
+    try {
+      if (!imageResult.canceled) {
+        const imageUri = imageResult.assets[0].uri;
+        const url = await uploadImageToFirebase(imageUri);
+        SetUrlImagenPerfil(url);
+
+        if (usuario && usuario.correo) {
+          console.log("entrado a updateProfile para la imagen: ", url, imageUri);
+          dispatch(updateProfile({ urlimagenperfil: url }))
+            .unwrap()
+            .then(() => {
+              showToast('success', t('user_profile.alerts.updated_title'), t('user_profile.alerts.updated'));
+            })
+            .catch(() => {
+              showToast('error', 'Error', t('user_profile.alerts.update_error'));
+            });
+        }
+      }
+    } catch (error) {
+      console.error("Error al subir imagen de perfil:", error);
+      showToast('error', 'Error', t('global.alert.no_selected_image'));
     }
   };
 
@@ -114,18 +226,48 @@ export default function UserProfileScreen({ navigation }) {
         ) : usuario ? (
           <>
             <View className="items-center mb-4">
-              <View className={`w-24 h-24 ${avatarBg} rounded-full justify-center items-center overflow-hidden mb-2`}>
-                {usuario.urlimagenperfil ? (
-                  <Image
-                    source={{ uri: usuario.urlimagenperfil }}
-                    className="w-full h-full"
-                    resizeMode="cover"
-                    onError={() => console.log(t('user_profile.alerts.no_img'))}
-                  />
-                ) : (
-                  <Icon name="user" size={40} color={colorScheme === 'light' ? '#4a6fa5' : '#60a5fa'} />
-                )}
-              </View>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={{ position: 'relative' }}
+                onPress={pickImage}
+                accessibilityLabel={t('user_profile.buttons.edit_avatar')}
+              >
+                <View className={`w-24 h-24 ${avatarBg} rounded-full justify-center items-center overflow-hidden mb-2`}>
+                  {usuario.urlimagenperfil ? (
+                    <Image
+                      source={{ uri: usuario.urlimagenperfil }}
+                      className="w-full h-full"
+                      resizeMode="cover"
+                      onError={() => console.log(t('user_profile.alerts.no_img'))}
+                    />
+                  ) : (
+                    <Icon
+                      name="user-circle"
+                      size={96}
+                      color={colorScheme === 'light' ? '#2563EB' : '#1E40AF'}
+                      style={{ backgroundColor: '#000' }}
+                    />
+                  )}
+                </View>
+                {/* Icono de lápiz sobresaliendo abajo a la derecha */}
+                <View style={{
+                  position: 'absolute',
+                  right: 0,
+                  bottom: 0,
+                  zIndex: 2,
+                }}>
+                  <View
+                    style={{
+                      backgroundColor: colorScheme === 'light' ? '#2563EB' : '#1E40AF',
+                      borderRadius: 20,
+                      padding: 6,
+                      elevation: 2,
+                    }}
+                  >
+                    <Icon name="pencil-alt" size={18} color="#fff" />
+                  </View>
+                </View>
+              </TouchableOpacity>
               <Text className={`text-lg font-semibold ${primaryText}`}>{`${nombre} ${apellido}`}</Text>
               <Text className={`text-sm ${secondaryText}`}>{usuario.correo}</Text>
             </View>

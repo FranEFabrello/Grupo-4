@@ -33,7 +33,7 @@ export default function InsuranceScreen({ navigation }) {
   }, [dispatch, usuario?.obraSocialId]);
 
   return (
-    <AppContainer navigation={navigation} screenTitle="Obra Social">
+    <AppContainer navigation={navigation} screenTitle={t('insurance.screen_title')}>
       <ScrollView className="p-5">
         <View className={`${containerBg} rounded-xl p-4 mb-4 shadow-md`}>
           <Text className={`text-lg font-semibold ${primaryText} mb-4`}>{t('insurance.section_title')}</Text>
@@ -41,8 +41,6 @@ export default function InsuranceScreen({ navigation }) {
             <Text className={`text-sm ${secondaryText}`}>{t('global.alert.loading')}</Text>
           ) : insurance ? (
             <>
-              <ProfileField label={t('insurance.fields.plan')} value={insurance.plan} />
-              <ProfileField label={t('insurance.fields.type')} value={insurance.tipoObraSocial} />
               <ProfileField
                 label={t('insurance.fields.plan')}
                 value={insurance.plan}

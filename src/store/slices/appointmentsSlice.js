@@ -63,6 +63,17 @@ export const rescheduleAppointment = createAsyncThunk(
   }
 );
 
+// Cancelar un turno
+export const cancelAppointment = createAsyncThunk(
+  'appointments/cancelAppointment',
+  async (appointmentId) => {
+    console.log('Cancelando turno con ID:', appointmentId);
+    const response = await api.patch(`/turnos/cancelar/${appointmentId}`);
+    console.log('Respuesta de cancelar turno:', response.data);
+    return response.data;
+  }
+);
+
 
 const appointmentsSlice = createSlice({
   name: 'appointments',

@@ -8,6 +8,8 @@ import FilterButton from '../components/FilterButton';
 import DateRangeFilterModal from '../components/DateRangeFilterModal';
 import { useTranslation } from 'react-i18next';
 import { useAppTheme } from '~/providers/ThemeProvider';
+import {showToast} from "~/components/ToastProvider";
+import {Platform, Linking } from 'react-native';
 
 export default function ResultsScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -107,15 +109,58 @@ export default function ResultsScreen({ navigation }) {
                 <Text className={`text-sm ${secondaryText} mb-1`}>
                   {t('results.info.test_name')} {result.nombreEstudio || '-'}
                 </Text>
-                <Text className={`text-sm ${secondaryText} mb-1`}>
-                  Link: {result.linkEstudio}
-                </Text>
-                <TouchableOpacity
-                  className={`${selectedButtonBg} rounded-lg py-2 flex-row justify-center mt-2`}
-                  onPress={() => alert(t('medical_note.alert.download_alert') + `${result.linkEstudio}`)}
-                >
-                  <Text className={`${selectedButtonText} text-sm font-semibold`}>{t('results.download.button')}</Text>
-                </TouchableOpacity>
+                {result.linkEstudio ? (
+                  <TouchableOpacity
+                    className={`${selectedButtonBg} rounded-lg py-2 flex-row justify-center items-center mt-2`}
+                    onPress={async () => {
+                      try {
+                        const url = result.linkEstudio;
+                        if (!url) {
+                          throw new Error(t('results.download.empty') || 'No hay enlace disponible.');
+                        }
+
+                        if (Platform.OS === 'web') {
+                          // Web: Forzar descarga real con <a download>
+                          const link = document.createElement('a');
+                          link.href = url;
+                          link.setAttribute('download', ''); // Forzar descarga con el nombre por defecto
+                          link.setAttribute('target', '_blank');
+                          document.body.appendChild(link);
+                          link.click();
+                          document.body.removeChild(link);
+                        } else {
+                          // Móvil: abrir en navegador o app correspondiente
+                          const supported = await Linking.canOpenURL(url);
+                          if (!supported) {
+                            throw new Error('No se puede abrir este enlace en el dispositivo.');
+                          }
+                          await Linking.openURL(url);
+                        }
+
+                        showToast(
+                          'success',
+                          t('results.download.success_title') || 'Descarga iniciada',
+                          t('results.download.success_message') || 'El archivo se abrió correctamente.'
+                        );
+                      } catch (error) {
+                        console.error(error);
+                        showToast(
+                          'error',
+                          t('results.download.error_title') || 'Error al abrir archivo',
+                          error.message || t('results.download.error_message') || 'No se pudo abrir el archivo.'
+                        );
+                      }
+                    }}
+                  >
+                    <Text className={`${selectedButtonText} text-sm font-semibold`}>
+                      {t('results.download.button') || 'Descargar'}
+                    </Text>
+                  </TouchableOpacity>
+                ) : (
+                  <Text className={`text-sm italic ${secondaryText}`}>
+                    {t('results.download.empty') || 'No se adjuntó ningún archivo.'}
+                  </Text>
+                )}
               </View>
             ))
           ) : (

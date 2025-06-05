@@ -75,6 +75,7 @@ export default function AppointmentsScreen({ navigation }) {
     })
   ).sort((a, b) => getDateWithTime(a.fecha, a.horaInicio) - getDateWithTime(b.fecha, b.horaInicio));
 
+
   const pastAppointments = filterByDateRange(
     (appointments || []).filter((appt) => {
       if (!appt.horaFin) return false;
@@ -234,7 +235,10 @@ export default function AppointmentsScreen({ navigation }) {
                   doctor={`${appt.doctorInfo.nombre} ${appt.doctorInfo.apellido}`}
                   specialty={appt.especialidadInfo.descripcion}
                   status={appt.estado}
-                  onPress={() => navigation.navigate('AppointmentDetail', { appointment: appt })}
+                  onPress={() => {
+                    console.log('Turno seleccionado ID:', appt.id);
+                    navigation.navigate('AppointmentDetail', { appointment: appt });
+                  }}
                   colorScheme={colorScheme}
                 />
               </View>

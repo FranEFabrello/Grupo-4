@@ -15,11 +15,32 @@ export default function ProfileScreen({ navigation }) {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { colorScheme, setTheme } = useAppTheme(); // Usa el contexto del tema
-  const user = useSelector(state => state.user.usuario);
+
+  const userForLogout = {
+    nombre: '',
+    apellido: '',
+    correo: '',
+    urlimagenperfil: '',
+    idioma: 'es',
+    celular: '',
+    cuentaActiva: null,
+    dni: '',
+    edad:'',
+    fcmToken: '',
+    fechaNacimiento: '',
+    genero:'',
+    id: '',
+    obraSocialId: '',
+    sesionActiva: null
+  };
+
+  const user = useSelector(state => state.user.usuario) || userForLogout;
   const dispatch = useDispatch();
 
   const [showSettingsModal, setShowSettingsModal] = React.useState(false);
   const [selectedLanguage, setSelectedLanguage] = React.useState('es');
+
+
 
   // Cargar idioma al iniciar
   useEffect(() => {
@@ -69,7 +90,7 @@ export default function ProfileScreen({ navigation }) {
         >
           <View className="flex-row items-center">
             <View className="w-14 h-14 rounded-full overflow-hidden justify-center items-center bg-gray-500">
-              {user.urlimagenperfil ? (
+              {user && user.urlimagenperfil ? (
                 <Image
                   source={{ uri: user.urlimagenperfil }}
                   className="w-full h-full"
@@ -77,7 +98,12 @@ export default function ProfileScreen({ navigation }) {
                   onError={() => console.log(t('user_profile.alerts.no_img'))}
                 />
               ) : (
-                <Icon name="user-circle" size={56} color={iconColor} />
+                <Icon
+                  name="user-circle"
+                  size={96}
+                  color={colorScheme === 'light' ? '#2563EB' : '#1E40AF'}
+                  style={{ backgroundColor: '#000' }}
+                />
               )}
             </View>
             <View className="ml-2">
