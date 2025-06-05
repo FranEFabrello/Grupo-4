@@ -12,9 +12,9 @@ import { useColorScheme } from 'react-native';
 import { Image } from 'react-native';
 import { useEffect } from 'react';
 import * as ImagePicker from 'expo-image-picker';
-import { Alert } from 'react-native';
 import { uploadImageToFirebase } from "~/api/FirebaseConfig";
 import { logout } from "~/store/slices/authSlice";
+import { showToast } from '~/components/ToastProvider';
 
 
 export default function UserProfileScreen({ navigation }) {
@@ -72,7 +72,11 @@ export default function UserProfileScreen({ navigation }) {
     }
 
     if (!usuario || !usuario.correo) {
-      alert(t('user_profile.alerts.not_identified'));
+      showToast(
+        'error',
+        t('user_profile.alerts.not_identified_title'),
+        t('user_profile.alerts.not_identified')
+      );
       return;
     }
 
@@ -85,17 +89,31 @@ export default function UserProfileScreen({ navigation }) {
 
     if (Object.keys(updates).length === 0) {
       setEditable(false);
-      alert(t('user_profile.alerts.no_changes'));
+      showToast(
+        'info',
+        t('user_profile.alerts.no_changes_title'),
+        t('user_profile.alerts.no_changes')
+      );
       return;
     }
 
-    dispatch(updateProfile( updates ))
+    dispatch(updateProfile(updates))
       .unwrap()
       .then(() => {
-        alert(t('user_profile.alerts.updated'));
+        showToast(
+          'success',
+          t('user_profile.alerts.updated_title'),
+          t('user_profile.alerts.updated')
+        );
         setEditable(false);
       })
-      .catch(() => alert(t('user_profile.alerts.update_error')));
+      .catch(() => {
+        showToast(
+          'error',
+          t('user_profile.alerts.update_error_title'),
+          t('user_profile.alerts.update_error')
+        );
+      });
   };
 
   const handleLogout = async () => {
@@ -146,7 +164,11 @@ export default function UserProfileScreen({ navigation }) {
     try {
       const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (!permissionResult.granted) {
-        Alert.alert(t('global.alert.denied_access'), t('global.alert.denied_access_message'));
+        shotToast(
+          'error',
+          t('global-alert.denied_access_title'),
+          t('global.alert.denied_access')
+        );
         return;
       }
 
@@ -160,7 +182,7 @@ export default function UserProfileScreen({ navigation }) {
       await handleImageChange(result);
     } catch (error) {
       console.error('Error al seleccionar la imagen:', error);
-      Alert.alert('Error', t('global.alert.no_selected_image'));
+      showToast('error','Error', t('global.alert.no_selected_image'));
     }
   };
 
@@ -172,20 +194,20 @@ export default function UserProfileScreen({ navigation }) {
         SetUrlImagenPerfil(url);
 
         if (usuario && usuario.correo) {
-          console.log("entrado a updateProfile para la imagen: ", url, imageUri)
+          console.log("entrado a updateProfile para la imagen: ", url, imageUri);
           dispatch(updateProfile({ urlimagenperfil: url }))
             .unwrap()
             .then(() => {
-              alert(t('user_profile.alerts.updated'));
+              showToast('success', t('user_profile.alerts.updated_title'), t('user_profile.alerts.updated'));
             })
-            .catch(() => Alert.alert('Error', t('user_profile.alerts.update_error')));
+            .catch(() => {
+              showToast('error', 'Error', t('user_profile.alerts.update_error'));
+            });
         }
-
-        console.log('URL de la imagen subida:', url);
       }
     } catch (error) {
-      console.error('Error al procesar la imagen:', error);
-      Alert.alert('Error', 'No se pudo subir la imagen. Por favor, intenta de nuevo.');
+      console.error("Error al subir imagen de perfil:", error);
+      showToast('error', 'Error', t('global.alert.no_selected_image'));
     }
   };
 

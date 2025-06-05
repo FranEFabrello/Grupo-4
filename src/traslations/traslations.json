@@ -650,21 +650,45 @@
       }
     },
     "alerts": {
+      "not_identified_title": {
+        "es": "Usuario no identificado",
+        "en": "User not identified"
+      },
       "not_identified": {
         "es": "No se pudo identificar al usuario.",
         "en": "User could not be identified."
       },
+      "no_changes_title": {
+        "es": "Sin cambios",
+        "en": "No changes"
+      },
       "no_changes": {
-        "es": "No se hicieron cambios.",
+        "es": "No se realizaron cambios.",
         "en": "No changes made."
       },
-      "updated": {
+      "updated_title": {
         "es": "Información actualizada",
         "en": "Information updated"
       },
+      "updated": {
+        "es": "Información actualizada de manera correcta",
+        "en": "Information updated successfully"
+      },
+      "update_error_title": {
+        "es": "Error al atualizar",
+        "en": "Error in updating"
+      },
       "update_error": {
-        "es": "Error al actualizar la información",
-        "en": "Error updating information"
+        "es": "Hubo un problema al actualizar la información.",
+        "en": "There was a problem updating the information."
+      },
+      "denied_access_title": {
+        "es": "Permiso denegado",
+        "en": "Permission denied"
+      },
+      "denied_access": {
+          "es": "Se necesitan permisos especiales para acceder a la galería.",
+          "en": "Special permissions are required to access the gallery."
       },
       "no_img": {
         "es": "Error al cargar la imagen de perfil",
