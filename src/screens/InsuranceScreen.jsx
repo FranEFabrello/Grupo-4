@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, ScrollView, Text, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { useColorScheme } from 'react-native';
 import { fetchInsurance } from "~/store/slices/insuranceSlice";
 import AppContainer from '../components/AppContainer';
 import ProfileField from '../components/ProfileField';
@@ -11,7 +10,6 @@ import '../i18n'; // Import your i18n configuration
 
 
 export default function InsuranceScreen({ navigation }) {
-  const colorScheme = useColorScheme(); // Detecta el tema del sistema
   const dispatch = useDispatch();
   const { status } = useSelector((state) => state.insurance);
   const insurance = useSelector((state) => state.insurance.insurance);
@@ -35,7 +33,7 @@ export default function InsuranceScreen({ navigation }) {
   }, [dispatch, usuario?.obraSocialId]);
 
   return (
-    <AppContainer navigation={navigation} screenTitle="Obra Social">
+    <AppContainer navigation={navigation} screenTitle={t('insurance.screen_title')}>
       <ScrollView className="p-5">
         <View className={`${containerBg} rounded-xl p-4 mb-4 shadow-md`}>
           <Text className={`text-lg font-semibold ${primaryText} mb-4`}>{t('insurance.section_title')}</Text>
@@ -43,8 +41,6 @@ export default function InsuranceScreen({ navigation }) {
             <Text className={`text-sm ${secondaryText}`}>{t('global.alert.loading')}</Text>
           ) : insurance ? (
             <>
-              <ProfileField label={t('insurance.fields.plan')} value={insurance.plan} />
-              <ProfileField label={t('insurance.fields.type')} value={insurance.tipoObraSocial} />
               <ProfileField
                 label={t('insurance.fields.plan')}
                 value={insurance.plan}
