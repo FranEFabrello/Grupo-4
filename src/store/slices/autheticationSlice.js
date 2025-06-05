@@ -137,4 +137,4 @@ const authenticationSlice = createSlice({
 });
 
 export const { setToken } = authenticationSlice.actions;
-export default authenticationSlice.reducer;git status
+export default authenticationSlice.reducer;
