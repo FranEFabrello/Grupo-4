@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "~/api/api";
-import { create } from "axios";
 
 // Thunks para las operaciones asincrónicas
 export const fetchUsuarios = createAsyncThunk(
