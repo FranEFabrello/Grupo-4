@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { View, Text, FlatList, ActivityIndicator, TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
 import AppContainer from '../components/AppContainer';
-import { fetchNotificaciones, marcarNotificacionLeida } from "~/store/slices/notificationSlice";
+import { fetchNotificaciones, marcarNotificacionLeida, markAsRead } from "~/store/slices/notificationSlice";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useTranslation } from 'react-i18next';
@@ -16,6 +16,10 @@ const NotificationsScreen = ({ navigation }) => {
   const [selectedNotificationId, setSelectedNotificationId] = React.useState(null);
   const { t } = useTranslation();
   const { colorScheme } = useAppTheme();
+
+  const [notificacion, setNotificacion] = React.useState([]);
+
+
 
   // Theme variables
   const containerBg = colorScheme === 'light' ? 'bg-gray-50' : 'bg-gray-800';
@@ -35,15 +39,29 @@ const NotificationsScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (usuarioId) {
-      dispatch(fetchNotificaciones(usuarioId));
+      dispatch(fetchNotificaciones(usuarioId)).then((action) => {
+        if (action.payload) {
+          setNotificacion(action.payload);
+        }
+      });
     }
   }, [dispatch, usuarioId]);
 
-  console.log('notificaciones en screen:', notificaciones);
-
-  const marcarNotificacionLeidaHandler = (id) => {
-    dispatch(marcarNotificacionLeida(id));
-    setSelectedNotificationId(null);
+  const marcarNotificacionLeidaHandler = async (id) => {
+    try {
+      const result = await dispatch(marcarNotificacionLeida(id));
+      if (!result.error) {
+        setSelectedNotificationId(null);
+        setNotificacion(prev =>
+          prev.map(n =>
+            n.id === id ? { ...n, estado: "LEÍDA" } : n
+          )
+        );
+        dispatch(markAsRead(id));
+      }
+    } finally {
+      setSelectedNotificationId(null);
+    }
   };
 
   return (
@@ -53,7 +71,7 @@ const NotificationsScreen = ({ navigation }) => {
         {error && <Text className={`${errorText} mb-4`}>{error}</Text>}
         {!loading && !error && (
           <FlatList
-            data={notificaciones}
+            data={notificacion}
             keyExtractor={item => item.id?.toString()}
             renderItem={({ item }) => (
               <View className={`${cardBg} rounded-xl p-3 mb-4 shadow-sm flex-row items-center`}>

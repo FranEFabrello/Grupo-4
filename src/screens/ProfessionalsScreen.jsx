@@ -9,6 +9,7 @@ import FilterButton from "../components/FilterButton";
 import { useTranslation } from 'react-i18next';
 import { fetchProfessionals } from "~/store/slices/professionalsSlice";
 import { useAppTheme } from "~/providers/ThemeProvider";
+import DoctorCardForProf from "~/components/DoctorCardForProf";
 
 export default function ProfessionalsScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -37,8 +38,10 @@ export default function ProfessionalsScreen({ navigation }) {
   const starInactiveColor = colorScheme === 'light' ? 'text-gray-400' : 'text-gray-300';
 
   useEffect(() => {
-    if (professionals.length && especialidades.length) {
+    if (!professionals.length) {
       dispatch(fetchProfessionals());
+    }
+    if (!especialidades.length) {
       dispatch(fetchSpecialities());
     }
   }, [dispatch, professionals.length, especialidades.length]);
@@ -115,7 +118,7 @@ export default function ProfessionalsScreen({ navigation }) {
           ) : filteredProfessionals.length > 0 ? (
             <View className="flex-row flex-wrap justify-between gap-y-4">
               {filteredProfessionals.map((prof) => (
-                <DoctorCard
+                <DoctorCardForProf
                   key={prof.id}
                   name={`${prof.nombre} ${prof.apellido}`}
                   specialty={

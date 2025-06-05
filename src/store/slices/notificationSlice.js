@@ -15,7 +15,7 @@ export const marcarNotificacionLeida = createAsyncThunk(
   'notifications/marcarNotificacionLeida',
   async (notificacionId, { rejectWithValue }) => {
     try {
-      await api.patch(`/notificaciones/${notificacionId}/leida`);
+      await api.patch(`/notificaciones/${notificacionId}/leer`);
       return notificacionId;
     } catch (error) {
       return rejectWithValue(error.message || 'Error al marcar como leída');
@@ -30,8 +30,23 @@ const notificationSlice = createSlice({
     notificaciones: [],
     loading: false,
     error: null,
+    unreadCount: 0,
   },
-  reducers: {},
+  reducers: {
+    setNotifications(state, action) {
+      state.notifications = action.payload;
+      state.unreadCount = action.payload.filter(n => !n.leida).length;
+    },
+    markAsRead(state, action) {
+      const id = action.payload;
+      const notif = state.notificaciones.find(n => n.id === id);
+      if (notif && !notif.leida) {
+        notif.leida = true;
+        state.unreadCount -= 1;
+        if (state.unreadCount < 0) state.unreadCount = 0;
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchNotificaciones.pending, (state) => {
@@ -41,6 +56,8 @@ const notificationSlice = createSlice({
       .addCase(fetchNotificaciones.fulfilled, (state, action) => {
         state.loading = false;
         state.notificaciones = action.payload;
+        //cuento la cantidad N notificaciones no leidas
+        state.unreadCount = action.payload.filter(n => n.estado === "NO_LEÍDA").length;
       })
       .addCase(fetchNotificaciones.rejected, (state, action) => {
         state.loading = false;
@@ -49,4 +66,5 @@ const notificationSlice = createSlice({
   },
 });
 
+export const { setNotifications, markAsRead } = notificationSlice.actions;
 export default notificationSlice.reducer;
