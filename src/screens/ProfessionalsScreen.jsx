@@ -36,9 +36,11 @@ export default function ProfessionalsScreen({ navigation }) {
   const starInactiveColor = colorScheme === 'light' ? 'text-gray-400' : 'text-gray-300';
 
   useEffect(() => {
-    dispatch(fetchProfessionals());
-    dispatch(fetchSpecialities());
-  }, [dispatch]);
+    if (professionals.length && especialidades.length) {
+      dispatch(fetchProfessionals());
+      dispatch(fetchSpecialities());
+    }
+  }, [dispatch, professionals.length, especialidades.length]);
 
   const [especialidadSearchQuery, setEspecialidadSearchQuery] = useState("");
 
@@ -60,10 +62,6 @@ export default function ProfessionalsScreen({ navigation }) {
         : true,
     );
 
-
-  useEffect(() => {
-    console.log('professionals in screen:', professionals);
-  }, []);
 
   return (
     <AppContainer navigation={navigation} screenTitle={t('professionals.title')}>
