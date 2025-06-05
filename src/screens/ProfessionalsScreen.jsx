@@ -60,6 +60,11 @@ export default function ProfessionalsScreen({ navigation }) {
         : true,
     );
 
+
+  useEffect(() => {
+    console.log('professionals in screen:', professionals);
+  }, []);
+
   return (
     <AppContainer navigation={navigation} screenTitle={t('professionals.title')}>
       <ScrollView className="p-5">
