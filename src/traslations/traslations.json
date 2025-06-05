@@ -560,6 +560,18 @@
       "alert": {
         "es": "Descargando {{file}}",
         "en": "Downloading {{file}}"
+      },
+      "success_title": {
+        "es": "¡Descarga exitosa!",
+        "en": "Successful download!"
+      },
+      "success_message": {
+        "es": "Los resultados se descargaron correctamente.",
+        "en": "The results were downloaded successfully."
+      },
+      "error_title": {
+        "es": "Ha surgido un error en la descarga, por favor intente nuevamente más tarde",
+        "en": "There has been an error while downloading, please do try again later."
       }
     },
     "info": {
