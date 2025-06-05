@@ -19,6 +19,7 @@ import './src/i18n';
 import CustomStatusBar from "~/components/CustomStatusBar";
 
 import 'react-native-gesture-handler';
+import { ThemeProvider } from '~/providers/ThemeProvider';
 
 
 SplashScreen.preventAutoHideAsync();
@@ -125,10 +126,13 @@ function AppWrapper() {
 
 export default function App() {
   return (
+
     <Provider store={store}>
+      <ThemeProvider>
       <SafeAreaProvider>
         <AppWrapper />
       </SafeAreaProvider>
+      </ThemeProvider>
     </Provider>
   );
 }

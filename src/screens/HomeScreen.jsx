@@ -32,13 +32,21 @@ export default function HomeScreen({ navigation }) {
     }
     if (!usuario) {
       dispatch(fetchUserByToken()).then((action) => {
-        const usuarioId = action.payload?.id;
+        const usuarioData = action.payload;
+        const usuarioId = usuarioData?.id;
         if (usuarioId) {
           dispatch(fetchAppointments(usuarioId));
+          if (typeof usuarioData?.settings?.modoOscuro === 'boolean') {
+            dispatch({ type: 'user/setModoOscuro', payload: usuarioData.settings.modoOscuro });
+          }
+          console.log('Modo oscuro establecido desde fetchUserByToken:', usuarioData?.settings?.modoOscuro);
         }
       });
     } else if (usuario.id) {
       dispatch(fetchAppointments(usuario.id));
+      if (typeof usuario.settings?.modoOscuro === 'boolean') {
+        dispatch({ type: 'user/setModoOscuro', payload: usuario.settings.modoOscuro });
+      }
     }
     if (specialities.length === 0) {
       dispatch(fetchSpecialities());

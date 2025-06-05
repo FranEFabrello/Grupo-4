@@ -20,14 +20,15 @@ export const fetchUserByToken = createAsyncThunk(
   'user/fetchUserByToken',
   async (_, { rejectWithValue }) => {
     try {
-      const token = await AsyncStorage.getItem('bearerToken');
-      //console.log('Token obtenido de AsyncStorage:', token);
+      // Cambia la clave a 'userToken' para que coincida con el resto de la app
+      const token = await AsyncStorage.getItem('userToken');
+      console.log('Token obtenido de AsyncStorage:', token);
       const response = await api.get('Usuario/usuario/info', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      //console.log('Respuesta de /usuario/info:', response.data);
+      console.log('Respuesta de /usuario/info:', response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al obtener el usuario por token');
@@ -173,6 +174,7 @@ const userSlice = createSlice({
       state.usuario = null;
     },
     setModoOscuro(state, action) {
+      state.modoOscuro = action.payload;
       if (state.usuario) {
         state.usuario.modoOscuro = action.payload;
       }

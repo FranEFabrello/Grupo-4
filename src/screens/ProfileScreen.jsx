@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { View, ScrollView, Text, Pressable, TouchableOpacity, Animated } from "react-native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AppContainer from '../components/AppContainer';
@@ -6,27 +6,23 @@ import QuickActions from '../components/QuickActions';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useTranslation } from 'react-i18next';
 import Modal from 'react-native-modal';
-import { useColorScheme } from 'react-native';
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { actualizarConfiguraciones } from "~/store/slices/userSlice";
-import { useDispatch } from "react-redux";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as SecureStore from 'expo-secure-store';
-import {useEffect} from "react";
 import { Image } from 'react-native';
+import { useAppTheme } from '~/providers/ThemeProvider'; // Importa el contexto del tema
 
 export default function ProfileScreen({ navigation }) {
   const insets = useSafeAreaInsets();
-  const colorScheme = useColorScheme();
   const { t } = useTranslation();
-
-  const [showSettingsModal, setShowSettingsModal] = React.useState(false);
-  const [selectedTheme, setSelectedTheme] = React.useState('light');
-  const [selectedLanguage, setSelectedLanguage] = React.useState('es');
+  const { colorScheme, setTheme } = useAppTheme(); // Usa el contexto del tema
   const user = useSelector(state => state.user.usuario);
   const dispatch = useDispatch();
 
+  const [showSettingsModal, setShowSettingsModal] = React.useState(false);
+  const [selectedLanguage, setSelectedLanguage] = React.useState('es');
 
+  // Cargar idioma al iniciar
   useEffect(() => {
     (async () => {
       const lang = await AsyncStorage.getItem('language');
@@ -38,24 +34,13 @@ export default function ProfileScreen({ navigation }) {
     })();
   }, [user]);
 
-  // Cargar configuraciones guardadas al iniciar
-  useEffect(() => {
-    (async () => {
-      const theme = await AsyncStorage.getItem('theme');
-      const lang = await AsyncStorage.getItem('language');
-      if (theme) setSelectedTheme(theme);
-      if (lang) setSelectedLanguage(lang);
-    })();
-  }, []);
-
-  // Guardar configuraciones cuando cambian
+  // Guardar configuraciones de idioma
   const saveSettings = async () => {
-    await AsyncStorage.setItem('theme', selectedTheme);
     await AsyncStorage.setItem('language', selectedLanguage);
     setShowSettingsModal(false);
   };
 
-  // Theme variables
+  // Theme variables usando colorScheme del ThemeProvider
   const containerBg = colorScheme === 'light' ? 'bg-white' : 'bg-gray-600';
   const modalBg = colorScheme === 'light' ? 'bg-white' : 'bg-gray-800';
   const primaryText = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
@@ -87,7 +72,6 @@ export default function ProfileScreen({ navigation }) {
           className={`flex-row justify-between items-center ${containerBg} rounded-xl p-4 mb-4 shadow-md`}
           android_ripple={{ color: '#e2e8f0' }}
         >
-          {/* Bloque izquierdo: ícono + saludo + correo */}
           <View className="flex-row items-center">
             <View className="w-14 h-14 rounded-full overflow-hidden justify-center items-center bg-gray-500">
               {user.urlimagenperfil ? (
@@ -110,11 +94,12 @@ export default function ProfileScreen({ navigation }) {
               </Text>
             </View>
           </View>
-
-          {/* Botón Ver perfil */}
           <View className="flex-row items-center gap-x-2">
             <Icon name="eye" size={16} color={actionIconColor} />
-            <Text className={`text-sm font-medium ${primaryText}`}style={{ color: colorScheme === 'light' ? '#2563EB' : '#fff' }}>
+            <Text
+              className={`text-sm font-medium ${primaryText}`}
+              style={{ color: colorScheme === 'light' ? '#2563EB' : '#fff' }}
+            >
               {t('profile.view_profile')}
             </Text>
           </View>
@@ -152,7 +137,7 @@ export default function ProfileScreen({ navigation }) {
         </View>
       </ScrollView>
 
-      {/* Modal de configuración como una opción más */}
+      {/* Modal de configuración */}
       {showSettingsModal && (
         <Pressable
           style={{
@@ -177,9 +162,7 @@ export default function ProfileScreen({ navigation }) {
               elevation: 5,
               transform: [
                 {
-                  translateY: showSettingsModal
-                    ? 0
-                    : 400, // Aparece desde abajo
+                  translateY: showSettingsModal ? 0 : 400,
                 },
               ],
               opacity: showSettingsModal ? 1 : 0,
@@ -189,19 +172,35 @@ export default function ProfileScreen({ navigation }) {
             onStartShouldSetResponder={() => true}
             onResponderStart={e => e.stopPropagation()}
           >
-            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 16, color: colorScheme === 'light' ? '#1F2937' : '#fff' }}>{t('profile.menu.settings.title')}</Text>
-            <Text style={{ fontWeight: 'bold', marginBottom: 8, color: colorScheme === 'light' ? '#1F2937' : '#fff' }}>{t('profile.menu.settings.theme')}</Text>
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: 'bold',
+                marginBottom: 16,
+                color: colorScheme === 'light' ? '#1F2937' : '#fff',
+              }}
+            >
+              {t('profile.menu.settings.title')}
+            </Text>
+            <Text
+              style={{
+                fontWeight: 'bold',
+                marginBottom: 8,
+                color: colorScheme === 'light' ? '#1F2937' : '#fff',
+              }}
+            >
+              {t('profile.menu.settings.theme')}
+            </Text>
             <View style={{ flexDirection: 'row', marginBottom: 16 }}>
               <TouchableOpacity
                 style={{
-                  backgroundColor: selectedTheme === 'light' ? '#2563EB' : (colorScheme === 'light' ? '#E2E8F0' : '#374151'),
+                  backgroundColor: colorScheme === 'light' ? '#2563EB' : (colorScheme === 'light' ? '#E2E8F0' : '#374151'),
                   padding: 10,
                   borderRadius: 6,
                   marginRight: 10,
                 }}
                 onPress={() => {
-                  setSelectedTheme('light');
-                  AsyncStorage.setItem('theme', 'light');
+                  setTheme('light');
                   if (user) {
                     dispatch(actualizarConfiguraciones({ id: user.id, configuraciones: { modoOscuro: false } }));
                     dispatch({ type: 'user/setModoOscuro', payload: false });
@@ -209,21 +208,22 @@ export default function ProfileScreen({ navigation }) {
                   console.log('Tema cambiado a: light');
                 }}
               >
-                <Text style={{
-                  color: selectedTheme === 'light'
-                    ? '#fff'
-                    : (colorScheme === 'dark' ? '#fff' : '#2563EB')
-                }}>{t('profile.menu.settings.theme_light')}</Text>
+                <Text
+                  style={{
+                    color: colorScheme === 'light' ? '#fff' : (colorScheme === 'dark' ? '#fff' : '#2563EB'),
+                  }}
+                >
+                  {t('profile.menu.settings.theme_light')}
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
-                  backgroundColor: selectedTheme === 'dark' ? '#2563EB' : (colorScheme === 'light' ? '#E2E8F0' : '#374151'),
+                  backgroundColor: colorScheme === 'dark' ? '#2563EB' : (colorScheme === 'light' ? '#E2E8F0' : '#374151'),
                   padding: 10,
                   borderRadius: 6,
                 }}
                 onPress={() => {
-                  setSelectedTheme('dark');
-                  AsyncStorage.setItem('theme', 'dark');
+                  setTheme('dark');
                   if (user) {
                     dispatch(actualizarConfiguraciones({ id: user.id, configuraciones: { modoOscuro: true } }));
                     dispatch({ type: 'user/setModoOscuro', payload: true });
@@ -231,14 +231,24 @@ export default function ProfileScreen({ navigation }) {
                   console.log('Tema cambiado a: dark');
                 }}
               >
-                <Text style={{
-                  color: selectedTheme === 'dark'
-                    ? '#fff'
-                    : (colorScheme === 'dark' ? '#fff' : '#2563EB')
-                }}>{t('profile.menu.settings.theme_dark')}</Text>
+                <Text
+                  style={{
+                    color: colorScheme === 'dark' ? '#fff' : (colorScheme === 'dark' ? '#fff' : '#2563EB'),
+                  }}
+                >
+                  {t('profile.menu.settings.theme_dark')}
+                </Text>
               </TouchableOpacity>
             </View>
-            <Text style={{ fontWeight: 'bold', marginBottom: 8, color: colorScheme === 'light' ? '#1F2937' : '#fff' }}>{t('profile.menu.settings.language')}</Text>
+            <Text
+              style={{
+                fontWeight: 'bold',
+                marginBottom: 8,
+                color: colorScheme === 'light' ? '#1F2937' : '#fff',
+              }}
+            >
+              {t('profile.menu.settings.language')}
+            </Text>
             <View style={{ flexDirection: 'row', marginBottom: 24 }}>
               <TouchableOpacity
                 style={{
@@ -258,11 +268,13 @@ export default function ProfileScreen({ navigation }) {
                   }
                 }}
               >
-                <Text style={{
-                  color: selectedLanguage === 'es'
-                    ? '#fff'
-                    : (colorScheme === 'dark' ? '#fff' : '#2563EB')
-                }}>{t('profile.menu.settings.language_es')}</Text>
+                <Text
+                  style={{
+                    color: selectedLanguage === 'es' ? '#fff' : (colorScheme === 'dark' ? '#fff' : '#2563EB'),
+                  }}
+                >
+                  {t('profile.menu.settings.language_es')}
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
@@ -281,11 +293,13 @@ export default function ProfileScreen({ navigation }) {
                   }
                 }}
               >
-                <Text style={{
-                  color: selectedLanguage === 'en'
-                    ? '#fff'
-                    : (colorScheme === 'dark' ? '#fff' : '#2563EB')
-                }}>{t('profile.menu.settings.language_en')}</Text>
+                <Text
+                  style={{
+                    color: selectedLanguage === 'en' ? '#fff' : (colorScheme === 'dark' ? '#fff' : '#2563EB'),
+                  }}
+                >
+                  {t('profile.menu.settings.language_en')}
+                </Text>
               </TouchableOpacity>
             </View>
             <TouchableOpacity

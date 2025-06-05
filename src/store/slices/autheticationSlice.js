@@ -7,7 +7,7 @@ import { Platform } from 'react-native';
 // Función auxiliar para guardar el token
 const saveToken = async (key, value) => {
   try {
-    if (Platform.OS === 'web') {
+    if (Platform.OS === 'web' || Platform.OS === 'ios' || Platform.OS === 'android') {
       await AsyncStorage.setItem(key, value);
     } else {
       await SecureStore.setItemAsync(key, value);
@@ -21,7 +21,7 @@ const saveToken = async (key, value) => {
 // Función auxiliar para eliminar el token
 const removeToken = async () => {
   try {
-    if (Platform.OS === 'web') {
+    if (Platform.OS === 'web' || Platform.OS === 'ios' || Platform.OS === 'android') {
       await AsyncStorage.removeItem('userToken');
     } else {
       await SecureStore.deleteItemAsync('userToken');
@@ -52,6 +52,7 @@ export const authenticate = createAsyncThunk(
       const response = await api.post(`/Auth/authenticate`, authData);
       const token = response.data.access_token;
       if (token) {
+        console.log('Token recibido desde AUTHSLICE:', token);
         await saveToken('userToken', token);
       }
       return response.data;
