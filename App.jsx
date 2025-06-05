@@ -11,7 +11,8 @@ import api from '~/api/api';
 import AppNavigator from '~/navigation/AppNavigator';
 import store from '~/store';
 import { setToken } from '~/store/slices/authSlice';
-import ToastProvider from '~/components/ToastProvider'; // Importa el nuevo componente
+import ToastProvider from '~/components/ToastProvider';
+import * as Notifications from 'expo-notifications';
 
 import './global.css';
 import './src/i18n';
@@ -20,7 +21,7 @@ import CustomStatusBar from "~/components/CustomStatusBar";
 
 import 'react-native-gesture-handler';
 import { ThemeProvider } from '~/providers/ThemeProvider';
-
+import { actualizarFcmToken, guardarSuscripcionWebPush } from "~/store/slices/userSlice";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -79,6 +80,7 @@ const removeToken = async () => {
 
 function AppWrapper() {
   const [isReady, setIsReady] = useState(false);
+  const [expoPushToken, setExpoPushToken] = useState('');
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -104,6 +106,32 @@ function AppWrapper() {
     };
 
     prepareApp();
+
+    /*// Registro de notificaciones push
+    registerForPushNotificationsAsync().then(token => {
+      console.log('Token recibido de registerForPushNotificationsAsync:', token);
+      if (token) {
+        setExpoPushToken(token);
+        // Envía el token FCM al backend
+        if (store.getState().user.usuario?.id) {
+          console.log('Enviando token FCM al backend:', {
+            id: store.getState().user.usuario.id,
+            token
+          });
+          dispatch(actualizarFcmToken({
+            id: store.getState().user.usuario.id,
+            token
+          }));
+        } else {
+          console.log('No hay usuario logueado para asociar el token FCM');
+        }
+      } else {
+        console.log('No se obtuvo token FCM');
+      }
+
+    });*/
+
+
   }, []);
 
   const onLayoutRootView = useCallback(async () => {
@@ -122,6 +150,34 @@ function AppWrapper() {
       </NavigationContainer>
     </ToastProvider>
   );
+}
+
+// Función para registrar notificaciones push
+async function registerForPushNotificationsAsync() {
+  let token;
+  if (Platform.OS === 'android') {
+    await Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.MAX,
+    });
+  }
+
+  const { status: existingStatus } = await Notifications.getPermissionsAsync();
+  let finalStatus = existingStatus;
+
+  if (existingStatus !== 'granted') {
+    const { status } = await Notifications.requestPermissionsAsync();
+    finalStatus = status;
+  }
+
+  if (finalStatus !== 'granted') {
+    alert('No se pudo obtener el permiso para notificaciones push.');
+    return null;
+  }
+
+  token = (await Notifications.getExpoPushTokenAsync()).data;
+  console.log('Expo push token obtenido en registerForPushNotificationsAsync:', token);
+  return token;
 }
 
 export default function App() {

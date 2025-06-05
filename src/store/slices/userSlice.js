@@ -81,7 +81,9 @@ export const actualizarFcmToken = createAsyncThunk(
   'user/actualizarFcmToken',
   async ({ id, token }, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/usuario/${id}/fcm-token`, { token });
+      console.log('ID del usuario, entrando a actualizarFcmToken:', id);
+      const response = await api.put(`/Usuario/usuario/${id}/fcm-token`, { token });
+      console.log('Respuesta de actualizar FCM token: ', response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al actualizar el token FCM');

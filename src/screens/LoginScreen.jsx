@@ -14,6 +14,9 @@ import { authenticate } from '~/store/slices/autheticationSlice';
 import { useTranslation } from 'react-i18next';
 import LoadingOverlay from "~/components/LoadingOverlay";
 import { useAppTheme } from "~/providers/ThemeProvider";
+import { actualizarFcmToken, fetchUserByToken } from "~/store/slices/userSlice";
+import store from "~/store";
+import { registerForPushNotificationsAsync } from "~/api/registerForPushNotificationsAsync";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -35,8 +38,12 @@ export default function LoginScreen({ navigation }) {
     setIsLoading(true);
     dispatch(authenticate({ email, password }))
       .unwrap()
-      .then(() => {
+      .then(async (user) => {
         navigation.navigate('Home');
+        const token = await registerForPushNotificationsAsync();
+        await dispatch(fetchUserByToken()).unwrap().then(usuario => {
+          dispatch(actualizarFcmToken({ id: usuario.id, token }));
+        });
       })
       .catch((error) => {
         console.log('Error de autenticación:', error);
