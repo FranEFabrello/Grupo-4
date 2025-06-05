@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { useColorScheme } from 'react-native';
+import { useAppTheme } from '~/providers/ThemeProvider';
 import '~/i18n'; // Import your i18n configuration
 
 export default function AppointmentsCalendar({ selectedDate, endDate, onSelectDate }) {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useAppTheme();
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);

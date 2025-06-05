@@ -13,6 +13,7 @@ import { useDispatch } from 'react-redux';
 import { authenticate } from '~/store/slices/autheticationSlice';
 import { useTranslation } from 'react-i18next';
 import LoadingOverlay from "~/components/LoadingOverlay";
+import { useAppTheme } from "~/providers/ThemeProvider";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -20,7 +21,7 @@ export default function LoginScreen({ navigation }) {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useAppTheme();
   const isDark = colorScheme === 'dark';
 
   const containerClass = isDark ? 'bg-gray-900' : 'bg-gray-100';

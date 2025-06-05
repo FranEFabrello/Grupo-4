@@ -6,7 +6,7 @@ import { fetchNotificaciones, marcarNotificacionLeida } from "~/store/slices/not
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useTranslation } from 'react-i18next';
-import { useColorScheme } from 'react-native';
+import { useAppTheme } from '~/providers/ThemeProvider';
 
 const NotificationsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -15,7 +15,7 @@ const NotificationsScreen = ({ navigation }) => {
   const usuarioId = useSelector(state => state.user.usuario?.id);
   const [selectedNotificationId, setSelectedNotificationId] = React.useState(null);
   const { t } = useTranslation();
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useAppTheme();
 
   // Theme variables
   const containerBg = colorScheme === 'light' ? 'bg-gray-50' : 'bg-gray-800';

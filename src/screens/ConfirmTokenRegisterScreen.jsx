@@ -6,6 +6,8 @@ import { useTranslation } from 'react-i18next';
 import { Text, View, TextInput, Button, Alert, useColorScheme } from 'react-native';
 import React, { useState } from 'react';
 import { twMerge } from 'tailwind-variants';
+import { useAppTheme } from "~/providers/ThemeProvider";
+
 
 const ConfirmTokenRegisterScreen = ({ route }) => {
   const [token, setToken] = useState('');
@@ -14,7 +16,7 @@ const ConfirmTokenRegisterScreen = ({ route }) => {
   const navigation = useNavigation();
   const tokenState = useSelector((state) => state.tokens);
   const { t } = useTranslation();
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useAppTheme();
   const isDark = colorScheme === 'dark';
 
   const enviarTokenConfirmacion = () => {

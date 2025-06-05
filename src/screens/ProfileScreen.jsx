@@ -5,12 +5,11 @@ import AppContainer from '../components/AppContainer';
 import QuickActions from '../components/QuickActions';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useTranslation } from 'react-i18next';
-import Modal from 'react-native-modal';
 import { useSelector, useDispatch } from "react-redux";
 import { actualizarConfiguraciones } from "~/store/slices/userSlice";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Image } from 'react-native';
-import { useAppTheme } from '~/providers/ThemeProvider'; // Importa el contexto del tema
+import { useAppTheme } from '~/providers/ThemeProvider';
 
 export default function ProfileScreen({ navigation }) {
   const insets = useSafeAreaInsets();
@@ -42,15 +41,11 @@ export default function ProfileScreen({ navigation }) {
 
   // Theme variables usando colorScheme del ThemeProvider
   const containerBg = colorScheme === 'light' ? 'bg-white' : 'bg-gray-600';
-  const modalBg = colorScheme === 'light' ? 'bg-white' : 'bg-gray-800';
   const primaryText = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
   const secondaryText = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-400';
-  const selectedButtonBg = colorScheme === 'light' ? 'bg-blue-500' : 'bg-blue-400';
-  const selectedButtonText = 'text-white';
-  const inactiveButtonBg = colorScheme === 'light' ? 'bg-gray-200' : 'bg-gray-600';
   const iconColor = colorScheme === 'light' ? '#4A5568' : '#9CA3AF';
   const actionIconColor = colorScheme === 'light' ? '#2563EB' : '#60A5FA';
-  const textClass = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
+
 
   const moreActions = [
     { icon: 'user-cog', label: t('profile.menu.edit'), screen: 'UserProfile' },

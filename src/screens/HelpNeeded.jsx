@@ -5,7 +5,7 @@ import { Alert, TextInput, TouchableOpacity, View, Text } from 'react-native';
 import AppContainer from "~/components/AppContainer";
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
-import { useColorScheme } from 'react-native';
+import { useAppTheme } from '~/providers/ThemeProvider';
 
 export default function HelpNeeded() {
   const navigation = useNavigation();
@@ -13,7 +13,7 @@ export default function HelpNeeded() {
   const dispatch = useDispatch();
   const usuario = useSelector(state => state.user.usuario);
   const { t } = useTranslation();
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useAppTheme();
 
   // Theme variables
   const containerBg = colorScheme === 'light' ? 'bg-gray-50' : 'bg-gray-800';

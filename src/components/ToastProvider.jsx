@@ -3,12 +3,12 @@ import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native
 import ToastManager, { Toast } from 'toastify-react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Animated, { Easing, useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
-import { useColorScheme } from 'react-native';
+import { useAppTheme } from '~/providers/ThemeProvider';
 
 
 
 const SuccessToast = ({ text1, text2, hide }) => {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useAppTheme();
   const textColor = colorScheme === 'light' ? styles.textLight : styles.textDark;
   const secondaryText = colorScheme === 'light' ? styles.textSecondaryLight : styles.textSecondaryDark;
 
@@ -26,7 +26,7 @@ const SuccessToast = ({ text1, text2, hide }) => {
 };
 
 const ErrorToast = ({ text1, text2, hide }) => {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useAppTheme();
   const textColor = colorScheme === 'light' ? styles.textLight : styles.textDark;
   const secondaryText = colorScheme === 'light' ? styles.textSecondaryLight : styles.textSecondaryDark;
 
@@ -44,7 +44,7 @@ const ErrorToast = ({ text1, text2, hide }) => {
 };
 
 const InfoToast = ({ text1, text2, hide }) => {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useAppTheme();
   const textColor = colorScheme === 'light' ? styles.textLight : styles.textDark;
   const secondaryText = colorScheme === 'light' ? styles.textSecondaryLight : styles.textSecondaryDark;
 
@@ -65,7 +65,7 @@ const InfoToast = ({ text1, text2, hide }) => {
 // Componente con animación y cierre por toque
 const TouchableToast = ({ children, hide }) => {
   const translateY = useSharedValue(-100);
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useAppTheme();
 
   useEffect(() => {
     translateY.value = withTiming(0, {

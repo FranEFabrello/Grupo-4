@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, useColorScheme } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { useTranslation } from 'react-i18next';
+import { useAppTheme } from "~/providers/ThemeProvider";
 
 export default function WelcomeScreen({ navigation }) {
   const { t } = useTranslation();
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useAppTheme();
 
 
   return (

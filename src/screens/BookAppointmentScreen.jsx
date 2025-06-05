@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Text, TouchableOpacity, ActivityIndicator, Modal, Animated, ToastAndroid } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
-import { useColorScheme } from 'react-native';
+import { useAppTheme } from '~/providers/ThemeProvider';
 import { fetchProfessionals } from "~/store/slices/professionalsSlice";
 import {
   fetchAvailableDays,
@@ -15,11 +15,12 @@ import Calendar from '../components/Calendar';
 import TimeSlot from '../components/TimeSlot';
 import { fetchSpecialities } from "~/store/slices/medicalSpecialitiesSlice";
 import { useTranslation } from "react-i18next";
+import LoadingOverlay from '../components/LoadingOverlay';
 
 export default function BookAppointmentScreen({ navigation, route }) {
   const { professionalId } = route.params || {};
   const dispatch = useDispatch();
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useAppTheme();
   const { t,i18n} = useTranslation();
 
   const professionals = useSelector((state) => state.professionals.professionals);
@@ -280,6 +281,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
               </View>
             </View>
           </Modal>
+          {loading && <LoadingOverlay />}
         </View>
       </Animated.View>
     </AppContainer>

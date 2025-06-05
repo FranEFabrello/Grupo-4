@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Image, StyleSheet, Dimensions } from 'react-native';
 import { BlurView } from 'expo-blur';
 import * as Animatable from 'react-native-animatable';
-import { useColorScheme } from 'nativewind';
+import { useAppTheme } from "~/providers/ThemeProvider";
 const { width } = Dimensions.get('window');
 
 import Fontisto from '@expo/vector-icons/Fontisto';
@@ -33,7 +33,7 @@ const pulseAnimation = {
 const blueTones = ['#3B82F6', '#60A5FA', '#93C5FD', '#BFDBFE', '#DBEAFE'];
 
 export default function LoadingOverlay() {
-  const { colorScheme } = useColorScheme();
+  const { colorScheme } = useAppTheme();
   const blurTint = colorScheme === 'dark' ? 'dark' : 'light';
 
   const [activeHearts, setActiveHearts] = useState([]);
