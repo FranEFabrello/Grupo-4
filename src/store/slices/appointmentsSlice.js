@@ -1,11 +1,16 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../../api/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const fetchAppointments = createAsyncThunk(
   'appointments/fetchAppointments',
-  async (usuarioId) => {
-    const response = await api.get(`/turnos/usuario/${usuarioId}/todos`);
-    //console.log('Response de turnos:', response.data);
+  async () => {
+    const token = await AsyncStorage.getItem('userToken');
+    const response = await api.get('/turnos/usuario/todos', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   }
 );
