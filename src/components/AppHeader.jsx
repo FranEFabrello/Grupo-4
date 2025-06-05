@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { useSelector } from "react-redux";
 
 export default function AppHeader({ navigation, screenTitle, colorScheme }) {
   const insets = useSafeAreaInsets();
@@ -12,6 +13,8 @@ export default function AppHeader({ navigation, screenTitle, colorScheme }) {
   // Detectar si estamos en Home
   // Considera tanto "Home" como "MediBook" como posibles títulos de Home
   const isHome = screenTitle === 'Home' || screenTitle === 'MediBook';
+
+  const unreadCount = useSelector(state => state.notifications.unreadCount);
 
   return (
     <View
@@ -31,8 +34,27 @@ export default function AppHeader({ navigation, screenTitle, colorScheme }) {
         <Text className={`ml-2 text-lg font-semibold ${textClass}`}>{screenTitle}</Text>
       </View>
       <View className="flex-row">
-        <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
-          <Icon name="bell" size={20} color={colorScheme === 'dark' ? '#d1d5db' : '#6c757d'} />
+        <TouchableOpacity onPress={() => navigation.navigate('Notifications')} className="relative">
+          <Icon name="bell" size={22} color={colorScheme === 'dark' ? '#d1d5db' : '#6c757d'} />
+          {/* Punto rojo con contador si hay notificaciones sin leer */}
+          {unreadCount > 0 && (
+            <View style={{
+              position: 'absolute',
+              top: -5,
+              right: -5,
+              backgroundColor: '#dc2626',
+              borderRadius: 10,
+              width: 20,
+              height: 20,
+              justifyContent: 'center',
+              alignItems: 'center',
+              zIndex: 10
+            }}>
+              <Text style={{ color: 'white', fontSize: 12, fontWeight: 'bold' }}>
+                {unreadCount}
+              </Text>
+            </View>
+          )}
         </TouchableOpacity>
       </View>
     </View>

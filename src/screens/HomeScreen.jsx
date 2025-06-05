@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import TestToastButton from "~/components/TestToastButton";
 import { useAppTheme} from "~/providers/ThemeProvider";
+import { fetchNotificaciones } from "~/store/slices/notificationSlice";
 
 export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -36,6 +37,7 @@ export default function HomeScreen({ navigation }) {
         const usuarioId = usuarioData?.id;
         if (usuarioId) {
           dispatch(fetchAppointments(usuarioId));
+          dispatch(fetchNotificaciones(usuarioId));
           if (typeof usuarioData?.settings?.modoOscuro === 'boolean') {
             dispatch({ type: 'user/setModoOscuro', payload: usuarioData.settings.modoOscuro });
           }
@@ -44,6 +46,7 @@ export default function HomeScreen({ navigation }) {
       });
     } else if (usuario.id) {
       dispatch(fetchAppointments(usuario.id));
+      dispatch(fetchNotificaciones(usuario.id));
       if (typeof usuario.settings?.modoOscuro === 'boolean') {
         dispatch({ type: 'user/setModoOscuro', payload: usuario.settings.modoOscuro });
       }
