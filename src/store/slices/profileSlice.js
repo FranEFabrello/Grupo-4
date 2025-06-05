@@ -7,8 +7,10 @@ export const fetchProfile = createAsyncThunk('profile/fetchProfile', async (user
   return response.data;
 });
 
-export const updateProfile = createAsyncThunk('profile/updateProfile', async ({ correo, updates }) => {
-  const response = await api.patch(`/Usuario/actualizarPorCorreo?correo=${encodeURIComponent(correo)}`, updates);
+export const updateProfile = createAsyncThunk('profile/updateProfile', async (updates) => {
+  console.log("Esto se para para updateProfile: ", updates);
+  console.log("Token desde api", api.defaults.headers.common['Authorization']);
+  const response = await api.patch(`/Usuario/actualizarPorCorreo`, updates);
   return response.data;
 });
 
