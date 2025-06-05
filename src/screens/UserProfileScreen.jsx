@@ -89,7 +89,7 @@ export default function UserProfileScreen({ navigation }) {
       return;
     }
 
-    dispatch(updateProfile({ updates }))
+    dispatch(updateProfile( updates ))
       .unwrap()
       .then(() => {
         alert(t('user_profile.alerts.updated'));
@@ -230,8 +230,8 @@ export default function UserProfileScreen({ navigation }) {
                 {/* Icono de lápiz sobresaliendo abajo a la derecha */}
                 <View style={{
                   position: 'absolute',
-                  right: -10,
-                  bottom: -10,
+                  right: 0,
+                  bottom: 0,
                   zIndex: 2,
                 }}>
                   <View
