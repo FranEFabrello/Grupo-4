@@ -14,9 +14,7 @@
       [
         "expo-notifications",
         {
-          "icon": "./assets/notification-icon.png",
-          "color": "#ffffff",
-          "sounds": ["./assets/notification-sound.wav"]
+          "color": "#ffffff"
         }
       ]
     ],
@@ -46,6 +44,12 @@
     },
     "updates": {
       "url": "https://u.expo.dev/a9b1c77a-9372-48e9-bc6f-7701f8d405bd"
+    },
+    "icon": "./assets/logo.png",
+    "splash": {
+      "image": "./assets/splash-icon-light.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
     }
   }
 }
