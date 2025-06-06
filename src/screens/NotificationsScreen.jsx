@@ -69,10 +69,22 @@ const NotificationsScreen = ({ navigation }) => {
         {error && <Text className={`${errorText} mb-4`}>{error}</Text>}
         {!loading && !error && (
           <FlatList
-            data={notificacion}
+            data={notificacion.filter(n => n.estado?.toUpperCase() === "NO_LEÍDA")}
             keyExtractor={item => item.id?.toString()}
             renderItem={({ item }) => (
-              <View className={`${cardBg} rounded-xl p-3 mb-4 shadow-sm flex-row items-center`}>
+              <TouchableOpacity
+                className={`${cardBg} rounded-xl p-3 mb-4 shadow-sm flex-row items-center`}
+                activeOpacity={0.85}
+                onPress={() => {
+                  if (item.estado?.toLowerCase() === "no_leída") {
+                    if (selectedNotificationId === item.id) {
+                      marcarNotificacionLeidaHandler(item.id);
+                    } else {
+                      setSelectedNotificationId(item.id);
+                    }
+                  }
+                }}
+              >
                 <View style={{
                   width: 48,
                   height: 48,
@@ -113,31 +125,23 @@ const NotificationsScreen = ({ navigation }) => {
                                 : item.tipoNotificacion}
                   </Text>
                   <Text className={`${secondaryText}`}>{item.mensaje}</Text>
-                  <View className="flex-row items-center mt-1">
+                  <View className="flex-row items-center mt-1 justify-between w-full">
                     {item.estado?.toLowerCase() === "no_leída" && selectedNotificationId === item.id ? (
-                      <TouchableOpacity
-                        className="ml-2 flex-row items-center"
-                        onPress={() => marcarNotificacionLeidaHandler(item.id)}
-                      >
-                        <MaterialCommunityIcons name="check" size={18} color={iconConfirm} />
-                        <Text className={`${successText} ml-1 text-xs`}>{t('notification.read_button')}</Text>
-                      </TouchableOpacity>
+                      <>
+                        <Text className={`${successText} mr-2 text-xs`}>{t('notification.read_button')}</Text>
+                        <MaterialCommunityIcons name="check" size={32} color={iconConfirm} />
+                      </>
                     ) : item.estado?.toLowerCase() === "no_leída" ? (
                       <>
                         <Text className={`text-xs ${accentText}`}>{t('notification.type.unread')}</Text>
-                        <TouchableOpacity
-                          className="ml-2"
-                          onPress={() => setSelectedNotificationId(item.id)}
-                        >
-                          <MaterialCommunityIcons name="check" size={18} color={iconConfirm} />
-                        </TouchableOpacity>
+                        <MaterialCommunityIcons name="check" size={32} color={iconConfirm} style={{ marginLeft: 'auto' }} />
                       </>
                     ) : (
-                      <Text className={`text-xs ${secondaryText}`}>{t('notification.type.read')}</Text>
+                      <Text className={`text-xs ${secondaryText} ml-auto`}>{t('notification.type.read')}</Text>
                     )}
                   </View>
                 </View>
-              </View>
+              </TouchableOpacity>
             )}
             ListEmptyComponent={
               <Text className={`text-center ${secondaryText} mt-10`}>{t('notification.empty')}</Text>
