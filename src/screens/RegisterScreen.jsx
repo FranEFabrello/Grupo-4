@@ -41,8 +41,16 @@ export default function RegisterScreen({ navigation }) {
   const [isLoading, setIsLoading] = useState(false);        // ⬅️ estado carga
   const { t } = useTranslation();
 
+  useEffect(() => {
+    if (!obrasSociales || obrasSociales.length === 0) {
+      dispatch(fetchObrasSociales());
+      console.log('No hay obras sociales en el estado');
+    }
+  }, []);
+
+
   const obrasSociales = useSelector((state) => state.socialWork.obrasSociales);
-  //console.log('obrasSociales en RegisterScreen:', obrasSociales);
+  console.log('obrasSociales en RegisterScreen:', obrasSociales);
   const dispatch = useDispatch();
 
   //const [mostrarPopup, setMostrarPopup] = useState(false);
@@ -81,8 +89,14 @@ export default function RegisterScreen({ navigation }) {
   // Validaciones paso 2
   const validarPaso2 = () => {
     let err = {};
-    if (!celular) err.celular = t('register.errors.phone'), console.log(err);
-    if (!obraSocial) err.obraSocial = t('register.errors.insurance'), console.log(err);
+    if (!celular) {
+      err.celular = t('register.errors.phone');
+      console.log('Error en celular:', err);
+    }
+    if (!idObraSocial) {
+      err.obraSocial = t('register.errors.insurance');
+      console.log('Error en obraSocial:', err, 'idObraSocial:', idObraSocial, 'obraSocial:', obraSocial);
+    }
     setErrores(err);
     return Object.keys(err).length === 0;
   };
@@ -93,10 +107,10 @@ export default function RegisterScreen({ navigation }) {
   const handleBack = () => setStep(1);
 
 
-  const handleRegister = async () => {                      // ⬅️ ahora async
-    console.log("handleRegister fue ejecutado"); // <- PRUEBA
+  const handleRegister = async () => {
+    console.log("handleRegister fue ejecutado");
     if (!validarPaso2()) {
-      console.log("validarPaso2 falló");        // <- PRUEBA
+      console.log("validarPaso2 falló");
       return;
     }
 
@@ -117,14 +131,19 @@ export default function RegisterScreen({ navigation }) {
     console.log("Datos del usuario:", userData);
 
     try {
-      setIsLoading(true);                                    // ⬅️ inicia carga
-      await dispatch(register(userData)).unwrap();
+      setIsLoading(true);
+      const result = await dispatch(register(userData)).unwrap();
+      console.log("Respuesta del registro:", result); // Log para depurar la respuesta
       navigation.navigate("ConfirmarToken", { email: correo });
     } catch (error) {
       console.error("Error en el registro:", error);
-      Alert.alert(t('register.errors.default_error'), JSON.stringify(error));
+      // Mostrar más detalles del error en el Alert
+      Alert.alert(
+        t('register.errors.default_error'),
+        `Error: ${error.message || JSON.stringify(error)}`
+      );
     } finally {
-      setIsLoading(false);                                   // ⬅️ finaliza carga
+      setIsLoading(false);
     }
   };
 
@@ -153,11 +172,7 @@ export default function RegisterScreen({ navigation }) {
   };
 
 
-  useEffect(() => {
-    if (!obrasSociales || obrasSociales.length === 0) {
-      dispatch(fetchObrasSociales());
-    }
-  }, []);
+
 
   // Color de texto dinámico para los <Picker>
   const pickerTextColor = colorScheme === 'dark' ? '#F3F4F6' : '#1F2937';
@@ -182,6 +197,7 @@ export default function RegisterScreen({ navigation }) {
               <TextInput className={`w-full h-12 border ${colorScheme === 'dark' ? 'border-gray-700 bg-gray-800 text-gray-100' : 'border-gray-300 bg-white text-gray-900'} rounded-lg px-3 mb-2`} placeholder={t('register.placeholders.dni')} placeholderTextColor={colorScheme === 'dark' ? '#9ca3af' : '#6b7280'} value={dni} onChangeText={setDni} keyboardType="numeric" />
               {errores.dni && <Text className="text-red-500 text-xs mb-1">{errores.dni}</Text>}
               <View className="w-full flex-row mb-2">
+                {/* Masculino */}
                 <TouchableOpacity
                   className={`flex-1 h-12 border rounded-lg justify-center items-center mr-1 ${
                     genero === 'M'
@@ -192,8 +208,11 @@ export default function RegisterScreen({ navigation }) {
                   }`}
                   onPress={() => setGenero('M')}
                 >
-                  <Text className={colorScheme === 'dark' ? 'text-gray-100' : ''}>{t('register.gender.M')}</Text>
+                  <Text className={genero === 'M' ? 'text-blue-700 font-bold' : colorScheme === 'dark' ? 'text-gray-100' : 'text-gray-900'}>
+                    {t('register.gender.M')}
+                  </Text>
                 </TouchableOpacity>
+                {/* Femenino */}
                 <TouchableOpacity
                   className={`flex-1 h-12 border rounded-lg justify-center items-center mx-1 ${
                     genero === 'F'
@@ -203,20 +222,25 @@ export default function RegisterScreen({ navigation }) {
                         : 'border-gray-300 bg-white'
                   }`}
                   onPress={() => setGenero('F')}
-                  >
-                    <Text className={colorScheme === 'dark' ? 'text-gray-100' : ''}>{t('register.gender.F')}</Text>
+                >
+                  <Text className={genero === 'F' ? 'text-pink-700 font-bold' : colorScheme === 'dark' ? 'text-gray-100' : 'text-gray-900'}>
+                    {t('register.gender.F')}
+                  </Text>
                 </TouchableOpacity>
+                {/* Otro */}
                 <TouchableOpacity
                   className={`flex-1 h-12 border rounded-lg justify-center items-center ml-1 ${
                     genero === 'O'
-                        ? 'border-purple-500 bg-purple-200'
+                      ? 'border-purple-500 bg-purple-200'
                       : colorScheme === 'dark'
                         ? 'border-gray-700 bg-gray-800'
                         : 'border-gray-300 bg-white'
                   }`}
                   onPress={() => setGenero('O')}
                 >
-                  <Text className={colorScheme === 'dark' ? 'text-gray-100' : ''}>{t('register.gender.O')}</Text>
+                  <Text className={genero === 'O' ? 'text-purple-700 font-bold' : colorScheme === 'dark' ? 'text-gray-100' : 'text-gray-900'}>
+                    {t('register.gender.O')}
+                  </Text>
                 </TouchableOpacity>
               </View>
               {errores.genero && <Text className="text-red-500 text-xs mb-1">{errores.genero}</Text>}
@@ -245,7 +269,7 @@ export default function RegisterScreen({ navigation }) {
                 activeOpacity={0.8}
                 onPress={handleNext}
               >
-                <Text className="text-white font-semibold">{t('global.next')}</Text>
+                <Text className="text-white font-semibold">{t('register.buttons.next')}</Text>
               </TouchableOpacity>
             </>
           ) : (
@@ -276,35 +300,36 @@ export default function RegisterScreen({ navigation }) {
                   const selectedOS = obrasSociales.find((o) => o.id === value);
                   const nombreOS = selectedOS ? `${selectedOS.tipoObraSocial} - ${selectedOS.plan}` : '';
                   setObraSocial(nombreOS); // Guardar el nombre completo, ej: "OSDE - Plan A"
+                  console.log('Obra social seleccionada:', { idObraSocial: value, nombreOS }); // Depuración
                 }}
                 style={{
-                  color: colorScheme === 'dark' ? '#ffffff' : '#000000', // Texto blanco en modo oscuro, negro en modo claro
-                  backgroundColor: colorScheme === 'dark' ? '#1f2937' : '#ffffff', // Fondo consistente
+                  color: colorScheme === 'dark' ? '#ffffff' : '#000000',
+                  backgroundColor: colorScheme === 'dark' ? '#1f2937' : '#ffffff',
                   borderColor: colorScheme === 'dark' ? '#374151' : '#d1d5db',
                   borderWidth: 1,
                   borderRadius: 8,
                   marginBottom: 8,
                   height: 48,
                   width: '100%',
-                  paddingHorizontal: 10, // Padding para mejor presentación
+                  paddingHorizontal: 10,
                 }}
                 itemStyle={{
-                  fontSize: 16, // Tamaño de fuente legible
-                  color: colorScheme === 'dark' ? '#ffffff' : '#000000', // Color de las opciones
+                  fontSize: 16,
+                  color: colorScheme === 'dark' ? '#ffffff' : '#000000',
                 }}
               >
                 <Picker.Item
                   enabled={false}
                   label={t('register.placeholders.choose_insurance')}
                   value=""
-                  color={colorScheme === 'dark' ? '#9ca3af' : '#6b7280'} // Color del placeholder
+                  color={colorScheme === 'dark' ? '#9ca3af' : '#6b7280'}
                 />
                 {obrasSociales.map((os) => (
                   <Picker.Item
                     key={os.id}
-                    label={`${os.tipoObraSocial} - ${os.plan}`} // Mostrar "OSDE - Plan A", "SANCOR_SALUD - 2500", etc.
+                    label={`${os.tipoObraSocial} - ${os.plan}`}
                     value={os.id}
-                    color={colorScheme === 'dark' ? '#ffffff' : '#000000'} // Color del texto de las opciones
+                    color={colorScheme === 'dark' ? '#ffffff' : '#000000'}
                   />
                 ))}
               </Picker>
@@ -321,7 +346,7 @@ export default function RegisterScreen({ navigation }) {
                 activeOpacity={0.8}
                 onPress={handleBack}
               >
-                <Text className="text-white font-semibold">{t('global.back')}</Text>
+                <Text className="text-white font-semibold">{t('register.buttons.back')}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -334,7 +359,7 @@ export default function RegisterScreen({ navigation }) {
               >
                 {isLoading
                   ? <ActivityIndicator color="#fff" />
-                  : <Text className="text-white font-semibold">{t('register.submit_button')}</Text>
+                  : <Text className="text-white font-semibold">{t('register.buttons.register')}</Text>
                 }
               </TouchableOpacity>
             </>

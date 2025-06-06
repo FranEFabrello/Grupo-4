@@ -17,23 +17,21 @@ import { fetchSpecialities } from "~/store/slices/medicalSpecialitiesSlice";
 import { useTranslation } from "react-i18next";
 import LoadingOverlay from '../components/LoadingOverlay';
 import { incrementUnreadCount } from "~/store/slices/notificationSlice";
-
 import {
   rescheduleAppointment
 } from "~/store/slices/appointmentsSlice";
 
 export default function BookAppointmentScreen({ navigation, route }) {
   const { reprogramming, appointmentId, currentDate, currentStart, currentEnd, specialtyId } = route.params || {};
-
   const { professionalId } = route.params || {};
   const dispatch = useDispatch();
   const { colorScheme } = useAppTheme();
-  const { t,i18n} = useTranslation();
+  const { t, i18n } = useTranslation();
 
-  const professionals = useSelector((state) => state.professionals.professionals);
-  const { availableDays, availableTimeSlots, status } = useSelector((state) => state.appointments);
+  const professionals = useSelector((state) => state.professionals.professionals || []);
+  const { availableDays = [], availableTimeSlots = [], status = 'idle' } = useSelector((state) => state.appointments || {});
   const usuario = useSelector((state) => state.user.usuario);
-  const specialties = useSelector((state) => state.medicalSpecialities.specialities);
+  const specialties = useSelector((state) => state.medicalSpecialities.specialities || []);
 
   const [specialty, setSpecialty] = useState('');
   const [professional, setProfessional] = useState(professionalId || '');
@@ -103,13 +101,39 @@ export default function BookAppointmentScreen({ navigation, route }) {
     return `${start}-${end}`;
   };
 
+  const isTimeSlotPast = (slot, selectedDate) => {
+    const now = new Date();
+    const currentDate = now.toISOString().split('T')[0]; // Fecha actual en formato YYYY-MM-DD
+
+    console.log('isTimeSlotPast - Current Date:', currentDate, 'Selected Date:', selectedDate);
+    console.log('Slot Time:', slot.horaInicio);
+
+    // Si selectedDate está vacío o no es la fecha actual, no filtramos
+    if (!selectedDate || selectedDate !== currentDate) {
+      console.log('Selected date is not today or is empty, allowing slot');
+      return false;
+    }
+
+    // Validar formato de horaInicio
+    let [hours, minutes, seconds = 0] = slot.horaInicio.split(':').map(Number);
+    if (isNaN(hours) || isNaN(minutes)) {
+      return true; // Filtra el slot si el formato es inválido
+    }
+    // Crear slotTime con la fecha actual, ajustando para la zona horaria local
+    const [year, month, day] = currentDate.split('-').map(Number);
+    const slotTime = new Date(year, month - 1, day, hours, minutes, seconds); // Meses en JS son 0-based
+    // Margen de 5 minutos desde la hora actual
+    const bufferMinutes = 5;
+    const bufferTime = new Date(now.getTime() + bufferMinutes * 60 * 1000);
+    return slotTime <= bufferTime;
+  };
+
   const handleConfirm = () => {
     console.log('handleConfirm called', { specialty, professional, selectedDate, selectedTime, reprogramming, appointmentId });
     if (specialty && professional && selectedDate && selectedTime) {
       setLoading(true);
 
       if (reprogramming && appointmentId) {
-        // Lanzar el dispatch de rescheduleAppointment
         dispatch(
           rescheduleAppointment({
             turnoId: appointmentId,
@@ -143,7 +167,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
           fecha: selectedDate,
           horaInicio: selectedTime.horaInicio.substring(0, 5),
           horaFin: selectedTime.horaFin.substring(0, 5),
-          nota: 'Consulta general', //CAMBIAR
+          nota: 'Consulta general',
           archivoAdjunto: null,
           estado: 'PENDIENTE',
         };
@@ -256,15 +280,17 @@ export default function BookAppointmentScreen({ navigation, route }) {
                     {status === 'loading' ? (
                       <ActivityIndicator size="large" color={colorScheme === 'light' ? '#2563eb' : '#60a5fa'} />
                     ) : availableTimeSlots.length > 0 ? (
-                      availableTimeSlots.map((slot, index) => (
-                        <TimeSlot
-                          key={index}
-                          time={formatTimeSlot(slot)}
-                          isSelected={selectedTime?.horaInicio === slot.horaInicio}
-                          onSelect={() => setSelectedTime(slot)}
-                          colorScheme={colorScheme}
-                        />
-                      ))
+                      availableTimeSlots
+                        .filter((slot) => !isTimeSlotPast(slot, selectedDate))
+                        .map((slot, index) => (
+                          <TimeSlot
+                            key={index}
+                            time={formatTimeSlot(slot)}
+                            isSelected={selectedTime?.horaInicio === slot.horaInicio}
+                            onSelect={() => setSelectedTime(slot)}
+                            colorScheme={colorScheme}
+                          />
+                        ))
                     ) : (
                       <Text className={`text-base ${secondaryTextClass}`}>{t('book_appointment.no_times')}</Text>
                     )}
@@ -273,7 +299,6 @@ export default function BookAppointmentScreen({ navigation, route }) {
               )}
             </View>
           </ScrollView>
-          {/* Botón flotante de confirmar turno */}
           {selectedTime && (
             <View style={{ position: 'absolute', left: 0, right: 0, bottom: 20, alignItems: 'center', zIndex: 10 }} pointerEvents="box-none">
               <TouchableOpacity
@@ -292,7 +317,6 @@ export default function BookAppointmentScreen({ navigation, route }) {
               </TouchableOpacity>
             </View>
           )}
-          {/* Modal de confirmación */}
           <Modal
             visible={modalVisible}
             transparent

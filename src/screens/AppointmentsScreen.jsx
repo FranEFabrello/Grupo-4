@@ -38,9 +38,12 @@ export default function AppointmentsScreen({ navigation }) {
 
   useEffect(() => {
     if (usuarioId) {
-      dispatch(fetchAppointments(usuarioId));
+      console.log('Fetching appointments for usuarioId:', usuarioId);
+      dispatch(fetchAppointments(usuarioId))
+        .then(() => console.log('fetchAppointments completed'))
+        .catch((err) => console.error('fetchAppointments failed:', err));
     }
-  }, [dispatch, usuarioId]);
+  }, [dispatch, usuarioId]); // Mantenemos usuarioId como dependencia para evitar fetch innecesario si no hay usuario
 
   const handleSelectDate = (date) => {
     if (!startDate || (startDate && endDate)) {
@@ -75,7 +78,6 @@ export default function AppointmentsScreen({ navigation }) {
     })
   ).sort((a, b) => getDateWithTime(a.fecha, a.horaInicio) - getDateWithTime(b.fecha, b.horaInicio));
 
-
   const pastAppointments = filterByDateRange(
     (appointments || []).filter((appt) => {
       if (!appt.horaFin) return false;
@@ -83,57 +85,39 @@ export default function AppointmentsScreen({ navigation }) {
       if (isNaN(apptEndDateTime)) return false;
       return apptEndDateTime.getTime() <= Date.now();
     })
-  ).sort((a, b) => getDateWithTime(b.fecha, b.horaInicio) - getDateWithTime(a.fecha, a.horaInicio));
+  ).sort((a, b) => getDateWithTime(b.fecha, b.horaInicio) - getDateWithTime(a.fecha, b.horaInicio));
 
   const cancelledAppointments = filterByDateRange(
     (appointments || []).filter((appt) => {
       return appt.estado === 'CANCELADO' && appt.cuentaActiva;
     })
-  ).sort((a, b) => getDateWithTime(b.fecha, b.horaInicio) - getDateWithTime(a.fecha, a.horaInicio));
+  ).sort((a, b) => getDateWithTime(b.fecha, b.horaInicio) - getDateWithTime(a.fecha, b.horaInicio));
 
-  // ==================== CLASES COMPLETAS ====================
-  // Contenedores
-  const screenContainerClass = "flex-1 bg-transparent"; // Respeta el fondo de la app
+  // Clases de estilo (sin cambios)
+  const screenContainerClass = "flex-1 bg-transparent";
   const scrollContainerClass = "p-5 bg-transparent";
   const contentContainerClass = colorScheme === 'light'
     ? 'bg-white border border-gray-200 shadow-md'
     : 'bg-gray-700 border border-gray-600 shadow-lg';
-
-  // Textos
   const textPrimaryClass = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-100';
   const textSecondaryClass = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-300';
   const textAccentClass = colorScheme === 'light' ? 'text-blue-600' : 'text-blue-400';
   const textWhiteClass = 'text-white';
-
-
   const selectedButtonBg = colorScheme === 'light' ? 'bg-blue-600' : 'bg-blue-700';
   const selectedButtonText = colorScheme === 'light' ? 'text-white' : 'text-gray-200';
-
-
-  // Botones
-  const buttonPrimaryClass = colorScheme === 'light'
-    ? 'bg-blue-600'
-    : 'bg-blue-500';
-
+  const buttonPrimaryClass = colorScheme === 'light' ? 'bg-blue-600' : 'bg-blue-500';
   const buttonSecondaryClass = colorScheme === 'light'
     ? 'border border-blue-600 bg-transparent'
     : 'border border-blue-400 bg-transparent';
-
-  // Modal
   const modalOverlayClass = 'flex-1 bg-black/50 justify-center items-center';
-
   const modalContainerClass = colorScheme === 'light'
     ? 'bg-white rounded-xl p-6 w-[90%]'
     : 'bg-gray-700 rounded-xl p-6 w-[90%]';
 
-
   return (
     <AppContainer navigation={navigation} screenTitle={t('appointments.Mytitle')} className={screenContainerClass}>
       <ScrollView className={scrollContainerClass}>
-        {/* Contenedor principal */}
         <View className={`rounded-lg p-4 mb-4 ${contentContainerClass}`}>
-
-          {/* Header */}
           <View className="flex-row justify-between items-center mb-4">
             <Text className={`text-lg font-semibold ${textPrimaryClass}`}>{t('appointments.Mytitle')}</Text>
             <FilterButton
@@ -143,8 +127,6 @@ export default function AppointmentsScreen({ navigation }) {
               iconColor="#FFFFFF"
             />
           </View>
-
-          {/* Filtro activo */}
           {(startDate || endDate) && (
             <View className="mb-2">
               <Text className={`text-sm ${textAccentClass}`}>
@@ -153,8 +135,6 @@ export default function AppointmentsScreen({ navigation }) {
               </Text>
             </View>
           )}
-
-          {/* Pestañas */}
           <View className="mb-4 flex-row justify-between" style={{ width: '100%' }}>
             <TabButton
               label={t('appointments.tabs.upcoming')}
@@ -175,8 +155,6 @@ export default function AppointmentsScreen({ navigation }) {
               colorScheme={colorScheme}
             />
           </View>
-
-          {/* Contenido dinámico */}
           {status === 'loading' ? (
             <Text className={`text-sm ${textSecondaryClass}`}>{t('global.alert.loading')}</Text>
           ) : activeTab === 'upcoming' ? (
@@ -193,7 +171,10 @@ export default function AppointmentsScreen({ navigation }) {
                     doctor={`${appt.doctorInfo.nombre} ${appt.doctorInfo.apellido}`}
                     specialty={appt.especialidadInfo.descripcion}
                     status={appt.estado}
-                    onPress={() => navigation.navigate('AppointmentDetail', { appointment: appt })}
+                    onPress={() => {
+                      console.log('Navigating to AppointmentDetail with ID:', appt.id);
+                      navigation.navigate('AppointmentDetail', { appointment: appt });
+                    }}
                     colorScheme={colorScheme}
                   />
                 </View>
@@ -236,7 +217,7 @@ export default function AppointmentsScreen({ navigation }) {
                   specialty={appt.especialidadInfo.descripcion}
                   status={appt.estado}
                   onPress={() => {
-                    console.log('Turno seleccionado ID:', appt.id);
+                    console.log('Navigating to AppointmentDetail with ID:', appt.id);
                     navigation.navigate('AppointmentDetail', { appointment: appt });
                   }}
                   colorScheme={colorScheme}
@@ -248,8 +229,6 @@ export default function AppointmentsScreen({ navigation }) {
           )}
         </View>
       </ScrollView>
-
-      {/* Modal de filtro */}
       {showFilterModal && (
         <BlurView intensity={50} tint="dark" className="flex-1 justify-center items-center" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
           <Modal
@@ -273,7 +252,6 @@ export default function AppointmentsScreen({ navigation }) {
                     onSelectDate={handleSelectDate}
                     colorScheme={colorScheme}
                   />
-
                   <View className="flex-row justify-between mt-3">
                     <Text className={textAccentClass}>
                       {startDate
@@ -286,14 +264,12 @@ export default function AppointmentsScreen({ navigation }) {
                         : `${t('filter.filter_dates.end')}: -`}
                     </Text>
                   </View>
-
                   <TouchableOpacity
-                    className={`${buttonPrimaryClass} py-3 rounded-lg mt-5 items-center`}
+                    className={`${buttonPrimaryClass} py-3 rounded-lg mt-4 items-center`}
                     onPress={() => setShowFilterModal(false)}
                   >
-                    <Text className={`text-base font-bold ${textWhiteClass}`}>{t('filter.filter_dates.apply')}</Text>
+                    <Text className={`text-base font-semibold ${textWhiteClass}}`}>{t('filter.filter_dates.apply')}</Text>
                   </TouchableOpacity>
-
                   <TouchableOpacity
                     className="mt-3 items-center"
                     onPress={() => {
@@ -302,7 +278,7 @@ export default function AppointmentsScreen({ navigation }) {
                       setShowFilterModal(false);
                     }}
                   >
-                    <Text className={`text-sm font-bold ${textAccentClass}`}>{t('filter.filter_dates.clear')}</Text>
+                    <Text className={`text-sm font-semibold ${textAccentClass}}`}>{t('Text filter.filter_dates.clear')}</Text>
                   </TouchableOpacity>
                 </View>
               </KeyboardAvoidingView>
