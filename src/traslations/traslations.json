@@ -1199,6 +1199,10 @@
       "es": "Validando token",
       "en": "Verifying token"
     },
+    "instructions": {
+      "es": "Por favor, ingrese el token recibido por correo electrónico.",
+      "en": "Please enter the token received via email."
+    },
     "alerts": {
       "token_received": {
         "es": "Token recibido",

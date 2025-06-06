@@ -5,8 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { Text, View, TextInput, Button, Alert, useColorScheme } from 'react-native';
 import React, { useState } from 'react';
-import { twMerge } from 'tailwind-variants';
 import { useAppTheme } from "~/providers/ThemeProvider";
+import { twMerge } from "tailwind-merge";
 
 
 const ConfirmTokenRegisterScreen = ({ route }) => {

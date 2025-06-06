@@ -329,9 +329,21 @@ export default function UserProfileScreen({ navigation }) {
                     minHeight: 48,
                   }}
                 >
-                  <Picker.Item label={t('user_profile.fields.gender.M')} value="masculino" />
-                  <Picker.Item label={t('user_profile.fields.gender.F')} value="femenino" />
-                  <Picker.Item label={t('user_profile.fields.gender.O')} value="otros" />
+                  <Picker.Item
+                    label={t('user_profile.fields.gender.M')}
+                    value="masculino"
+                    color={colorScheme === 'light' ? '#1f2937' : '#000'}
+                  />
+                  <Picker.Item
+                    label={t('user_profile.fields.gender.F')}
+                    value="femenino"
+                    color={colorScheme === 'light' ? '#1f2937' : '#000'}
+                  />
+                  <Picker.Item
+                    label={t('user_profile.fields.gender.O')}
+                    value="otros"
+                    color={colorScheme === 'light' ? '#1f2937' : '#000'}
+                  />
                 </Picker>
               </View>
 

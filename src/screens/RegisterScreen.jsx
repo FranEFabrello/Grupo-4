@@ -104,11 +104,11 @@ export default function RegisterScreen({ navigation }) {
       contrasenia,
       dni,
       genero,
-      fechaNacimiento,
       celular,
-      idObraSocial,
-      urlImagenPerfil,
-      rol: "PACIENTE"
+      fechaNacimiento,
+      idObraSocial: parseInt(idObraSocial, 10),
+      rol: "PACIENTE",
+      urlImagenPerfil
     };
 
     console.log("Datos del usuario:", userData);
@@ -174,6 +174,7 @@ export default function RegisterScreen({ navigation }) {
               <TextInput className={`w-full h-12 border ${colorScheme === 'dark' ? 'border-gray-700 bg-gray-800 text-gray-100' : 'border-gray-300 bg-white text-gray-900'} rounded-lg px-3 mb-2`} placeholder={t('register.placeholders.dni')} placeholderTextColor={colorScheme === 'dark' ? '#9ca3af' : '#6b7280'} value={dni} onChangeText={setDni} keyboardType="numeric" />
               {errores.dni && <Text className="text-red-500 text-xs mb-1">{errores.dni}</Text>}
               <View className="w-full flex-row mb-2">
+                {/* Masculino */}
                 <TouchableOpacity
                   className={`flex-1 h-12 border rounded-lg justify-center items-center mr-1 ${
                     genero === 'M'
@@ -184,8 +185,11 @@ export default function RegisterScreen({ navigation }) {
                   }`}
                   onPress={() => setGenero('M')}
                 >
-                  <Text className={colorScheme === 'dark' ? 'text-gray-100' : ''}>{t('register.gender.M')}</Text>
+                  <Text className={genero === 'M' ? 'text-blue-700 font-bold' : colorScheme === 'dark' ? 'text-gray-100' : 'text-gray-900'}>
+                    {t('register.gender.M')}
+                  </Text>
                 </TouchableOpacity>
+                {/* Femenino */}
                 <TouchableOpacity
                   className={`flex-1 h-12 border rounded-lg justify-center items-center mx-1 ${
                     genero === 'F'
@@ -195,20 +199,25 @@ export default function RegisterScreen({ navigation }) {
                         : 'border-gray-300 bg-white'
                   }`}
                   onPress={() => setGenero('F')}
-                  >
-                    <Text className={colorScheme === 'dark' ? 'text-gray-100' : ''}>{t('register.gender.F')}</Text>
+                >
+                  <Text className={genero === 'F' ? 'text-pink-700 font-bold' : colorScheme === 'dark' ? 'text-gray-100' : 'text-gray-900'}>
+                    {t('register.gender.F')}
+                  </Text>
                 </TouchableOpacity>
+                {/* Otro */}
                 <TouchableOpacity
                   className={`flex-1 h-12 border rounded-lg justify-center items-center ml-1 ${
                     genero === 'O'
-                        ? 'border-purple-500 bg-purple-200'
+                      ? 'border-purple-500 bg-purple-200'
                       : colorScheme === 'dark'
                         ? 'border-gray-700 bg-gray-800'
                         : 'border-gray-300 bg-white'
                   }`}
                   onPress={() => setGenero('O')}
                 >
-                  <Text className={colorScheme === 'dark' ? 'text-gray-100' : ''}>{t('register.gender.O')}</Text>
+                  <Text className={genero === 'O' ? 'text-purple-700 font-bold' : colorScheme === 'dark' ? 'text-gray-100' : 'text-gray-900'}>
+                    {t('register.gender.O')}
+                  </Text>
                 </TouchableOpacity>
               </View>
               {errores.genero && <Text className="text-red-500 text-xs mb-1">{errores.genero}</Text>}
