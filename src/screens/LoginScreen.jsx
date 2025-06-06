@@ -46,7 +46,7 @@ export default function LoginScreen({ navigation }) {
       navigation.navigate('Home');
 
       // 3. Obtenemos el token de notificaciones
-      const token = await registerForPushNotificationsAsync();
+      //const token = await registerForPushNotificationsAsync();
       if (!token) {
         console.log('No se pudo obtener el token de notificaciones');
         return;

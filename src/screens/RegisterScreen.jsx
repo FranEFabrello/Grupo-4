@@ -8,13 +8,15 @@ import {
   Platform,
   ScrollView,
   Alert,
-  Image
+  Image,
+  ActivityIndicator          // ⬅️ nuevo
 } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
 import { useDispatch, useSelector } from "react-redux";
 import { fetchObrasSociales } from "~/store/slices/socialWorksSlice";
 import { register } from '~/store/slices/autheticationSlice';
 import { uploadImageToFirebase } from "~/api/FirebaseConfig";
+import LoadingOverlay from "~/components/LoadingOverlay";   // ⬅️ overlay
 import { useTranslation } from 'react-i18next';
 import { Picker } from '@react-native-picker/picker';
 import { useAppTheme } from '~/providers/ThemeProvider';
@@ -32,10 +34,11 @@ export default function RegisterScreen({ navigation }) {
   const [genero, setGenero] = useState('');
   const [fechaNacimiento, setFechaNacimiento] = useState('');
   const [celular, setCelular] = useState('');
-  const [obraSocial, setObraSocial] = useState('');
-  const [idObraSocial, setIdObraSocial] = useState('');
+  const [obraSocial, setObraSocial] = useState('');   // nombre
+  const [idObraSocial, setIdObraSocial] = useState(''); // id
   const [urlImagenPerfil, SetUrlImagenPerfil] = useState(null);
   const [errores, setErrores] = useState({});
+  const [isLoading, setIsLoading] = useState(false);        // ⬅️ estado carga
   const { t } = useTranslation();
 
   const obrasSociales = useSelector((state) => state.socialWork.obrasSociales);
@@ -90,7 +93,7 @@ export default function RegisterScreen({ navigation }) {
   const handleBack = () => setStep(1);
 
 
-  const handleRegister = () => {
+  const handleRegister = async () => {                      // ⬅️ ahora async
     console.log("handleRegister fue ejecutado"); // <- PRUEBA
     if (!validarPaso2()) {
       console.log("validarPaso2 falló");        // <- PRUEBA
@@ -112,15 +115,17 @@ export default function RegisterScreen({ navigation }) {
     };
 
     console.log("Datos del usuario:", userData);
-    dispatch(register(userData))
-      .unwrap()
-      .then(() => {
-        navigation.navigate("ConfirmarToken", { email: correo });
-      })
-      .catch((error) => {
-        console.error("Error en el registro:", error);
-        Alert.alert(t('register.errors.default_error'), JSON.stringify(error));
-      });
+
+    try {
+      setIsLoading(true);                                    // ⬅️ inicia carga
+      await dispatch(register(userData)).unwrap();
+      navigation.navigate("ConfirmarToken", { email: correo });
+    } catch (error) {
+      console.error("Error en el registro:", error);
+      Alert.alert(t('register.errors.default_error'), JSON.stringify(error));
+    } finally {
+      setIsLoading(false);                                   // ⬅️ finaliza carga
+    }
   };
 
   const pickImage = async () => {
@@ -133,8 +138,8 @@ export default function RegisterScreen({ navigation }) {
       }
 
       // Seleccionar la imagen
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: 'Images',        // ← nueva sintaxis
         allowsEditing: true,
         aspect: [1, 1],
         quality: 0.5,
@@ -153,6 +158,9 @@ export default function RegisterScreen({ navigation }) {
       dispatch(fetchObrasSociales());
     }
   }, []);
+
+  // Color de texto dinámico para los <Picker>
+  const pickerTextColor = colorScheme === 'dark' ? '#F3F4F6' : '#1F2937';
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} className="flex-1">
@@ -230,8 +238,14 @@ export default function RegisterScreen({ navigation }) {
                 maxLength={10}
               />
               {errores.fechaNacimiento && <Text className="text-red-500 text-xs mb-1">{errores.fechaNacimiento}</Text>}
-              <TouchableOpacity className="w-full h-12 bg-blue-600 rounded-lg justify-center items-center mt-2" onPress={handleNext}>
-                <Text className="text-white text-base font-bold">{t('register.buttons.next')}</Text>
+              <TouchableOpacity
+                className={`w-full h-12 rounded-xl justify-center items-center mt-4 shadow-md ${
+                  'bg-blue-600'
+                }`}
+                activeOpacity={0.8}
+                onPress={handleNext}
+              >
+                <Text className="text-white font-semibold">{t('global.next')}</Text>
               </TouchableOpacity>
             </>
           ) : (
@@ -252,40 +266,77 @@ export default function RegisterScreen({ navigation }) {
                 }}
                 keyboardType="phone-pad"
               />
-              <View className={`w-full h-12 border rounded-lg px-3 mb-3 ${colorScheme === 'dark' ? 'border-gray-700 bg-gray-800' : 'border-gray-300 bg-white'}`}>
-                <Picker
-                  selectedValue={obraSocial}
-                  onValueChange={(value) => {
-                    setObraSocial(value);
-                    setIdObraSocial(value);
-                  }}
-                  style={{
-                    color: colorScheme === 'dark' ? '#f3f4f6' : '#1f2937',
-                    backgroundColor: 'transparent',
-                  }}
-                >
-                  {obrasSociales.map((obra) => (
-                    <Picker.Item
-                      key={obra.id}
-                      label={`${obra.tipoObraSocial} - ${obra.plan}`}
-                      value={obra.id}
-                      color={colorScheme === 'dark' ? '#f3f4f6' : '#1f2937'}
-                    />
-                  ))}
-                </Picker>
-              </View>
+              {/* Selector de obra social */}
+              <Picker
+                mode="dropdown"
+                selectedValue={idObraSocial}
+                dropdownIconColor={colorScheme === 'dark' ? '#f3f4f6' : '#4b5563'}
+                onValueChange={(value, _index) => {
+                  setIdObraSocial(value);
+                  const selectedOS = obrasSociales.find((o) => o.id === value);
+                  const nombreOS = selectedOS ? `${selectedOS.tipoObraSocial} - ${selectedOS.plan}` : '';
+                  setObraSocial(nombreOS); // Guardar el nombre completo, ej: "OSDE - Plan A"
+                }}
+                style={{
+                  color: colorScheme === 'dark' ? '#ffffff' : '#000000', // Texto blanco en modo oscuro, negro en modo claro
+                  backgroundColor: colorScheme === 'dark' ? '#1f2937' : '#ffffff', // Fondo consistente
+                  borderColor: colorScheme === 'dark' ? '#374151' : '#d1d5db',
+                  borderWidth: 1,
+                  borderRadius: 8,
+                  marginBottom: 8,
+                  height: 48,
+                  width: '100%',
+                  paddingHorizontal: 10, // Padding para mejor presentación
+                }}
+                itemStyle={{
+                  fontSize: 16, // Tamaño de fuente legible
+                  color: colorScheme === 'dark' ? '#ffffff' : '#000000', // Color de las opciones
+                }}
+              >
+                <Picker.Item
+                  enabled={false}
+                  label={t('register.placeholders.choose_insurance')}
+                  value=""
+                  color={colorScheme === 'dark' ? '#9ca3af' : '#6b7280'} // Color del placeholder
+                />
+                {obrasSociales.map((os) => (
+                  <Picker.Item
+                    key={os.id}
+                    label={`${os.tipoObraSocial} - ${os.plan}`} // Mostrar "OSDE - Plan A", "SANCOR_SALUD - 2500", etc.
+                    value={os.id}
+                    color={colorScheme === 'dark' ? '#ffffff' : '#000000'} // Color del texto de las opciones
+                  />
+                ))}
+              </Picker>
+              {errores.obraSocial && <Text className="text-red-500 text-xs mb-1">{errores.obraSocial}</Text>}
+              <Text className="text-gray-500 mt-2">
+                Obra Social seleccionada: {obraSocial || 'Ninguna'}
+              </Text>
               <TouchableOpacity className={`w-full h-12 border rounded-lg justify-center items-center mb-2 ${colorScheme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-300'}`} onPress={pickImage}>
                 <Text className={colorScheme === 'dark' ? 'text-gray-100' : 'text-gray-700'}>{urlImagenPerfil ? t('register.buttons.change_img') : t('register.buttons.add_img')}</Text>
               </TouchableOpacity>
               {urlImagenPerfil && <Image source={{ uri: urlImagenPerfil }} style={{ width: 80, height: 80, borderRadius: 40, marginBottom: 10 }} onPress={handleImageChange} />}
-              <View className="flex-row w-full justify-between">
-                <TouchableOpacity className={`h-12 flex-1 rounded-lg justify-center items-center mr-2 ${colorScheme === 'dark' ? 'bg-gray-700' : 'bg-gray-300'}`} onPress={handleBack}>
-                  <Text className={colorScheme === 'dark' ? 'text-gray-100 font-bold' : 'text-gray-700 font-bold'}>{t('register.buttons.back')}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity className="h-12 flex-1 bg-blue-600 rounded-lg justify-center items-center ml-2" onPress={handleRegister}>
-                  <Text className="text-white font-bold">{t('register.buttons.register')}</Text>
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity
+                className={`w-full h-12 rounded-xl justify-center items-center mt-4 shadow-md bg-blue-500`}
+                activeOpacity={0.8}
+                onPress={handleBack}
+              >
+                <Text className="text-white font-semibold">{t('global.back')}</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                disabled={isLoading}
+                activeOpacity={0.8}
+                className={`w-full h-12 rounded-xl justify-center items-center mt-4 shadow-md ${
+                  isLoading ? 'bg-blue-400 opacity-80' : 'bg-blue-600'
+                }`}
+                onPress={handleRegister}
+              >
+                {isLoading
+                  ? <ActivityIndicator color="#fff" />
+                  : <Text className="text-white font-semibold">{t('register.submit_button')}</Text>
+                }
+              </TouchableOpacity>
             </>
           )}
           <TouchableOpacity className="mt-6" onPress={() => navigation.replace('Login')}>
@@ -293,6 +344,9 @@ export default function RegisterScreen({ navigation }) {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      {/* Overlay de carga global */}
+      {isLoading && <LoadingOverlay />}
     </KeyboardAvoidingView>
   );
 }
