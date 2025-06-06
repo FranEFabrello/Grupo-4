@@ -13,7 +13,7 @@ export async function registerForPushNotificationsAsync() {
     }
 
     if (finalStatus !== 'granted') {
-      alert('No se pudo obtener permisos para notificaciones push');
+      {/*alert('No se pudo obtener permisos para notificaciones push');*/}
       return;
     }
 

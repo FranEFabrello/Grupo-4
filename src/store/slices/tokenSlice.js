@@ -7,9 +7,7 @@ export const validarTokenRegistro = createAsyncThunk(
   'tokens/validarTokenRegistro',
   async (data, { rejectWithValue }) => {
     try {
-      console.log("Validando token de registro:", data);
       const response = await api.post(`/Tokens/validarTokenRegistro`, data);
-      console.log("Respuesta de validación de token:", response.data);
       // Guarda el token si existe en la respuesta
       if (response.data && response.data.token) {
         await AsyncStorage.setItem('access_token', response.data.token);

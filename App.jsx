@@ -188,7 +188,7 @@ function AppWrapper() {
     }
 
     if (finalStatus !== 'granted') {
-      alert('No se pudo obtener el permiso para notificaciones push.');
+     // alert('No se pudo obtener el permiso para notificaciones push.');
       return null;
     }
 
