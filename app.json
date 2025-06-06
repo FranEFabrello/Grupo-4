@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "my-expo-app",
-    "slug": "my-expo-app",
+    "name": "Medic Book",
+    "slug": "medic-book",
     "version": "1.0.0",
     "web": {
       "favicon": "./assets/favicon.png"
@@ -27,17 +27,12 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.franfabrello.myexpoapp",
+      "package": "com.franfabrello.medicbook",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "useNextNotificationsApi": true
-    },
-    "extra": {
-      "eas": {
-        "projectId": "a9b1c77a-9372-48e9-bc6f-7701f8d405bd"
-      }
     },
     "runtimeVersion": {
       "policy": "appVersion"
@@ -50,6 +45,11 @@
       "image": "./assets/splash-icon-light.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f837adc2-5b02-48e1-bbd5-14e0675e41e7"
+      }
     }
   }
 }
