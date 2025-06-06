@@ -19,8 +19,6 @@ const NotificationsScreen = ({ navigation }) => {
 
   const [notificacion, setNotificacion] = React.useState([]);
 
-
-
   // Theme variables
   const containerBg = colorScheme === 'light' ? 'bg-gray-50' : 'bg-gray-800';
   const cardBg = colorScheme === 'light' ? 'bg-white' : 'bg-gray-700';
