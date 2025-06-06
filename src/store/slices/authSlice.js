@@ -1,10 +1,30 @@
 import { createSlice } from '@reduxjs/toolkit';
 import * as SecureStore from 'expo-secure-store';
+import { Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const initialState = {
   user: null,
   token: null,
   isAuthenticated: false,
+};
+
+// Función para cargar el token almacenado
+export const loadStoredToken = () => async (dispatch) => {
+  try {
+    let token;
+    if (Platform.OS === 'web') {
+      token = await AsyncStorage.getItem('userToken');
+    } else {
+      token = await SecureStore.getItemAsync('userToken');
+    }
+    
+    if (token) {
+      dispatch(setToken(token));
+    }
+  } catch (error) {
+    console.error('Error al cargar el token:', error);
+  }
 };
 
 const authSlice = createSlice({

@@ -214,9 +214,9 @@ export default function App() {
 
     <Provider store={store}>
       <ThemeProvider>
-      <SafeAreaProvider>
-        <AppWrapper />
-      </SafeAreaProvider>
+        <SafeAreaProvider>
+          <AppWrapper />
+        </SafeAreaProvider>
       </ThemeProvider>
     </Provider>
   );
