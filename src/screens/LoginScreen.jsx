@@ -10,7 +10,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { useDispatch } from 'react-redux';
-import { authenticate, fetchUserByToken, actualizarFcmToken } from '~/store/slices/autheticationSlice';
+import { authenticate } from '~/store/slices/autheticationSlice';
 import { useTranslation } from 'react-i18next';
 import LoadingOverlay from "~/components/LoadingOverlay";
 import { useAppTheme } from "~/providers/ThemeProvider";

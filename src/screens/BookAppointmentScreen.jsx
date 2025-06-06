@@ -16,8 +16,11 @@ import TimeSlot from '../components/TimeSlot';
 import { fetchSpecialities } from "~/store/slices/medicalSpecialitiesSlice";
 import { useTranslation } from "react-i18next";
 import LoadingOverlay from '../components/LoadingOverlay';
+import { incrementUnreadCount } from "~/store/slices/notificationSlice";
 
 export default function BookAppointmentScreen({ navigation, route }) {
+  const { reprogramming, appointmentId, currentDate, currentStart, currentEnd, specialtyId } = route.params || {};
+
   const { professionalId } = route.params || {};
   const dispatch = useDispatch();
   const { colorScheme } = useAppTheme();
@@ -97,10 +100,10 @@ export default function BookAppointmentScreen({ navigation, route }) {
   };
 
   const handleConfirm = () => {
-    console.log('handleConfirm called', { specialty, professional, selectedDate, selectedTime });
+    console.log('handleConfirm called', { specialty, professional, selectedDate, selectedTime, reprogramming, appointmentId });
     if (specialty && professional && selectedDate && selectedTime) {
       setLoading(true);
-      const payload = {
+      let payload = {
         doctorId: professional,
         usuarioId: usuario?.id,
         fecha: selectedDate,
@@ -110,19 +113,28 @@ export default function BookAppointmentScreen({ navigation, route }) {
         archivoAdjunto: null,
         estado: 'PENDIENTE',
       };
+
+      // Si es reprogramación, agregar el id del turno y cambiar acción si es necesario
+      if (reprogramming && appointmentId) {
+        payload = { ...payload, appointmentId, reprogramming: true };
+      }
+
       console.log('Dispatching bookAppointment', payload);
       dispatch(bookAppointment(payload))
         .unwrap()
         .then(() => {
-          setModalMessage(t('appointments.alerts.confirmation'));
+          setModalMessage(
+            reprogramming
+              ? t('appointments.reschedule_confirmation')
+              : t('appointments.confirmation')
+          );
           setModalSuccess(true);
           setModalVisible(true);
           setTimeout(() => {
             setModalVisible(false);
             navigation.navigate('Appointments');
-          }, 2000); // espera 2 segundos y navega
+          }, 2000);
         })
-
         .catch((err) => {
           console.log('Error en bookAppointment:', err);
           setModalMessage(t('book_appointment.alerts.error'));
@@ -130,6 +142,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
           setModalVisible(true);
         })
         .finally(() => setLoading(false));
+      dispatch(incrementUnreadCount());
     } else {
       console.log('Campos faltantes en handleConfirm');
       setModalMessage(t('book_appointment.alerts.missing_fields'));

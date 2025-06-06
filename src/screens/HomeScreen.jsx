@@ -207,7 +207,7 @@ export default function HomeScreen({ navigation }) {
             <Text className="text-white text-sm font-semibold">{t('home.medical_news.title')}</Text>
           </TouchableOpacity>
 
-          <TestToastButton />
+          {/*<TestToastButton />*/}
 
         </View>
       </ScrollView>

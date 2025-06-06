@@ -908,6 +908,10 @@
       "es": "Reprogramar",
       "en": "Reschedule"
     },
+    "reschedule_confirmation": {
+      "es": "Este turno ya fue reprogramado con éxito!",
+      "en": "This appointment has been successfully rescheduled!"
+    },
     "cancel_confirmation": {
       "es": "¿Estás seguro de que deseas cancelar este turno?",
       "en": "Are you sure you want to cancel this appointment?"

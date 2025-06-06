@@ -6,7 +6,7 @@ export const fetchNotificaciones = createAsyncThunk(
   'notificaciones/fetchNotificaciones',
   async (userId, thunkAPI) => {
     const response = await api.get(`/notificaciones/usuarios/${userId}`);
-    //console.log("Notificaicones: ", response.data)
+    console.log("Notificaicones: ", response.data)
     return response.data;
   }
 );
@@ -46,6 +46,9 @@ const notificationSlice = createSlice({
         if (state.unreadCount < 0) state.unreadCount = 0;
       }
     },
+    incrementUnreadCount(state) {
+      state.unreadCount += 1;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -66,5 +69,5 @@ const notificationSlice = createSlice({
   },
 });
 
-export const { setNotifications, markAsRead } = notificationSlice.actions;
+export const { setNotifications, markAsRead , incrementUnreadCount} = notificationSlice.actions;
 export default notificationSlice.reducer;

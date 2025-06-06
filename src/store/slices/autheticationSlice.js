@@ -112,6 +112,9 @@ const authenticationSlice = createSlice({
       state.token = action.payload;
       state.isAuthenticated = !!action.payload;
     },
+    setIsAuthenticated(state, action) {
+      state.isAuthenticated = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -159,5 +162,5 @@ const authenticationSlice = createSlice({
   },
 });
 
-export const { setToken } = authenticationSlice.actions;
+export const { setToken, setIsAuthenticated } = authenticationSlice.actions;
 export default authenticationSlice.reducer;
