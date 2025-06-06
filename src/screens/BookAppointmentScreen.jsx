@@ -18,6 +18,10 @@ import { useTranslation } from "react-i18next";
 import LoadingOverlay from '../components/LoadingOverlay';
 import { incrementUnreadCount } from "~/store/slices/notificationSlice";
 
+import {
+  rescheduleAppointment
+} from "~/store/slices/appointmentsSlice";
+
 export default function BookAppointmentScreen({ navigation, route }) {
   const { reprogramming, appointmentId, currentDate, currentStart, currentEnd, specialtyId } = route.params || {};
 
@@ -103,46 +107,68 @@ export default function BookAppointmentScreen({ navigation, route }) {
     console.log('handleConfirm called', { specialty, professional, selectedDate, selectedTime, reprogramming, appointmentId });
     if (specialty && professional && selectedDate && selectedTime) {
       setLoading(true);
-      let payload = {
-        doctorId: professional,
-        usuarioId: usuario?.id,
-        fecha: selectedDate,
-        horaInicio: selectedTime.horaInicio.substring(0, 5),
-        horaFin: selectedTime.horaFin.substring(0, 5),
-        nota: 'Consulta general', //CAMBIAR
-        archivoAdjunto: null,
-        estado: 'PENDIENTE',
-      };
 
-      // Si es reprogramación, agregar el id del turno y cambiar acción si es necesario
       if (reprogramming && appointmentId) {
-        payload = { ...payload, appointmentId, reprogramming: true };
-      }
+        // Lanzar el dispatch de rescheduleAppointment
+        dispatch(
+          rescheduleAppointment({
+            turnoId: appointmentId,
+            nuevaFecha: selectedDate,
+            nuevaHoraInicio: selectedTime.horaInicio.substring(0, 5),
+            nuevaHoraFin: selectedTime.horaFin.substring(0, 5),
+          })
+        )
+          .unwrap()
+          .then(() => {
+            setModalMessage(t('appointments.reschedule_confirmation'));
+            setModalSuccess(true);
+            setModalVisible(true);
+            setTimeout(() => {
+              setModalVisible(false);
+              navigation.navigate('Appointments');
+            }, 2000);
+          })
+          .catch((err) => {
+            console.log('Error en rescheduleAppointment:', err);
+            setModalMessage(t('book_appointment.alerts.error'));
+            setModalSuccess(false);
+            setModalVisible(true);
+          })
+          .finally(() => setLoading(false));
+        dispatch(incrementUnreadCount());
+      } else {
+        let payload = {
+          doctorId: professional,
+          usuarioId: usuario?.id,
+          fecha: selectedDate,
+          horaInicio: selectedTime.horaInicio.substring(0, 5),
+          horaFin: selectedTime.horaFin.substring(0, 5),
+          nota: 'Consulta general', //CAMBIAR
+          archivoAdjunto: null,
+          estado: 'PENDIENTE',
+        };
 
-      console.log('Dispatching bookAppointment', payload);
-      dispatch(bookAppointment(payload))
-        .unwrap()
-        .then(() => {
-          setModalMessage(
-            reprogramming
-              ? t('appointments.reschedule_confirmation')
-              : t('appointments.confirmation')
-          );
-          setModalSuccess(true);
-          setModalVisible(true);
-          setTimeout(() => {
-            setModalVisible(false);
-            navigation.navigate('Appointments');
-          }, 2000);
-        })
-        .catch((err) => {
-          console.log('Error en bookAppointment:', err);
-          setModalMessage(t('book_appointment.alerts.error'));
-          setModalSuccess(false);
-          setModalVisible(true);
-        })
-        .finally(() => setLoading(false));
-      dispatch(incrementUnreadCount());
+        console.log('Dispatching bookAppointment', payload);
+        dispatch(bookAppointment(payload))
+          .unwrap()
+          .then(() => {
+            setModalMessage(t('appointments.alerts.confirmation'));
+            setModalSuccess(true);
+            setModalVisible(true);
+            setTimeout(() => {
+              setModalVisible(false);
+              navigation.navigate('Appointments');
+            }, 2000);
+          })
+          .catch((err) => {
+            console.log('Error en bookAppointment:', err);
+            setModalMessage(t('book_appointment.alerts.error'));
+            setModalSuccess(false);
+            setModalVisible(true);
+          })
+          .finally(() => setLoading(false));
+        dispatch(incrementUnreadCount());
+      }
     } else {
       console.log('Campos faltantes en handleConfirm');
       setModalMessage(t('book_appointment.alerts.missing_fields'));
