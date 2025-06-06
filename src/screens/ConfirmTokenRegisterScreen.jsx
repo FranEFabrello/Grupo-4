@@ -39,7 +39,7 @@ const ConfirmTokenRegisterScreen = ({ route }) => {
         navigation.replace('Login');
       })
       .catch((err) => {
-        Alert.alert('Error', err.mensaje || t('token.alerts.default_error'));
+        Alert.alert('Error', err.mensaje || t('token.alerts.token_length_error'));
       })
       .finally(() => setIsLoading(false));                    // ⬅️ termina carga
   };
