@@ -39,7 +39,7 @@ export default function AppointmentsScreen({ navigation }) {
   useEffect(() => {
     if (usuarioId) {
       console.log('Fetching appointments for usuarioId:', usuarioId);
-      dispatch(fetchAppointments(usuarioId))
+      dispatch(fetchAppointments())
         .then(() => console.log('fetchAppointments completed'))
         .catch((err) => console.error('fetchAppointments failed:', err));
     }

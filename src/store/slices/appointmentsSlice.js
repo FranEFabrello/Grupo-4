@@ -139,12 +139,31 @@ const appointmentsSlice = createSlice({
         }));
         //console.log('Turnos por usuario TURNOSSLICE:', state.appointmentsByUser);
       })
+      // casos ya existentes
       .addCase(confirmAppointment.fulfilled, (state, action) => {
         state.appointmentsByUser = state.appointmentsByUser.map((appointment) =>
           appointment.id === action.payload.id ? action.payload : appointment
         );
         console.log('Turno confirmado:', action.payload);
       })
+
+      /* --------------- NUEVO CASO PARA CANCELAR --------------- */
+      .addCase(cancelAppointment.fulfilled, (state, action) => {
+        /** 
+         * action.payload  -> "cancelado con exito"
+         * action.meta.arg -> appointmentId que enviamos al thunk
+         */
+        const cancelledId = action.meta.arg;
+
+        state.appointmentsByUser = state.appointmentsByUser.map((appointment) =>
+          appointment.id === cancelledId
+            ? { ...appointment, estado: 'CANCELADO' } // o la propiedad que uses
+            : appointment
+        );
+        // Opcional: podrías guardar un mensaje flash en el estado
+        state.status = 'succeeded';
+        console.log(`Turno ${cancelledId} cancelado localmente`);
+      });
   },
 });
 
