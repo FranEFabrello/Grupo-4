@@ -1,3 +1,4 @@
+// LoginScreen.jsx
 import React, { useState } from 'react';
 import {
   View,
@@ -6,17 +7,20 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Keyboard,
-  useColorScheme,
   StyleSheet,
+  Platform, // Agrega esta importación
 } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { authenticate } from '~/store/slices/autheticationSlice';
 import { useTranslation } from 'react-i18next';
-import LoadingOverlay from "~/components/LoadingOverlay";
+import LoginLoadingOverlay from "~/components/LoginLoadingOverlay";
 import { useAppTheme } from "~/providers/ThemeProvider";
 import { actualizarFcmToken, fetchUserByToken } from "~/store/slices/userSlice";
-import store from "~/store";
 import { registerForPushNotificationsAsync } from "~/api/registerForPushNotificationsAsync";
+import { fetchProfessionals } from "~/store/slices/professionalsSlice";
+import { fetchAppointments } from "~/store/slices/appointmentsSlice";
+import { fetchNotificaciones } from "~/store/slices/notificationSlice";
+import { fetchSpecialities } from "~/store/slices/medicalSpecialitiesSlice";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -39,21 +43,25 @@ export default function LoginScreen({ navigation }) {
       setIsLoading(true);
 
       // 1. Autenticamos al usuario
+      console.log('Intentando autenticar al usuario con email:', email, 'y contraseña:', password);
       const user = await dispatch(authenticate({ email, password })).unwrap();
       console.log('Usuario autenticado:', user);
 
-      // 2. Navegamos a Home
-      navigation.navigate('Home');
-
-      // 3. Obtenemos el token de notificaciones
-      //const token = await registerForPushNotificationsAsync();
-      if (!token) {
-        console.log('No se pudo obtener el token de notificaciones');
-        return;
+      // 2. Obtenemos el token de notificaciones solo en plataformas móviles
+      let token = null;
+      if (Platform.OS === 'ios' || Platform.OS === 'android') {
+        token = await registerForPushNotificationsAsync();
+        console.log('Token de notificaciones: !!!', token);
+        if (!token) {
+          console.log('No se pudo obtener el token de notificaciones');
+        } else {
+          console.log('Token de notificaciones obtenido:', token);
+        }
+      } else {
+        console.log('Notificaciones push omitidas en la plataforma web');
       }
-      console.log('Token de notificaciones obtenido:', token);
 
-      // 4. Obtenemos los datos del usuario
+      // 3. Obtenemos los datos del usuario
       const usuario = await dispatch(fetchUserByToken()).unwrap();
       if (!usuario || !usuario.id) {
         console.log('No se pudo obtener la información del usuario');
@@ -61,16 +69,32 @@ export default function LoginScreen({ navigation }) {
       }
       console.log('Datos del usuario obtenidos:', usuario);
 
-      // 5. Actualizamos el token FCM
-      await dispatch(actualizarFcmToken({
-        id: usuario.id,
-        token: token.data ?? token // dependiendo de la estructura que devuelva registerForPushNotificationsAsync
-      })).unwrap();
-      console.log('Token FCM actualizado exitosamente');
+      // 4. Actualizamos el token FCM solo si se obtuvo un token
+      if (token) {
+        await dispatch(actualizarFcmToken({
+          id: usuario.id,
+          token: token.data ?? token
+        })).unwrap();
+        console.log('Token FCM actualizado exitosamente');
+      } else {
+        console.log('No se actualizó el token FCM porque no se obtuvo un token');
+      }
+
+      // 5. Ejecutamos las peticiones iniciales
+      await Promise.all([
+        dispatch(fetchProfessionals()).unwrap(),
+        dispatch(fetchAppointments(usuario.id)).unwrap(),
+        dispatch(fetchNotificaciones(usuario.id)).unwrap(),
+        dispatch(fetchSpecialities()).unwrap(),
+      ]);
+      console.log('Datos iniciales cargados con éxito');
+
+      // 6. Navegamos a Home
+      navigation.navigate('Home');
 
     } catch (error) {
       console.error('Error en el proceso de login:', error);
-      // Podés mostrar un toast o modal acá si querés
+      // Mostrar un toast o modal aquí si es necesario
     } finally {
       setIsLoading(false);
     }
@@ -147,9 +171,7 @@ export default function LoginScreen({ navigation }) {
         </TouchableOpacity>
       </View>
 
-
-      {isLoading &&
-        <LoadingOverlay />}
+      {isLoading && <LoginLoadingOverlay />}
     </View>
   );
 }

@@ -3,6 +3,7 @@ import api from "~/api/api";
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
+import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
 
 // Función auxiliar para guardar el token
 const saveToken = async (key, value) => {
@@ -54,6 +55,8 @@ export const authenticate = createAsyncThunk(
       if (token) {
         console.log('Token recibido desde AUTHSLICE:', token);
         await saveToken('userToken', token);
+        //const storedToken = await AsyncStorage.getItem('userToken');
+        //console.log('Token guardado correctamente', asyncStorage, 'Token recuperado:', storedToken);
       }
       return response.data;
     } catch (error) {

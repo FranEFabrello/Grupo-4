@@ -12,7 +12,7 @@ export default function DoctorCardForProf({
                                             containerClassName = 'w-full',
                                             colorScheme,
                                             imageUrl,
-                                            cardHeight = 220, // altura fija para todas las cards
+                                            cardHeight = 140, // Altura ajustada para diseño compacto
                                           }) {
   const cardBgClass = colorScheme === 'light' ? 'bg-white shadow-lg shadow-gray-300' : 'bg-gray-800 shadow-lg shadow-black/40';
   const iconBgClass = colorScheme === 'light' ? 'bg-blue-100' : 'bg-blue-900';
@@ -28,25 +28,16 @@ export default function DoctorCardForProf({
   return (
     <View className={containerClassName}>
       <View
-        className={`${cardBgClass} rounded-lg p-4 shadow-md items-center justify-center`}
-        style={{ elevation: 5, minHeight: cardHeight, height: cardHeight }}
+        className={`${cardBgClass} rounded-lg p-2 shadow-md flex-row items-center justify-center m-0 relative`}
+        style={{ elevation: 5, height: cardHeight }}
       >
-        {imageUrl ? (
-          <Image
-            source={{ uri: imageUrl }}
-            className="w-10 h-10 rounded-full mb-2"
-            resizeMode="cover"
-          />
-        ) : (
-          <View className={`w-10 h-10 ${iconBgClass} rounded-full justify-center items-center mb-2`}>
-            <Icon name="user-md" size={18} color={iconColor} />
-          </View>
-        )}
-        <Text className={`text-sm font-medium ${nameTextClass}`}>{name}</Text>
-        <Text className={`text-xs ${specialtyTextClass}`}>{specialty}</Text>
-        <View className="flex-row items-center my-1">
+        {/* Estrellas arriba a la derecha */}
+        <View className="absolute top-2 right-3 flex-row items-center">
           {noRating ? (
-            <Text className={`text-xs ${noRatingTextClass}`}>{t('doctor_card.no_rating')}</Text>
+            <>
+              <Text className={`text-xs ${noRatingTextClass} mr-1`}>{t('doctor_card.no_rating')}</Text>
+              <Text className={`text-xs ${starsTextClass}`}>★</Text>
+            </>
           ) : (
             <>
               <Text className={`text-xs ${starsTextClass} mr-1`}>{stars}</Text>
@@ -54,13 +45,32 @@ export default function DoctorCardForProf({
             </>
           )}
         </View>
-        <TouchableOpacity
-          className={`${buttonBgClass} rounded-lg p-2 mt-2 w-full flex-row justify-center items-center ${borderClass}`}
-          onPress={onBook}
-        >
-          <Icon name="calendar-alt" size={14} color="#ffffff" />
-          <Text className="text-white text-xs ml-1">{t('doctor_card.book')}</Text>
-        </TouchableOpacity>
+        {/* Foto a la izquierda */}
+        <View className="justify-center items-center mr-4 ml-4">
+          {imageUrl ? (
+            <Image
+              source={{ uri: imageUrl }}
+              className="w-20 h-20 rounded-full"
+              resizeMode="cover"
+            />
+          ) : (
+            <View className={`w-20 h-20 ${iconBgClass} rounded-full justify-center items-center`}>
+              <Icon name="user-md" size={32} color={iconColor} />
+            </View>
+          )}
+        </View>
+        {/* Contenido centrado */}
+        <View className="flex-1 justify-center items-center mt-2">
+          <Text className={`text-sm font-medium ${nameTextClass} text-center`}>{name}</Text>
+          <Text className={`text-xs ${specialtyTextClass} text-center mt-0.5`}>{specialty}</Text>
+          <TouchableOpacity
+            className={`${buttonBgClass} rounded-lg py-1.5 px-2 w-28 flex-row justify-center items-center ${borderClass} mt-2`}
+            onPress={onBook}
+          >
+            <Icon name="calendar-alt" size={12} color="#ffffff" />
+            <Text className="text-white text-xs ml-1">{t('doctor_card.book')}</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );

@@ -1,4 +1,4 @@
-// LoadingOverlay.jsx
+// LoginLoadingOverlay.jsx
 import React, { useEffect, useState } from 'react';
 import { View, Image, StyleSheet, Dimensions } from 'react-native';
 import { BlurView } from 'expo-blur';
@@ -21,18 +21,28 @@ const pulseAnimation = {
 
 const blueTones = ['#3B82F6', '#60A5FA', '#93C5FD', '#BFDBFE', '#DBEAFE'];
 
-export default function LoadingOverlay() {
+export default function LoginLoadingOverlay({ onAnimationComplete }) {
   const { colorScheme } = useAppTheme();
   const blurTint = colorScheme === 'dark' ? 'dark' : 'light';
   const [activeHearts, setActiveHearts] = useState([]);
 
   useEffect(() => {
-    blueTones.forEach((_, index) => {
+    const timers = blueTones.map((_, index) =>
       setTimeout(() => {
         setActiveHearts((prev) => [...prev, index]);
-      }, index * 500);
-    });
-  }, []);
+      }, index * 500)
+    );
+
+    // Llamar a onAnimationComplete después de que termine la animación (ajusta el tiempo según necesidad)
+    const completeTimer = setTimeout(() => {
+      onAnimationComplete?.();
+    }, blueTones.length * 500 + 2000); // Duración total de las animaciones + un buffer
+
+    return () => {
+      timers.forEach(clearTimeout);
+      clearTimeout(completeTimer);
+    };
+  }, [onAnimationComplete]);
 
   return (
     <BlurView intensity={50} tint={blurTint} style={styles.blur}>
