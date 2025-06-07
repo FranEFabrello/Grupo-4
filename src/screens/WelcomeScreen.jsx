@@ -12,7 +12,7 @@ export default function WelcomeScreen({ navigation }) {
   const containerClass = isDark ? 'bg-gray-900' : 'bg-gray-100';
   const textColor = isDark ? 'text-white' : 'text-gray-800';
   const loginBtnClass = isDark ? 'bg-blue-700' : 'bg-blue-600';
-  const registerBtnClass = isDark ? 'bg-green-700' : 'bg-green-500';
+  const registerBtnClass = isDark ? 'bg-blue-900' : 'bg-blue-800';
 
   return (
     <View className={`flex-1 justify-center items-center p-5 ${containerClass}`}>

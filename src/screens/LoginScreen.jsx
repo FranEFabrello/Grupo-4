@@ -92,7 +92,7 @@ export default function LoginScreen({ navigation }) {
         className="w-full max-w-md p-6 rounded-2xl shadow-lg bg-opacity-90"
         style={{ backgroundColor: isDark ? '#1f2937' : 'white' }}
       >
-        <Text className={`text-3xl font-extrabold mb-6 ${textColor}`}>
+        <Text className={`text-3xl font-extrabold mb-6 text-center ${textColor}`}>
           {t('login.title')}
         </Text>
 

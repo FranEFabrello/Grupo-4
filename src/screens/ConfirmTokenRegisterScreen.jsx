@@ -77,13 +77,13 @@ const ConfirmTokenRegisterScreen = ({ route }) => {
           )}
         />
 
-        {/* Aviso de caracteres restantes */}
-        {token.length < MAX_LENGTH && (
+        {/* Aviso de caracteres restantes solo después de intentar enviar */}
+        {token.length < MAX_LENGTH && isLoading && (
           <Text className={twMerge(
             "mb-4 text-sm",
             isDark ? "text-rose-300" : "text-rose-600"
           )}>
-            {t('token.remaining_chars', { remaining: MAX_LENGTH - token.length })}
+            {t('token.alerts.missing_token', { remaining: MAX_LENGTH - token.length })}
           </Text>
         )}
 

@@ -295,7 +295,7 @@ export default function UserProfileScreen({ navigation }) {
               <TextInput
                 className={`rounded-xl ${inputBg} ${borderColor} border p-3 mb-2 text-sm ${editable ? primaryText : secondaryText}`}
                 value={dni}
-                onChangeText={setDni}
+                onChangeText={(text) => setDni(text.replace(/\D/g, '').slice(0, 9))}
                 editable={editable}
               />
 

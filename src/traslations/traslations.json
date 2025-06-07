@@ -415,6 +415,10 @@
       "genero": {
         "es": "Género",
         "en": "Gender"
+      },
+      "insurance": {
+        "es": "Seleccione una obra social",
+        "en": "Select a health insurance"
       }
     },
     "gender": {
@@ -1207,6 +1211,10 @@
       "token_received": {
         "es": "Token recibido",
         "en": "Token received"
+      },
+      "missing_token": {
+        "es": "Por favor, intente nuevamente ingresar el token.",
+        "en": "Please try entering the token again."
       },
       "token_length_error": {
         "es": "El token debe tener 8 caracteres.",
