@@ -132,6 +132,7 @@ export default function ProfessionalsScreen({ navigation }) {
                       professionalId: prof.id,
                     })
                   }
+                  onPress={() => navigation.navigate('DoctorProfileScreen', { doctorId: prof.id })}
                   containerClassName="w-full"
                   colorScheme={colorScheme}
                   cardHeight={140} // Reducido para un diseño más compacto
@@ -239,3 +240,4 @@ export default function ProfessionalsScreen({ navigation }) {
     </AppContainer>
   );
 }
+

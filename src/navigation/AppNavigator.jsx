@@ -21,6 +21,7 @@ import HelpNeeded from '~/screens/HelpNeeded';
 import SecurityPolicyScreen from '~/screens/SecurityPolicyScreen';
 import NotificationsScreen from '~/screens/NotificationsScreen';
 import AppointmentDetailScreen from '~/screens/AppointmentDetailScreen';
+import DoctorProfileScreen from "~/screens/DoctorProfileScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -58,6 +59,7 @@ export default function AppNavigator() {
               <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
               <Stack.Screen name="ConfirmarToken" component={ConfirmTokenRegisterScreen} options={{ headerShown: false }} />
               <Stack.Screen name="CambioContrasenia" component={ChangePasswordScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="DoctorProfileScreen" component={DoctorProfileScreen} options={{ headerShown: false }} />
             </>
           ) : (
             <>

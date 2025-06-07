@@ -9,6 +9,7 @@ export default function DoctorCard({
                                      stars,
                                      noRating,
                                      onBook,
+                                     onPress, // NUEVA PROP
                                      containerClassName = 'w-full',
                                      colorScheme,
                                      imageUrl,
@@ -25,7 +26,11 @@ export default function DoctorCard({
   const { t } = useTranslation();
 
   return (
-    <View className={containerClassName}>
+    <TouchableOpacity
+      className={containerClassName}
+      activeOpacity={0.85}
+      onPress={onPress}
+    >
       <View
         className={`${cardBgClass} rounded-lg p-4 shadow-md items-center justify-center`}
         style={{ elevation: 5, minHeight: 180 }}
@@ -61,7 +66,7 @@ export default function DoctorCard({
           <Text className="text-white text-xs ml-1">{t('doctor_card.book')}</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 

@@ -328,7 +328,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
           >
             <View className="flex-1 justify-center items-center bg-black/50">
               <View className={`w-80 p-6 rounded-2xl ${cardClass} items-center shadow-2xl`}>
-                <Text className={`text-lg font-semibold mb-4 ${modalSuccess ? 'text-green-500' : 'text-red-500'}`}>{modalMessage}</Text>
+                <Text className={`text-lg font-semibold mb-4 text-center ${modalSuccess ? 'text-green-500' : 'text-red-500'}`}>{modalMessage}</Text>
                 <TouchableOpacity
                   className={`px-6 py-3 rounded-xl ${primaryButtonClass}`}
                   onPress={() => {

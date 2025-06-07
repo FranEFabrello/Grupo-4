@@ -9,6 +9,7 @@ export default function DoctorCardForProf({
                                             stars,
                                             noRating,
                                             onBook,
+                                            onPress, // NUEVA PROP
                                             containerClassName = 'w-full',
                                             colorScheme,
                                             imageUrl,
@@ -26,7 +27,11 @@ export default function DoctorCardForProf({
   const { t } = useTranslation();
 
   return (
-    <View className={containerClassName}>
+    <TouchableOpacity
+      className={containerClassName}
+      activeOpacity={0.85}
+      onPress={onPress}
+    >
       <View
         className={`${cardBgClass} rounded-lg p-2 shadow-md flex-row items-center justify-center m-0 relative`}
         style={{ elevation: 5, height: cardHeight }}
@@ -72,6 +77,7 @@ export default function DoctorCardForProf({
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
+
