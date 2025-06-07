@@ -38,12 +38,12 @@ export default function AppointmentsScreen({ navigation }) {
 
   useEffect(() => {
     if (usuarioId) {
-      console.log('Fetching appointments for usuarioId:', usuarioId);
+      //console.log('Fetching appointments for usuarioId:', usuarioId);
       dispatch(fetchAppointments())
         .then(() => console.log('fetchAppointments completed'))
         .catch((err) => console.error('fetchAppointments failed:', err));
     }
-  }, [dispatch, usuarioId]); // Mantenemos usuarioId como dependencia para evitar fetch innecesario si no hay usuario
+  }, [dispatch]);
 
   const handleSelectDate = (date) => {
     if (!startDate || (startDate && endDate)) {

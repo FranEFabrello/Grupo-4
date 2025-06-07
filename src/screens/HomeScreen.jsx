@@ -184,6 +184,7 @@ export default function HomeScreen({ navigation }) {
                     onBook={() =>
                       navigation.navigate('BookAppointment', { professionalId: doctor.id })
                     }
+                    onPress={() => navigation.navigate('DoctorProfileScreen', { doctor: doctor.id })}
                     containerClassName="w-64"
                     colorScheme={colorScheme}
                   />
@@ -212,3 +213,4 @@ export default function HomeScreen({ navigation }) {
     </AppContainer>
   );
 }
+

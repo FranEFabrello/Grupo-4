@@ -188,7 +188,7 @@ export default function AppointmentDetailScreen({ route, navigation }) {
           ) : null}
         </View>
       </ScrollView>
-      {isCancelLoading && <LoadingOverlay />} {/* Optional: Ensure overlay covers the entire screen */}
+      {isCancelLoading && <LoadingOverlay />}
     </AppContainer>
   );
 }
