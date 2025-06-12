@@ -8,6 +8,7 @@ import {
   fetchAvailableTimeSlots,
   bookAppointment,
   clearAvailableTimeSlots,
+  fetchAppointments,
 } from "~/store/slices/appointmentsSlice";
 import AppContainer from '../components/AppContainer';
 import ProfileField from '../components/ProfileField';
@@ -16,7 +17,7 @@ import TimeSlot from '../components/TimeSlot';
 import { fetchSpecialities } from "~/store/slices/medicalSpecialitiesSlice";
 import { useTranslation } from "react-i18next";
 import LoadingOverlay from '../components/LoadingOverlay';
-import { incrementUnreadCount } from "~/store/slices/notificationSlice";
+import { incrementUnreadCount, fetchNotificaciones } from "~/store/slices/notificationSlice";
 import {
   rescheduleAppointment
 } from "~/store/slices/appointmentsSlice";
@@ -32,6 +33,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
   const { availableDays = [], availableTimeSlots = [], status = 'idle' } = useSelector((state) => state.appointments || {});
   const usuario = useSelector((state) => state.user.usuario);
   const specialties = useSelector((state) => state.medicalSpecialities.specialities || []);
+  const usuarioId = useSelector((state) => state.user.usuario?.id);
 
   const [specialty, setSpecialty] = useState('');
   const [professional, setProfessional] = useState(professionalId || '');
@@ -144,21 +146,28 @@ export default function BookAppointmentScreen({ navigation, route }) {
         )
           .unwrap()
           .then(() => {
-            setModalMessage(t('appointments.reschedule_confirmation'));
-            setModalSuccess(true);
-            setModalVisible(true);
-            setTimeout(() => {
-              setModalVisible(false);
-              navigation.navigate('Appointments');
-            }, 2000);
+            if (usuarioId) {
+              dispatch(fetchNotificaciones(usuarioId));
+            }
+            dispatch(fetchAppointments())
+              .then(() => {
+                setLoading(false);
+                setModalMessage(t('appointments.reschedule_confirmation'));
+                setModalSuccess(true);
+                setModalVisible(true);
+                setTimeout(() => {
+                  setModalVisible(false);
+                  navigation.navigate('Appointments');
+                }, 2000);
+              });
           })
           .catch((err) => {
             console.log('Error en rescheduleAppointment:', err);
             setModalMessage(t('book_appointment.alerts.error'));
             setModalSuccess(false);
             setModalVisible(true);
-          })
-          .finally(() => setLoading(false));
+            setLoading(false);
+          });
         dispatch(incrementUnreadCount());
       } else {
         let payload = {
@@ -175,22 +184,23 @@ export default function BookAppointmentScreen({ navigation, route }) {
         console.log('Dispatching bookAppointment', payload);
         dispatch(bookAppointment(payload))
           .unwrap()
-          .then(() => {
-            setModalMessage(t('appointments.alerts.confirmation'));
-            setModalSuccess(true);
-            setModalVisible(true);
-            setTimeout(() => {
-              setModalVisible(false);
-              navigation.navigate('Appointments');
-            }, 2000);
+          .then((appointment) => {
+            if (usuarioId) {
+              dispatch(fetchNotificaciones(usuarioId));
+            }
+            dispatch(fetchAppointments())
+              .then(() => {
+                setLoading(false);
+                navigation.navigate('Appointments', { newAppointmentId: appointment.id });
+              });
           })
           .catch((err) => {
             console.log('Error en bookAppointment:', err);
             setModalMessage(t('book_appointment.alerts.error'));
             setModalSuccess(false);
             setModalVisible(true);
-          })
-          .finally(() => setLoading(false));
+            setLoading(false);
+          });
         dispatch(incrementUnreadCount());
       }
     } else {
@@ -350,3 +360,4 @@ export default function BookAppointmentScreen({ navigation, route }) {
     </AppContainer>
   );
 }
+

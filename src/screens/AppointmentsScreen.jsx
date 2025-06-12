@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Text, TouchableOpacity, Modal, Pressable } from 'react-native';
+import { View, ScrollView, Text, TouchableOpacity, Modal, Pressable, Alert } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAppointments } from '~/store/slices/appointmentsSlice';
 import AppContainer from '../components/AppContainer';
@@ -44,6 +44,34 @@ export default function AppointmentsScreen({ navigation }) {
         .catch((err) => console.error('fetchAppointments failed:', err));
     }
   }, [dispatch]);
+
+  useEffect(() => {
+    if (navigation && navigation.getState) {
+      const state = navigation.getState();
+      const lastRoute = state.routes[state.routes.length - 1];
+      if (lastRoute?.params?.cancelled) {
+        Alert.alert(
+          t('global.alert.success'),
+          t('appointments.alerts.cancel'),
+          [
+            {
+              text: 'OK',
+              onPress: () => {
+                navigation.setParams({ cancelled: undefined });
+              },
+            },
+          ]
+        );
+      }
+      // Si viene de agendar un turno, selecciona upcoming y (opcional) scroll
+      if (lastRoute?.params?.newAppointmentId) {
+        setActiveTab('upcoming');
+        // Opcional: podrías hacer scroll hasta el turno aquí si usas ref
+        // Limpia el parámetro para evitar repeticiones
+        navigation.setParams({ newAppointmentId: undefined });
+      }
+    }
+  }, [navigation, t]);
 
   const handleSelectDate = (date) => {
     if (!startDate || (startDate && endDate)) {
@@ -289,3 +317,4 @@ export default function AppointmentsScreen({ navigation }) {
     </AppContainer>
   );
 }
+

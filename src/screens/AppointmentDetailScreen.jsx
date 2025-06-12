@@ -5,6 +5,7 @@ import { useAppTheme } from '~/providers/ThemeProvider';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AppContainer from '../components/AppContainer';
 import { rescheduleAppointment, cancelAppointment } from "~/store/slices/appointmentsSlice";
+import { fetchNotificaciones } from '~/store/slices/notificationSlice';
 import { useTranslation } from "react-i18next";
 import LoadingOverlay from '~/components/LoadingOverlay'; // Import your LoadingOverlay component
 import '../i18n';
@@ -19,7 +20,8 @@ function parseLocalDate(fechaStr) {
 export default function AppointmentDetailScreen({ route, navigation }) {
   const dispatch = useDispatch();
   const { colorScheme } = useAppTheme();
-  const { status, error } = useSelector((state) => state.appointments);
+  const { status, error, appointmentsByUser } = useSelector((state) => state.appointments);
+  const usuarioId = useSelector((state) => state.user.usuario?.id);
   const { t, i18n } = useTranslation();
   const [isCancelLoading, setIsCancelLoading] = useState(false); // Add local loading state
 
@@ -30,7 +32,9 @@ export default function AppointmentDetailScreen({ route, navigation }) {
   const borderClass = colorScheme === 'light' ? 'border-gray-100' : 'border-gray-600';
 
   const notificacion = route.params?.notificacion;
-  const appointment = notificacion?.turno || route.params?.appointment;
+  const appointmentParam = notificacion?.turno || route.params?.appointment;
+  // Buscar el turno actualizado en el store por id
+  const appointment = appointmentsByUser.find(a => a.id === appointmentParam?.id) || appointmentParam;
 
   const handleReschedule = () => {
     navigation.navigate('BookAppointment', {
@@ -80,9 +84,11 @@ export default function AppointmentDetailScreen({ route, navigation }) {
     dispatch(cancelAppointment(appointment.id))
       .unwrap()
       .then(() => {
+        if (usuarioId) {
+          dispatch(fetchNotificaciones(usuarioId));
+        }
         setIsCancelLoading(false); // Hide LoadingOverlay
-        Alert.alert(t('global.alert.success'), t('appointments.alerts.cancel'));
-        navigation.goBack();
+        navigation.navigate('AppointmentsScreen', { cancelled: true });
       })
       .catch((err) => {
         setIsCancelLoading(false); // Hide LoadingOverlay on error
@@ -192,3 +198,4 @@ export default function AppointmentDetailScreen({ route, navigation }) {
     </AppContainer>
   );
 }
+
