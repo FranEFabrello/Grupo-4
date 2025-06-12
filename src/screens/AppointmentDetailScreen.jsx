@@ -5,7 +5,6 @@ import { useAppTheme } from '~/providers/ThemeProvider';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AppContainer from '../components/AppContainer';
 import { rescheduleAppointment, cancelAppointment } from "~/store/slices/appointmentsSlice";
-import AppointmentCardFullWidth from "~/components/ApptCardForApptScreen";
 import { useTranslation } from "react-i18next";
 import LoadingOverlay from '~/components/LoadingOverlay'; // Import your LoadingOverlay component
 import '../i18n';
