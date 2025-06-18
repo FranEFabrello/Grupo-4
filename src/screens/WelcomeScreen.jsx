@@ -1,66 +1,49 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { useAppTheme } from "~/providers/ThemeProvider";
+import { useAppTheme } from '~/providers/ThemeProvider';
 
 export default function WelcomeScreen({ navigation }) {
   const { t } = useTranslation();
   const { colorScheme } = useAppTheme();
+  const isDark = colorScheme === 'dark';
 
+  const containerClass = isDark ? 'bg-gray-900' : 'bg-gray-100';
+  const textColor = isDark ? 'text-white' : 'text-gray-800';
+  const loginBtnClass = isDark ? 'bg-blue-700' : 'bg-blue-600';
+  const registerBtnClass = isDark ? 'bg-blue-900' : 'bg-blue-800';
+  const cardBgClass = isDark ? 'bg-gray-800' : 'bg-white';
 
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: colorScheme === 'dark' ? '#18181b' : '#f3f4f6',
-        padding: 20,
-      }}
-    >
-      <Text
-        style={{
-          fontSize: 28,
-          fontWeight: 'bold',
-          marginBottom: 40,
-          color: colorScheme === 'dark' ? '#f3f4f6' : '#1f2937',
-        }}
-      >
-        {t('welcome.title')}
-      </Text>
-
-      <TouchableOpacity
-        style={{
-          width: '100%',
-          height: 48,
-          backgroundColor: colorScheme === 'dark' ? '#1d4ed8' : '#2563eb',
-          borderRadius: 8,
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginBottom: 16,
-        }}
-        onPress={() => navigation.navigate('Login')}
-      >
-        <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16 }}>
-          {t('welcome.login_button')}
+    <View className={`flex-1 ${containerClass} justify-center items-center p-6`}>
+      {/* Contenedor central destacado */}
+      <View className={`w-full rounded-2xl p-6 shadow-xl ${cardBgClass}`}>
+        <Text className={`text-3xl font-bold mb-10 text-center ${textColor}`}>
+          {t('welcome.title')}
         </Text>
-      </TouchableOpacity>
 
-      <TouchableOpacity
-        style={{
-          width: '100%',
-          height: 48,
-          backgroundColor: colorScheme === 'dark' ? '#15803d' : '#22c55e',
-          borderRadius: 8,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-        onPress={() => navigation.navigate('Register')}
-      >
-        <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16 }}>
-          {t('welcome.register_button')}
-        </Text>
-      </TouchableOpacity>
+        {/* Botón Login */}
+        <TouchableOpacity
+          activeOpacity={0.8}
+          className={`w-full h-12 rounded-xl justify-center items-center mb-4 shadow-md ${loginBtnClass}`}
+          onPress={() => navigation.navigate('Login')}
+        >
+          <Text className="text-white font-semibold">
+            {t('welcome.login_button')}
+          </Text>
+        </TouchableOpacity>
+
+        {/* Botón Registro */}
+        <TouchableOpacity
+          activeOpacity={0.8}
+          className={`w-full h-12 rounded-xl justify-center items-center shadow-md ${registerBtnClass}`}
+          onPress={() => navigation.navigate('Register')}
+        >
+          <Text className="text-white font-semibold">
+            {t('welcome.register_button')}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }

@@ -415,6 +415,10 @@
       "genero": {
         "es": "Género",
         "en": "Gender"
+      },
+      "insurance": {
+        "es": "Seleccione una obra social",
+        "en": "Select a health insurance"
       }
     },
     "gender": {
@@ -908,6 +912,10 @@
       "es": "Reprogramar",
       "en": "Reschedule"
     },
+    "reschedule_confirmation": {
+      "es": "Este turno ya fue reprogramado con éxito!",
+      "en": "This appointment has been successfully rescheduled!"
+    },
     "cancel_confirmation": {
       "es": "¿Estás seguro de que deseas cancelar este turno?",
       "en": "Are you sure you want to cancel this appointment?"
@@ -1195,10 +1203,18 @@
       "es": "Validando token",
       "en": "Verifying token"
     },
+    "instructions": {
+      "es": "Por favor, ingrese el token recibido por correo electrónico.",
+      "en": "Please enter the token received via email."
+    },
     "alerts": {
       "token_received": {
         "es": "Token recibido",
         "en": "Token received"
+      },
+      "missing_token": {
+        "es": "Por favor, intente nuevamente ingresar el token.",
+        "en": "Please try entering the token again."
       },
       "token_length_error": {
         "es": "El token debe tener 8 caracteres.",

@@ -8,6 +8,7 @@ import {
   fetchAvailableTimeSlots,
   bookAppointment,
   clearAvailableTimeSlots,
+  fetchAppointments,
 } from "~/store/slices/appointmentsSlice";
 import AppContainer from '../components/AppContainer';
 import ProfileField from '../components/ProfileField';
@@ -16,17 +17,23 @@ import TimeSlot from '../components/TimeSlot';
 import { fetchSpecialities } from "~/store/slices/medicalSpecialitiesSlice";
 import { useTranslation } from "react-i18next";
 import LoadingOverlay from '../components/LoadingOverlay';
+import { incrementUnreadCount, fetchNotificaciones } from "~/store/slices/notificationSlice";
+import {
+  rescheduleAppointment
+} from "~/store/slices/appointmentsSlice";
 
 export default function BookAppointmentScreen({ navigation, route }) {
+  const { reprogramming, appointmentId, currentDate, currentStart, currentEnd, specialtyId } = route.params || {};
   const { professionalId } = route.params || {};
   const dispatch = useDispatch();
   const { colorScheme } = useAppTheme();
-  const { t,i18n} = useTranslation();
+  const { t, i18n } = useTranslation();
 
-  const professionals = useSelector((state) => state.professionals.professionals);
-  const { availableDays, availableTimeSlots, status } = useSelector((state) => state.appointments);
+  const professionals = useSelector((state) => state.professionals.professionals || []);
+  const { availableDays = [], availableTimeSlots = [], status = 'idle' } = useSelector((state) => state.appointments || {});
   const usuario = useSelector((state) => state.user.usuario);
-  const specialties = useSelector((state) => state.medicalSpecialities.specialities);
+  const specialties = useSelector((state) => state.medicalSpecialities.specialities || []);
+  const usuarioId = useSelector((state) => state.user.usuario?.id);
 
   const [specialty, setSpecialty] = useState('');
   const [professional, setProfessional] = useState(professionalId || '');
@@ -96,40 +103,106 @@ export default function BookAppointmentScreen({ navigation, route }) {
     return `${start}-${end}`;
   };
 
+  const isTimeSlotPast = (slot, selectedDate) => {
+    const now = new Date();
+    const currentDate = now.toISOString().split('T')[0]; // Fecha actual en formato YYYY-MM-DD
+
+    console.log('isTimeSlotPast - Current Date:', currentDate, 'Selected Date:', selectedDate);
+    console.log('Slot Time:', slot.horaInicio);
+
+    // Si selectedDate está vacío o no es la fecha actual, no filtramos
+    if (!selectedDate || selectedDate !== currentDate) {
+      console.log('Selected date is not today or is empty, allowing slot');
+      return false;
+    }
+
+    // Validar formato de horaInicio
+    let [hours, minutes, seconds = 0] = slot.horaInicio.split(':').map(Number);
+    if (isNaN(hours) || isNaN(minutes)) {
+      return true; // Filtra el slot si el formato es inválido
+    }
+    // Crear slotTime con la fecha actual, ajustando para la zona horaria local
+    const [year, month, day] = currentDate.split('-').map(Number);
+    const slotTime = new Date(year, month - 1, day, hours, minutes, seconds); // Meses en JS son 0-based
+    // Margen de 5 minutos desde la hora actual
+    const bufferMinutes = 5;
+    const bufferTime = new Date(now.getTime() + bufferMinutes * 60 * 1000);
+    return slotTime <= bufferTime;
+  };
+
   const handleConfirm = () => {
-    console.log('handleConfirm called', { specialty, professional, selectedDate, selectedTime });
+    console.log('handleConfirm called', { specialty, professional, selectedDate, selectedTime, reprogramming, appointmentId });
     if (specialty && professional && selectedDate && selectedTime) {
       setLoading(true);
-      const payload = {
-        doctorId: professional,
-        usuarioId: usuario?.id,
-        fecha: selectedDate,
-        horaInicio: selectedTime.horaInicio.substring(0, 5),
-        horaFin: selectedTime.horaFin.substring(0, 5),
-        nota: 'Consulta general', //CAMBIAR
-        archivoAdjunto: null,
-        estado: 'PENDIENTE',
-      };
-      console.log('Dispatching bookAppointment', payload);
-      dispatch(bookAppointment(payload))
-        .unwrap()
-        .then(() => {
-          setModalMessage(t('appointments.alerts.confirmation'));
-          setModalSuccess(true);
-          setModalVisible(true);
-          setTimeout(() => {
-            setModalVisible(false);
-            navigation.navigate('Appointments');
-          }, 2000); // espera 2 segundos y navega
-        })
 
-        .catch((err) => {
-          console.log('Error en bookAppointment:', err);
-          setModalMessage(t('book_appointment.alerts.error'));
-          setModalSuccess(false);
-          setModalVisible(true);
-        })
-        .finally(() => setLoading(false));
+      if (reprogramming && appointmentId) {
+        dispatch(
+          rescheduleAppointment({
+            turnoId: appointmentId,
+            nuevaFecha: selectedDate,
+            nuevaHoraInicio: selectedTime.horaInicio.substring(0, 5),
+            nuevaHoraFin: selectedTime.horaFin.substring(0, 5),
+          })
+        )
+          .unwrap()
+          .then(() => {
+            if (usuarioId) {
+              dispatch(fetchNotificaciones(usuarioId));
+            }
+            dispatch(fetchAppointments())
+              .then(() => {
+                setLoading(false);
+                setModalMessage(t('appointments.reschedule_confirmation'));
+                setModalSuccess(true);
+                setModalVisible(true);
+                setTimeout(() => {
+                  setModalVisible(false);
+                  navigation.navigate('Appointments');
+                }, 2000);
+              });
+          })
+          .catch((err) => {
+            console.log('Error en rescheduleAppointment:', err);
+            setModalMessage(t('book_appointment.alerts.error'));
+            setModalSuccess(false);
+            setModalVisible(true);
+            setLoading(false);
+          });
+        dispatch(incrementUnreadCount());
+      } else {
+        let payload = {
+          doctorId: professional,
+          usuarioId: usuario?.id,
+          fecha: selectedDate,
+          horaInicio: selectedTime.horaInicio.substring(0, 5),
+          horaFin: selectedTime.horaFin.substring(0, 5),
+          nota: 'Consulta general',
+          archivoAdjunto: null,
+          estado: 'PENDIENTE',
+        };
+
+        console.log('Dispatching bookAppointment', payload);
+        dispatch(bookAppointment(payload))
+          .unwrap()
+          .then((appointment) => {
+            if (usuarioId) {
+              dispatch(fetchNotificaciones(usuarioId));
+            }
+            dispatch(fetchAppointments())
+              .then(() => {
+                setLoading(false);
+                navigation.navigate('Appointments', { newAppointmentId: appointment.id });
+              });
+          })
+          .catch((err) => {
+            console.log('Error en bookAppointment:', err);
+            setModalMessage(t('book_appointment.alerts.error'));
+            setModalSuccess(false);
+            setModalVisible(true);
+            setLoading(false);
+          });
+        dispatch(incrementUnreadCount());
+      }
     } else {
       console.log('Campos faltantes en handleConfirm');
       setModalMessage(t('book_appointment.alerts.missing_fields'));
@@ -217,15 +290,17 @@ export default function BookAppointmentScreen({ navigation, route }) {
                     {status === 'loading' ? (
                       <ActivityIndicator size="large" color={colorScheme === 'light' ? '#2563eb' : '#60a5fa'} />
                     ) : availableTimeSlots.length > 0 ? (
-                      availableTimeSlots.map((slot, index) => (
-                        <TimeSlot
-                          key={index}
-                          time={formatTimeSlot(slot)}
-                          isSelected={selectedTime?.horaInicio === slot.horaInicio}
-                          onSelect={() => setSelectedTime(slot)}
-                          colorScheme={colorScheme}
-                        />
-                      ))
+                      availableTimeSlots
+                        .filter((slot) => !isTimeSlotPast(slot, selectedDate))
+                        .map((slot, index) => (
+                          <TimeSlot
+                            key={index}
+                            time={formatTimeSlot(slot)}
+                            isSelected={selectedTime?.horaInicio === slot.horaInicio}
+                            onSelect={() => setSelectedTime(slot)}
+                            colorScheme={colorScheme}
+                          />
+                        ))
                     ) : (
                       <Text className={`text-base ${secondaryTextClass}`}>{t('book_appointment.no_times')}</Text>
                     )}
@@ -234,7 +309,6 @@ export default function BookAppointmentScreen({ navigation, route }) {
               )}
             </View>
           </ScrollView>
-          {/* Botón flotante de confirmar turno */}
           {selectedTime && (
             <View style={{ position: 'absolute', left: 0, right: 0, bottom: 20, alignItems: 'center', zIndex: 10 }} pointerEvents="box-none">
               <TouchableOpacity
@@ -253,7 +327,6 @@ export default function BookAppointmentScreen({ navigation, route }) {
               </TouchableOpacity>
             </View>
           )}
-          {/* Modal de confirmación */}
           <Modal
             visible={modalVisible}
             transparent
@@ -265,7 +338,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
           >
             <View className="flex-1 justify-center items-center bg-black/50">
               <View className={`w-80 p-6 rounded-2xl ${cardClass} items-center shadow-2xl`}>
-                <Text className={`text-lg font-semibold mb-4 ${modalSuccess ? 'text-green-500' : 'text-red-500'}`}>{modalMessage}</Text>
+                <Text className={`text-lg font-semibold mb-4 text-center ${modalSuccess ? 'text-green-500' : 'text-red-500'}`}>{modalMessage}</Text>
                 <TouchableOpacity
                   className={`px-6 py-3 rounded-xl ${primaryButtonClass}`}
                   onPress={() => {
@@ -287,3 +360,4 @@ export default function BookAppointmentScreen({ navigation, route }) {
     </AppContainer>
   );
 }
+

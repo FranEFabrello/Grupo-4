@@ -1,19 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react'; // Import useState
 import { View, Text, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useAppTheme } from '~/providers/ThemeProvider';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AppContainer from '../components/AppContainer';
 import { rescheduleAppointment, cancelAppointment } from "~/store/slices/appointmentsSlice";
-import AppointmentCardFullWidth from "~/components/ApptCardForApptScreen";
+import { fetchNotificaciones } from '~/store/slices/notificationSlice';
 import { useTranslation } from "react-i18next";
-import '../i18n'; // Import your i18n configuration
+import LoadingOverlay from '~/components/LoadingOverlay'; // Import your LoadingOverlay component
+import '../i18n';
 
 function parseLocalDate(fechaStr) {
   if (!fechaStr) return null;
-  // Si ya tiene T y zona, simplemente crea el Date
   if (fechaStr.includes('T')) return new Date(fechaStr);
-  // Si solo viene YYYY-MM-DD, parsea como local
   const [year, month, day] = fechaStr.split('-').map(Number);
   return new Date(year, month - 1, day);
 }
@@ -21,8 +20,10 @@ function parseLocalDate(fechaStr) {
 export default function AppointmentDetailScreen({ route, navigation }) {
   const dispatch = useDispatch();
   const { colorScheme } = useAppTheme();
-  const { status, error } = useSelector((state) => state.appointments);
+  const { status, error, appointmentsByUser } = useSelector((state) => state.appointments);
+  const usuarioId = useSelector((state) => state.user.usuario?.id);
   const { t, i18n } = useTranslation();
+  const [isCancelLoading, setIsCancelLoading] = useState(false); // Add local loading state
 
   const containerClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-800';
   const textClass = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
@@ -31,9 +32,10 @@ export default function AppointmentDetailScreen({ route, navigation }) {
   const borderClass = colorScheme === 'light' ? 'border-gray-100' : 'border-gray-600';
 
   const notificacion = route.params?.notificacion;
-  const appointment = notificacion?.turno || route.params?.appointment;
+  const appointmentParam = notificacion?.turno || route.params?.appointment;
+  // Buscar el turno actualizado en el store por id
+  const appointment = appointmentsByUser.find(a => a.id === appointmentParam?.id) || appointmentParam;
 
-  // Navega a la pantalla de reprogramación, pasando los datos del turno y doctor
   const handleReschedule = () => {
     navigation.navigate('BookAppointment', {
       reprogramming: true,
@@ -78,13 +80,18 @@ export default function AppointmentDetailScreen({ route, navigation }) {
   const statusConfig = getStatusConfig(appointment.estado);
 
   const handleCancel = () => {
+    setIsCancelLoading(true); // Show LoadingOverlay
     dispatch(cancelAppointment(appointment.id))
       .unwrap()
       .then(() => {
-        Alert.alert(t('global.alert.success'), t('appointments.alerts.cancel'));
-        navigation.goBack();
+        if (usuarioId) {
+          dispatch(fetchNotificaciones(usuarioId));
+        }
+        setIsCancelLoading(false); // Hide LoadingOverlay
+        navigation.navigate('AppointmentsScreen', { cancelled: true });
       })
       .catch((err) => {
+        setIsCancelLoading(false); // Hide LoadingOverlay on error
         Alert.alert('Error', err || t('appointments.alerts.cancel_error'));
       });
   };
@@ -99,7 +106,6 @@ export default function AppointmentDetailScreen({ route, navigation }) {
               <Text className={`text-2xl font-bold ${textClass}`}>
                 {t('appointments.medic_book')}
               </Text>
-              {/* Badge de estado */}
               <View className={`flex-row items-center ${statusConfig.bgColor} border ${statusConfig.borderColor} px-3 py-2 rounded-full`}>
                 <Icon
                   name={statusConfig.icon}
@@ -162,8 +168,8 @@ export default function AppointmentDetailScreen({ route, navigation }) {
           </View>
 
           {/* Botón de cancelar y reprogramar */}
-          {status === 'loading' ? (
-            <ActivityIndicator size="large" color={colorScheme === 'light' ? '#2563EB' : '#60A5FA'} />
+          {status === 'loading' || isCancelLoading ? (
+            <LoadingOverlay /> // Show LoadingOverlay when canceling
           ) : appointment.estado === 'CONFIRMADO' ? (
             <View className="flex-row">
               <TouchableOpacity
@@ -188,6 +194,8 @@ export default function AppointmentDetailScreen({ route, navigation }) {
           ) : null}
         </View>
       </ScrollView>
+      {isCancelLoading && <LoadingOverlay />}
     </AppContainer>
   );
 }
+

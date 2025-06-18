@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Modal, ScrollView, Text, TextInput, TouchableOpacity, View, useColorScheme } from "react-native";
+import { Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchSpecialities } from "~/store/slices/medicalSpecialitiesSlice";
 import AppContainer from "../components/AppContainer";
-import DoctorCard from "../components/DoctorCard";
+import DoctorCardForProf from "~/components/DoctorCardForProf";
 import FilterButton from "../components/FilterButton";
 import { useTranslation } from 'react-i18next';
 import { fetchProfessionals } from "~/store/slices/professionalsSlice";
 import { useAppTheme } from "~/providers/ThemeProvider";
-import DoctorCardForProf from "~/components/DoctorCardForProf";
 
 export default function ProfessionalsScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -66,7 +65,6 @@ export default function ProfessionalsScreen({ navigation }) {
         : true,
     );
 
-
   return (
     <AppContainer navigation={navigation} screenTitle={t('professionals.title')}>
       <ScrollView className="p-5">
@@ -116,7 +114,7 @@ export default function ProfessionalsScreen({ navigation }) {
           {status === "loading" ? (
             <Text className={`text-sm ${secondaryText}`}>{t('global.alert.loading')}</Text>
           ) : filteredProfessionals.length > 0 ? (
-            <View className="flex-row flex-wrap justify-between gap-y-4">
+            <View className="flex-col gap-y-2">
               {filteredProfessionals.map((prof) => (
                 <DoctorCardForProf
                   key={prof.id}
@@ -134,8 +132,10 @@ export default function ProfessionalsScreen({ navigation }) {
                       professionalId: prof.id,
                     })
                   }
-                  containerClassName="w-[48%]"
+                  onPress={() => navigation.navigate('DoctorProfileScreen', { doctorId: prof.id })}
+                  containerClassName="w-full"
                   colorScheme={colorScheme}
+                  cardHeight={140} // Reducido para un diseño más compacto
                 />
               ))}
             </View>
@@ -159,7 +159,6 @@ export default function ProfessionalsScreen({ navigation }) {
             <Text className={`font-bold text-lg mb-2.5 ${primaryText}`}>
               {t('professionals.filter_especiality')}
             </Text>
-            {/* Barra de búsqueda de especialidad */}
             <View className="flex-row items-center mb-2.5">
               <Icon
                 name="search"
@@ -241,3 +240,4 @@ export default function ProfessionalsScreen({ navigation }) {
     </AppContainer>
   );
 }
+

@@ -8,8 +8,8 @@ import FilterButton from '../components/FilterButton';
 import DateRangeFilterModal from '../components/DateRangeFilterModal';
 import { useTranslation } from 'react-i18next';
 import { useAppTheme } from '~/providers/ThemeProvider';
-import {showToast} from "~/components/ToastProvider";
-import {Platform, Linking } from 'react-native';
+import { showToast } from "~/components/ToastProvider";
+import { Platform, Linking } from 'react-native';
 
 export default function ResultsScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -30,7 +30,8 @@ export default function ResultsScreen({ navigation }) {
   const [startDate, setStartDate] = React.useState(null);
   const [endDate, setEndDate] = React.useState(null);
 
-  const userId = useSelector((state) => state.user.usuario.id);
+  const usuario = useSelector((state) => state.user.usuario);
+  const userId = usuario?.id;
 
   // Lógica para seleccionar fechas
   const handleSelectDate = (date) => {
@@ -68,10 +69,12 @@ export default function ResultsScreen({ navigation }) {
   }, [results, startDate, endDate]);
 
   useEffect(() => {
-    console.log('Fetching results for user ID:', userId);
-    dispatch(fetchResults(userId));
-    console.log('Fetching results for user ID2:', userId);
-  }, [dispatch]);
+    if (userId) {
+      dispatch(fetchResults(userId));
+    } else {
+      console.log('No user ID available, skipping fetchResults');
+    }
+  }, [dispatch, userId]);
 
   return (
     <AppContainer navigation={navigation} screenTitle={t('results.screen_title')}>
@@ -89,7 +92,9 @@ export default function ResultsScreen({ navigation }) {
               iconColor="#FFFFFF"
             />
           </View>
-          {status === 'loading' ? (
+          {(!userId) ? (
+            <Text className={`text-sm ${secondaryText}`}>{t('results.no_user')}</Text>
+          ) : status === 'loading' ? (
             <Text className={`text-sm ${secondaryText}`}>{t('global.alert.loading')}</Text>
           ) : filteredResults.length > 0 ? (
             filteredResults.map((result) => (
@@ -120,16 +125,14 @@ export default function ResultsScreen({ navigation }) {
                         }
 
                         if (Platform.OS === 'web') {
-                          // Web: Forzar descarga real con <a download>
                           const link = document.createElement('a');
                           link.href = url;
-                          link.setAttribute('download', ''); // Forzar descarga con el nombre por defecto
+                          link.setAttribute('download', '');
                           link.setAttribute('target', '_blank');
                           document.body.appendChild(link);
                           link.click();
                           document.body.removeChild(link);
                         } else {
-                          // Móvil: abrir en navegador o app correspondiente
                           const supported = await Linking.canOpenURL(url);
                           if (!supported) {
                             throw new Error('No se puede abrir este enlace en el dispositivo.');
@@ -168,7 +171,6 @@ export default function ResultsScreen({ navigation }) {
           )}
         </View>
       </ScrollView>
-      {/* Modal para filtrar por rango de fechas */}
       <DateRangeFilterModal
         visible={showFilterModal}
         startDate={startDate}

@@ -1,4 +1,4 @@
-import React, {useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Text, TouchableOpacity, Switch, TextInput } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
 import { updateProfile } from "~/store/slices/profileSlice";
@@ -7,15 +7,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AppContainer from '../components/AppContainer';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Picker } from '@react-native-picker/picker';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'i18next';
 import { useAppTheme } from '~/providers/ThemeProvider';
 import { Image } from 'react-native';
-import { useEffect } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { uploadImageToFirebase } from "~/api/FirebaseConfig";
 import { logout } from "~/store/slices/authSlice";
 import { showToast } from '~/components/ToastProvider';
-
 
 export default function UserProfileScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -28,12 +26,11 @@ export default function UserProfileScreen({ navigation }) {
   const [dni, setDni] = useState('');
   const [celular, setCelular] = useState('');
   const [genero, setGenero] = useState('');
-  const [urlImagenPerfil, SetUrlImagenPerfil] = useState('');
+  const [urlImagenPerfil, setUrlImagenPerfil] = useState('');
   const [editable, setEditable] = useState(false);
 
   const { status, error } = useSelector((state) => state.user);
   const usuario = useSelector((state) => state.user.usuario);
-  const user=useSelector((state) => state.user);
 
   // Theme variables
   const containerBg = colorScheme === 'light' ? 'bg-white' : 'bg-gray-700';
@@ -62,6 +59,14 @@ export default function UserProfileScreen({ navigation }) {
       setDni(usuario.dni || '');
       setCelular(usuario.celular || '');
       setGenero(usuario.genero || '');
+      setUrlImagenPerfil(usuario.urlimagenperfil || '');
+    } else {
+      setNombre('');
+      setApellido('');
+      setDni('');
+      setCelular('');
+      setGenero('');
+      setUrlImagenPerfil('');
     }
   }, [usuario]);
 
@@ -87,7 +92,7 @@ export default function UserProfileScreen({ navigation }) {
     if (celular !== usuario.celular) updates.celular = celular;
     if (genero !== usuario.genero) updates.genero = genero;
 
-    if (Object.keys(updates).length === 0) {
+    if (Object.keys(updates).length === 0 && urlImagenPerfil === usuario.urlimagenperfil) {
       setEditable(false);
       showToast(
         'info',
@@ -97,7 +102,7 @@ export default function UserProfileScreen({ navigation }) {
       return;
     }
 
-    dispatch(updateProfile(updates))
+    dispatch(updateProfile({ ...updates, urlimagenperfil: urlImagenPerfil }))
       .unwrap()
       .then(() => {
         showToast(
@@ -117,46 +122,36 @@ export default function UserProfileScreen({ navigation }) {
   };
 
   const handleLogout = async () => {
-    const userForLogout = {
-      nombre: '',
-      apellido: '',
-      correo: '',
-      urlimagenperfil: '',
-      idioma: 'es',
-      celular: '',
-      cuentaActiva: null,
-      dni: '',
-      edad: '',
-      fcmToken: '',
-      fechaNacimiento: '',
-      genero: '',
-      id: '',
-      obraSocialId: '',
-      sesionActiva: null
-    };
-
-    // Limpiar AsyncStorage
     try {
+      // Limpiar AsyncStorage
       const AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
       await AsyncStorage.clear();
-    } catch (e) {
-      console.warn('No se pudo limpiar AsyncStorage:', e);
-    }
+      console.log('AsyncStorage limpiado correctamente');
 
-    // Limpiar usuario en redux
-    console.log('isAuthenticated antes de logout:', user?.isAuthenticated);
-    dispatch(logout());
-    console.log('isAuthenticated después de logout:', user?.isAuthenticated);
+      // Limpiar estado de Redux
+      dispatch(logout());
+      dispatch({ type: 'user/setUsuario', payload: null }); // Asegurar que usuario sea null
+      dispatch({ type: 'user/setIsAuthenticated', payload: false });
 
-// Reiniciar el stack de navegación y llevar a Welcome
-    navigation.navigate('Welcome')
+      // Cerrar sesión en backend si corresponde
+      if (usuario && usuario.id) {
+        await dispatch(cerrarSesion(usuario.id)).unwrap();
+      } else {
+        await dispatch(cerrarSesion()).unwrap();
+      }
 
-// Cerrar sesión en backend si corresponde
-    dispatch({ type: 'user/setIsAuthenticated', payload: false });
-    if (usuario && usuario.id) {
-      dispatch(cerrarSesion(usuario.id));
-    } else {
-      dispatch(cerrarSesion());
+      // Reiniciar el stack de navegación
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Welcome' }],
+      });
+    } catch (error) {
+      console.error('Error durante el logout:', error);
+      showToast(
+        'error',
+        t('user_profile.alerts.logout_error_title'),
+        t('user_profile.alerts.logout_error') || 'Error al cerrar sesión.'
+      );
     }
   };
 
@@ -164,9 +159,9 @@ export default function UserProfileScreen({ navigation }) {
     try {
       const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (!permissionResult.granted) {
-        shotToast(
+        showToast(
           'error',
-          t('global-alert.denied_access_title'),
+          t('global.alert.denied_access_title'),
           t('global.alert.denied_access')
         );
         return;
@@ -182,7 +177,7 @@ export default function UserProfileScreen({ navigation }) {
       await handleImageChange(result);
     } catch (error) {
       console.error('Error al seleccionar la imagen:', error);
-      showToast('error','Error', t('global.alert.no_selected_image'));
+      showToast('error', 'Error', t('global.alert.no_selected_image'));
     }
   };
 
@@ -191,7 +186,7 @@ export default function UserProfileScreen({ navigation }) {
       if (!imageResult.canceled) {
         const imageUri = imageResult.assets[0].uri;
         const url = await uploadImageToFirebase(imageUri);
-        SetUrlImagenPerfil(url);
+        setUrlImagenPerfil(url);
 
         if (usuario && usuario.correo) {
           console.log("entrado a updateProfile para la imagen: ", url, imageUri);
@@ -233,9 +228,9 @@ export default function UserProfileScreen({ navigation }) {
                 accessibilityLabel={t('user_profile.buttons.edit_avatar')}
               >
                 <View className={`w-24 h-24 ${avatarBg} rounded-full justify-center items-center overflow-hidden mb-2`}>
-                  {usuario.urlimagenperfil ? (
+                  {urlImagenPerfil || (usuario.urlimagenperfil && usuario.urlimagenperfil !== '') ? (
                     <Image
-                      source={{ uri: usuario.urlimagenperfil }}
+                      source={{ uri: urlImagenPerfil || usuario.urlimagenperfil }}
                       className="w-full h-full"
                       resizeMode="cover"
                       onError={() => console.log(t('user_profile.alerts.no_img'))}
@@ -249,7 +244,6 @@ export default function UserProfileScreen({ navigation }) {
                     />
                   )}
                 </View>
-                {/* Icono de lápiz sobresaliendo abajo a la derecha */}
                 <View style={{
                   position: 'absolute',
                   right: 0,
@@ -295,7 +289,7 @@ export default function UserProfileScreen({ navigation }) {
               <TextInput
                 className={`rounded-xl ${inputBg} ${borderColor} border p-3 mb-2 text-sm ${editable ? primaryText : secondaryText}`}
                 value={dni}
-                onChangeText={setDni}
+                onChangeText={(text) => setDni(text.replace(/\D/g, '').slice(0, 9))}
                 editable={editable}
               />
 
@@ -329,9 +323,21 @@ export default function UserProfileScreen({ navigation }) {
                     minHeight: 48,
                   }}
                 >
-                  <Picker.Item label={t('user_profile.fields.gender.M')} value="masculino" />
-                  <Picker.Item label={t('user_profile.fields.gender.F')} value="femenino" />
-                  <Picker.Item label={t('user_profile.fields.gender.O')} value="otros" />
+                  <Picker.Item
+                    label={t('user_profile.fields.gender.M')}
+                    value="masculino"
+                    color={colorScheme === 'light' ? '#1f2937' : '#000'}
+                  />
+                  <Picker.Item
+                    label={t('user_profile.fields.gender.F')}
+                    value="femenino"
+                    color={colorScheme === 'light' ? '#1f2937' : '#000'}
+                  />
+                  <Picker.Item
+                    label={t('user_profile.fields.gender.O')}
+                    value="otros"
+                    color={colorScheme === 'light' ? '#1f2937' : '#000'}
+                  />
                 </Picker>
               </View>
 
@@ -354,7 +360,9 @@ export default function UserProfileScreen({ navigation }) {
               </TouchableOpacity>
             </View>
           </>
-        ) : null}
+        ) : (
+          <Text className={`text-sm ${secondaryText}`}>{t('user_profile.alerts.no_user')}</Text>
+        )}
       </ScrollView>
     </AppContainer>
   );

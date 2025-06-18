@@ -1,10 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProfessionals } from '~/store/slices/professionalsSlice';
-import { fetchUserByToken } from "~/store/slices/userSlice";
-import { fetchAppointments } from '~/store/slices/appointmentsSlice';
-import { fetchSpecialities } from '~/store/slices/medicalSpecialitiesSlice';
 import AppContainer from '../components/AppContainer';
 import QuickActions from '../components/QuickActions';
 import AppointmentCard from '../components/AppointmentCard';
@@ -15,18 +11,20 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import TestToastButton from "~/components/TestToastButton";
 import { useAppTheme} from "~/providers/ThemeProvider";
 import { fetchNotificaciones } from "~/store/slices/notificationSlice";
+import { useAppInitialData } from "~/components/useAppInitialData";
 
 export default function HomeScreen({ navigation }) {
-  const dispatch = useDispatch();
   const { colorScheme } = useAppTheme();
   const { status: appointmentsStatus } = useSelector((state) => state.appointments);
   const appointments = useSelector((state) => state.appointments.appointmentsByUser);
   const { professionals, status: professionalsStatus } = useSelector((state) => state.professionals);
   const usuario = useSelector((state) => state.user.usuario);
   const specialities = useSelector((state) => state.medicalSpecialities.specialities);
-  const { t,i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
 
-
+  // Usar useAppInitialData para mantener la lógica de carga
+  useAppInitialData();
+/*
   useEffect(() => {
     if (!professionals || professionals.length === 0) {
       dispatch(fetchProfessionals());
@@ -54,10 +52,10 @@ export default function HomeScreen({ navigation }) {
     if (specialities.length === 0) {
       dispatch(fetchSpecialities());
     }
-  }, [dispatch, usuario]);
+  }, [dispatch, usuario]);*/
 
   // Sincroniza idioma y tema con AsyncStorage cuando cambia el usuario
-  useEffect(() => {
+  /*useEffect(() => {
     (async () => {
       if (usuario && usuario.idioma) await AsyncStorage.setItem('language', usuario.idioma);
       if (usuario && typeof usuario.modoOscuro === 'boolean') {
@@ -65,7 +63,7 @@ export default function HomeScreen({ navigation }) {
       }
     })();
   }, [usuario]);
-
+*/
 
   const quickActions = [
     { icon: 'calendar-plus', label: t('book_appointment.title'), screen: 'BookAppointment' },
@@ -186,6 +184,7 @@ export default function HomeScreen({ navigation }) {
                     onBook={() =>
                       navigation.navigate('BookAppointment', { professionalId: doctor.id })
                     }
+                    onPress={() => navigation.navigate('DoctorProfileScreen', { doctor })}
                     containerClassName="w-64"
                     colorScheme={colorScheme}
                   />
@@ -207,10 +206,11 @@ export default function HomeScreen({ navigation }) {
             <Text className="text-white text-sm font-semibold">{t('home.medical_news.title')}</Text>
           </TouchableOpacity>
 
-          <TestToastButton />
+          {/*<TestToastButton />*/}
 
         </View>
       </ScrollView>
     </AppContainer>
   );
 }
+
