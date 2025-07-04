@@ -121,7 +121,7 @@ export default function ResultsScreen({ navigation }) {
                       try {
                         const url = result.linkEstudio;
                         if (!url) {
-                          throw new Error(t('results.download.empty') || 'No hay enlace disponible.');
+                          throw new Error(t('results.empty') || 'No hay enlace disponible.');
                         }
 
                         if (Platform.OS === 'web') {
@@ -161,13 +161,13 @@ export default function ResultsScreen({ navigation }) {
                   </TouchableOpacity>
                 ) : (
                   <Text className={`text-sm italic ${secondaryText}`}>
-                    {t('results.download.empty') || 'No se adjuntó ningún archivo.'}
+                    {t('results.empty') || 'No se adjuntó ningún archivo.'}
                   </Text>
                 )}
               </View>
             ))
           ) : (
-            <Text className={`text-sm ${secondaryText}`}>{t('results.download.empty')}</Text>
+            <Text className={`text-sm ${secondaryText}`}>{t('results.empty')}</Text>
           )}
         </View>
       </ScrollView>

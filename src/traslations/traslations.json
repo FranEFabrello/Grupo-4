@@ -739,6 +739,18 @@
     "book_button": {
       "es": "Reservar Turno",
       "en": "Book Appointment"
+    },
+    "consultation": {
+      "es": "Horas de atención",
+      "en": "Consultation hours"
+    },
+    "no_times": {
+      "es": "Sin horarios registrados.",
+      "en": "No registered times."
+    },
+    "non_working": {
+      "es": "Días no laborables: ",
+      "en": "Non-working days: "
     }
   },
 

@@ -102,7 +102,7 @@ export default function DoctorProfileScreen({ navigation, route }) {
           <View className={`border-t pt-4 ${borderClass}`}>
             <Text className={`text-lg font-semibold ${textPrimary} mb-2`}>{t('doctor_profile.additional_info')}</Text>
             <Text className={`text-sm ${textSecondary} mb-4`}>{doctorData.informacionAdicional || t('doctor_profile.no_additional_info')}</Text>
-            <Text className={`text-lg font-semibold ${textPrimary} mb-2`}>Horarios de atención</Text>
+            <Text className={`text-lg font-semibold ${textPrimary} mb-2`}>{t('doctor_profile.consultation')}</Text>
             {/* Días laborables */}
             {workingDays.length > 0 ? (
               workingDays.map((sch, idx) => (
@@ -116,12 +116,12 @@ export default function DoctorProfileScreen({ navigation, route }) {
                 </View>
               ))
             ) : (
-              <Text className={`text-sm ${textSecondary}`}>Sin horarios registrados</Text>
+              <Text className={`text-sm ${textSecondary}`}>{t('doctor_profile.no_times')}</Text>
             )}
             {/* Días no laborables */}
             {nonWorkingDays.length > 0 && (
               <View className="mb-2 mt-2">
-                <Text className={`text-sm font-semibold mb-1 ${nonWorkingLabel}`}>Días no laborables:</Text>
+                <Text className={`text-sm font-semibold mb-1 ${nonWorkingLabel}`}>{t('doctor_profile.non_working')}</Text>
                 <View className="flex-row flex-wrap">
                   {nonWorkingDays.map((sch, idx) => (
                     <View key={idx} className={`${nonWorkingBg} border rounded-lg px-2 py-1 mr-2 mb-2`}>
