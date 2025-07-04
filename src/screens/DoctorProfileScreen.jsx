@@ -6,7 +6,7 @@ import AppContainer from '../components/AppContainer';
 import { fetchProfessionals } from '~/store/slices/professionalsSlice';
 import { fetchSpecialities } from '~/store/slices/medicalSpecialitiesSlice';
 import { useTranslation } from 'react-i18next';
-import { useAppTheme } from "../providers/ThemeProvider";
+import { useAppTheme } from "~/providers/ThemeProvider";
 
 export default function DoctorProfileScreen({ navigation, route }) {
   const { t } = useTranslation();

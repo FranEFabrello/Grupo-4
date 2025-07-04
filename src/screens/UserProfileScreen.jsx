@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AppContainer from '../components/AppContainer';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Picker } from '@react-native-picker/picker';
-import { useTranslation } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { useAppTheme } from '~/providers/ThemeProvider';
 import { Image } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
