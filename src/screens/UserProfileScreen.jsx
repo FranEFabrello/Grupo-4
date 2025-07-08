@@ -28,6 +28,8 @@ export default function UserProfileScreen({ navigation }) {
   const [genero, setGenero] = useState('');
   const [urlImagenPerfil, setUrlImagenPerfil] = useState('');
   const [editable, setEditable] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [pendingUpdates, setPendingUpdates] = useState(null);
 
   const { status, error } = useSelector((state) => state.user);
   const usuario = useSelector((state) => state.user.usuario);
@@ -77,11 +79,6 @@ export default function UserProfileScreen({ navigation }) {
     }
 
     if (!usuario || !usuario.correo) {
-      showToast(
-        'error',
-        t('user_profile.alerts.not_identified_title'),
-        t('user_profile.alerts.not_identified')
-      );
       return;
     }
 
@@ -93,32 +90,48 @@ export default function UserProfileScreen({ navigation }) {
     if (genero !== usuario.genero) updates.genero = genero;
 
     if (Object.keys(updates).length === 0 && urlImagenPerfil === usuario.urlimagenperfil) {
-      setEditable(false);
-      showToast(
-        'info',
-        t('user_profile.alerts.no_changes_title'),
-        t('user_profile.alerts.no_changes')
-      );
+      // No hay cambios, no permitir guardar
       return;
     }
 
-    dispatch(updateProfile({ ...updates, urlimagenperfil: urlImagenPerfil }))
+    // Guardar los cambios pendientes y mostrar el modal
+    setPendingUpdates({ ...updates, urlimagenperfil: urlImagenPerfil });
+    setShowModal(true);
+  };
+
+  const handleConfirmSave = () => {
+    if (!pendingUpdates) return;
+    dispatch(updateProfile(pendingUpdates))
       .unwrap()
       .then(() => {
-        showToast(
-          'success',
-          t('user_profile.alerts.updated_title'),
-          t('user_profile.alerts.updated')
-        );
         setEditable(false);
+        setShowModal(false);
+        setPendingUpdates(null);
+        // Reiniciar la app
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Welcome' }],
+        });
       })
       .catch(() => {
-        showToast(
-          'error',
-          t('user_profile.alerts.update_error_title'),
-          t('user_profile.alerts.update_error')
-        );
+        setShowModal(false);
+        setPendingUpdates(null);
       });
+  };
+
+  const handleCancelSave = () => {
+    setShowModal(false);
+    setPendingUpdates(null);
+  };
+
+  const handleCancelEdit = () => {
+    setEditable(false);
+    setNombre(usuario?.nombre || '');
+    setApellido(usuario?.apellido || '');
+    setDni(usuario?.dni || '');
+    setCelular(usuario?.celular || '');
+    setGenero(usuario?.genero || '');
+    setUrlImagenPerfil(usuario?.urlimagenperfil || '');
   };
 
   const handleLogout = async () => {
@@ -147,11 +160,7 @@ export default function UserProfileScreen({ navigation }) {
       });
     } catch (error) {
       console.error('Error durante el logout:', error);
-      showToast(
-        'error',
-        t('user_profile.alerts.logout_error_title'),
-        t('user_profile.alerts.logout_error') || 'Error al cerrar sesión.'
-      );
+      // Aquí se puede manejar el error si es necesario
     }
   };
 
@@ -159,11 +168,6 @@ export default function UserProfileScreen({ navigation }) {
     try {
       const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (!permissionResult.granted) {
-        showToast(
-          'error',
-          t('global.alert.denied_access_title'),
-          t('global.alert.denied_access')
-        );
         return;
       }
 
@@ -177,7 +181,7 @@ export default function UserProfileScreen({ navigation }) {
       await handleImageChange(result);
     } catch (error) {
       console.error('Error al seleccionar la imagen:', error);
-      showToast('error', 'Error', t('global.alert.no_selected_image'));
+      // Aquí se puede manejar el error si es necesario
     }
   };
 
@@ -193,21 +197,65 @@ export default function UserProfileScreen({ navigation }) {
           dispatch(updateProfile({ urlimagenperfil: url }))
             .unwrap()
             .then(() => {
-              showToast('success', t('user_profile.alerts.updated_title'), t('user_profile.alerts.updated'));
+              // Aquí se puede manejar el éxito si es necesario
             })
             .catch(() => {
-              showToast('error', 'Error', t('user_profile.alerts.update_error'));
+              // Aquí se puede manejar el error si es necesario
             });
         }
       }
     } catch (error) {
       console.error("Error al subir imagen de perfil:", error);
-      showToast('error', 'Error', t('global.alert.no_selected_image'));
+      // Aquí se puede manejar el error si es necesario
     }
   };
 
+  // Modal de confirmación
+  const renderModal = () => (
+    showModal && (
+      <View style={{
+        position: 'absolute',
+        top: 0, left: 0, right: 0, bottom: 0,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 999,
+      }}>
+        <View style={{
+          backgroundColor: '#fff',
+          borderRadius: 16,
+          padding: 24,
+          width: '80%',
+          alignItems: 'center',
+        }}>
+          <Text style={{ fontSize: 16, fontWeight: 'bold', marginBottom: 12 }}>
+            ¿Aplicar cambios?
+          </Text>
+          <Text style={{ fontSize: 14, marginBottom: 24, textAlign: 'center' }}>
+            Si aplicas los cambios, la aplicación se reiniciará para reflejarlos.
+          </Text>
+          <View style={{ flexDirection: 'row', gap: 12 }}>
+            <TouchableOpacity
+              style={{ backgroundColor: '#2563EB', borderRadius: 8, padding: 12, marginRight: 8 }}
+              onPress={handleConfirmSave}
+            >
+              <Text style={{ color: '#fff', fontWeight: 'bold' }}>Aplicar y reiniciar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{ backgroundColor: '#6b7280', borderRadius: 8, padding: 12 }}
+              onPress={handleCancelSave}
+            >
+              <Text style={{ color: '#fff', fontWeight: 'bold' }}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    )
+  );
+
   return (
     <AppContainer navigation={navigation} screenTitle={t('user_profile.screen_title')}>
+      {renderModal()}
       <ScrollView
         className="p-5"
         contentContainerStyle={{ paddingBottom: insets.bottom + 20 }}
@@ -341,14 +389,41 @@ export default function UserProfileScreen({ navigation }) {
                 </Picker>
               </View>
 
-              <TouchableOpacity
-                className={`${selectedButtonBg} rounded-xl p-3 flex-row justify-center mt-4`}
-                onPress={handleEdit}
-              >
-                <Text className={`${selectedButtonText} text-sm font-semibold`}>
-                  {editable ? t('user_profile.buttons.save') : t('user_profile.buttons.edit')}
-                </Text>
-              </TouchableOpacity>
+              {editable ? (
+                (nombre !== usuario.nombre ||
+                  apellido !== usuario.apellido ||
+                  dni !== usuario.dni ||
+                  celular !== usuario.celular ||
+                  genero !== usuario.genero ||
+                  urlImagenPerfil !== usuario.urlimagenperfil) ? (
+                  <TouchableOpacity
+                    className={`${selectedButtonBg} rounded-xl p-3 flex-row justify-center mt-4`}
+                    onPress={handleEdit}
+                  >
+                    <Text className={`${selectedButtonText} text-sm font-semibold`}>
+                      {t('user_profile.buttons.save')}
+                    </Text>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    className={`${selectedButtonBg} rounded-xl p-3 flex-row justify-center mt-4`}
+                    onPress={handleCancelEdit}
+                  >
+                    <Text className={`${selectedButtonText} text-sm font-semibold`}>
+                      Cancelar
+                    </Text>
+                  </TouchableOpacity>
+                )
+              ) : (
+                <TouchableOpacity
+                  className={`${selectedButtonBg} rounded-xl p-3 flex-row justify-center mt-4`}
+                  onPress={handleEdit}
+                >
+                  <Text className={`${selectedButtonText} text-sm font-semibold`}>
+                    {t('user_profile.buttons.edit')}
+                  </Text>
+                </TouchableOpacity>
+              )}
             </View>
 
             <View className={`${containerBg} rounded-xl p-4 shadow-md`}>

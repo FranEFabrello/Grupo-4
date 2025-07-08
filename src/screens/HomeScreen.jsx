@@ -12,6 +12,8 @@ import TestToastButton from "~/components/TestToastButton";
 import { useAppTheme} from "~/providers/ThemeProvider";
 import { fetchNotificaciones } from "~/store/slices/notificationSlice";
 import { useAppInitialData } from "~/components/useAppInitialData";
+import { useFocusEffect } from '@react-navigation/native';
+import { fetchAppointments } from "~/store/slices/appointmentsSlice";
 
 export default function HomeScreen({ navigation }) {
   const { colorScheme } = useAppTheme();
@@ -21,49 +23,27 @@ export default function HomeScreen({ navigation }) {
   const usuario = useSelector((state) => state.user.usuario);
   const specialities = useSelector((state) => state.medicalSpecialities.specialities);
   const { t, i18n } = useTranslation();
+  const dispatch = useDispatch();
+
+  // Refresca turnos si viene el parámetro refreshAppointments
+  useFocusEffect(
+    React.useCallback(() => {
+      if (navigation?.getState) {
+        const routes = navigation.getState().routes;
+        const currentRoute = routes[routes.length - 1];
+        if (currentRoute?.params?.refreshAppointments) {
+          if (usuario?.id) {
+            dispatch(fetchAppointments(usuario.id));
+          }
+          // Limpia el flag para evitar loops
+          navigation.setParams({ refreshAppointments: undefined });
+        }
+      }
+    }, [navigation, usuario, dispatch])
+  );
 
   // Usar useAppInitialData para mantener la lógica de carga
   useAppInitialData();
-/*
-  useEffect(() => {
-    if (!professionals || professionals.length === 0) {
-      dispatch(fetchProfessionals());
-    }
-    if (!usuario) {
-      dispatch(fetchUserByToken()).then((action) => {
-        const usuarioData = action.payload;
-        const usuarioId = usuarioData?.id;
-        if (usuarioId) {
-          dispatch(fetchAppointments(usuarioId));
-          dispatch(fetchNotificaciones(usuarioId));
-          if (typeof usuarioData?.settings?.modoOscuro === 'boolean') {
-            dispatch({ type: 'user/setModoOscuro', payload: usuarioData.settings.modoOscuro });
-          }
-          console.log('Modo oscuro establecido desde fetchUserByToken:', usuarioData?.settings?.modoOscuro);
-        }
-      });
-    } else if (usuario.id) {
-      dispatch(fetchAppointments(usuario.id));
-      dispatch(fetchNotificaciones(usuario.id));
-      if (typeof usuario.settings?.modoOscuro === 'boolean') {
-        dispatch({ type: 'user/setModoOscuro', payload: usuario.settings.modoOscuro });
-      }
-    }
-    if (specialities.length === 0) {
-      dispatch(fetchSpecialities());
-    }
-  }, [dispatch, usuario]);*/
-
-  // Sincroniza idioma y tema con AsyncStorage cuando cambia el usuario
-  /*useEffect(() => {
-    (async () => {
-      if (usuario && usuario.idioma) await AsyncStorage.setItem('language', usuario.idioma);
-      if (usuario && typeof usuario.modoOscuro === 'boolean') {
-        await AsyncStorage.setItem('theme', usuario.modoOscuro ? 'dark' : 'light');
-      }
-    })();
-  }, [usuario]);
-*/
 
   const quickActions = [
     { icon: 'calendar-plus', label: t('book_appointment.title'), screen: 'BookAppointment' },
@@ -96,6 +76,18 @@ export default function HomeScreen({ navigation }) {
   const secondaryTextClass = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-400';
   const primaryButtonClass = colorScheme === 'light' ? 'bg-blue-600' : 'bg-blue-700';
   const linkClass = colorScheme === 'light' ? 'text-blue-600' : 'text-blue-400';
+
+  // Usar useAppInitialData para mantener la lógica de carga
+  useAppInitialData();
+
+  React.useEffect(() => {
+    if (!usuario || !usuario.nombre) {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'SplashScreen' }],
+      });
+    }
+  }, [usuario, navigation]);
 
 
 

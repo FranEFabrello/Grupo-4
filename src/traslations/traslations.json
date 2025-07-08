@@ -67,6 +67,10 @@
         "en": "Confirm appointment at: "
       }
     },
+    "reschedule_button": {
+      "es": "Reprogramar turno a las: ",
+      "en": "Reschedule appointment at: "
+    },
     "alerts": {
       "success": {
         "es": "Turno confirmado exitosamente",

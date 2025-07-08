@@ -124,7 +124,7 @@ export default function ResultsScreen({ navigation }) {
                           throw new Error(t('results.empty') || 'No hay enlace disponible.');
                         }
 
-                        if (Platform.OS === 'web') {
+                        if (Platform.OS === 'web' || Platform.OS === 'ios' || Platform.OS === 'android') {
                           const link = document.createElement('a');
                           link.href = url;
                           link.setAttribute('download', '');

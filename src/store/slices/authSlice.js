@@ -13,7 +13,7 @@ const initialState = {
 export const loadStoredToken = () => async (dispatch) => {
   try {
     let token;
-    if (Platform.OS === 'web') {
+    if (Platform.OS === 'web' || Platform.OS === 'ios' || Platform.OS === 'android') {
       token = await AsyncStorage.getItem('userToken');
     } else {
       token = await SecureStore.getItemAsync('userToken');

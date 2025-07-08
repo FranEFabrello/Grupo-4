@@ -56,7 +56,7 @@ const linking = {
 
 const getToken = async () => {
   try {
-    if (Platform.OS === 'web') {
+    if (Platform.OS === 'web' || Platform.OS === 'ios' || Platform.OS === 'android') {
       return await AsyncStorage.getItem('userToken');
     } else {
       return await SecureStore.getItemAsync('userToken');
@@ -69,7 +69,7 @@ const getToken = async () => {
 
 const removeToken = async () => {
   try {
-    if (Platform.OS === 'web') {
+    if (Platform.OS === 'web' || Platform.OS === 'ios' || Platform.OS === 'android') {
       await AsyncStorage.removeItem('userToken');
     } else {
       await SecureStore.deleteItemAsync('userToken');
