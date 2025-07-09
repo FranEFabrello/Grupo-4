@@ -6,8 +6,6 @@ import { useTranslation } from 'react-i18next';
 export default function DoctorCard({
                                      name,
                                      specialty,
-                                     stars,
-                                     noRating,
                                      onBook,
                                      onPress, // NUEVA PROP
                                      containerClassName = 'w-full',
@@ -19,8 +17,6 @@ export default function DoctorCard({
   const iconColor = colorScheme === 'light' ? '#4a6fa5' : '#93c5fd';
   const nameTextClass = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
   const specialtyTextClass = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-400';
-  const noRatingTextClass = colorScheme === 'light' ? 'text-gray-400' : 'text-gray-500';
-  const starsTextClass = colorScheme === 'light' ? 'text-yellow-500' : 'text-yellow-400';
   const buttonBgClass = colorScheme === 'light' ? 'bg-blue-600' : 'bg-blue-700';
   const borderClass = colorScheme === 'light' ? 'border border-blue-400 shadow-md' : 'border border-blue-500 shadow-md';
   const { t } = useTranslation();
@@ -48,16 +44,7 @@ export default function DoctorCard({
         )}
         <Text className={`text-sm font-medium ${nameTextClass}`}>{name}</Text>
         <Text className={`text-xs ${specialtyTextClass}`}>{specialty}</Text>
-        <View className="flex-row items-center my-1">
-          {noRating ? (
-            <Text className={`text-xs ${noRatingTextClass}`}>{t('doctor_card.no_rating')}</Text>
-          ) : (
-            <>
-              <Text className={`text-xs ${starsTextClass} mr-1`}>{stars}</Text>
-              <Text className={`text-xs ${starsTextClass}`}>★</Text>
-            </>
-          )}
-        </View>
+
         <TouchableOpacity
           className={`${buttonBgClass} rounded-lg p-2 mt-2 w-full flex-row justify-center items-center ${borderClass}`}
           onPress={onBook}

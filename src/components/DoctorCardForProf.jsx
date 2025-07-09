@@ -6,8 +6,6 @@ import { useTranslation } from "react-i18next";
 export default function DoctorCardForProf({
                                             name,
                                             specialty,
-                                            stars,
-                                            noRating,
                                             onBook,
                                             onPress, // NUEVA PROP
                                             containerClassName = 'w-full',
@@ -20,8 +18,6 @@ export default function DoctorCardForProf({
   const iconColor = colorScheme === 'light' ? '#4a6fa5' : '#93c5fd';
   const nameTextClass = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
   const specialtyTextClass = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-400';
-  const noRatingTextClass = colorScheme === 'light' ? 'text-gray-400' : 'text-gray-500';
-  const starsTextClass = colorScheme === 'light' ? 'text-yellow-500' : 'text-yellow-400';
   const buttonBgClass = colorScheme === 'light' ? 'bg-blue-600' : 'bg-blue-700';
   const borderClass = colorScheme === 'light' ? 'border border-blue-400 shadow-md' : 'border border-blue-500 shadow-md';
   const { t } = useTranslation();
@@ -36,20 +32,6 @@ export default function DoctorCardForProf({
         className={`${cardBgClass} rounded-lg p-2 shadow-md flex-row items-center justify-center m-0 relative`}
         style={{ elevation: 5, height: cardHeight }}
       >
-        {/* Estrellas arriba a la derecha */}
-        <View className="absolute top-2 right-3 flex-row items-center">
-          {noRating ? (
-            <>
-              <Text className={`text-xs ${noRatingTextClass} mr-1`}>{t('doctor_card.no_rating')}</Text>
-              <Text className={`text-xs ${starsTextClass}`}>★</Text>
-            </>
-          ) : (
-            <>
-              <Text className={`text-xs ${starsTextClass} mr-1`}>{stars}</Text>
-              <Text className={`text-xs ${starsTextClass}`}>★</Text>
-            </>
-          )}
-        </View>
         {/* Foto a la izquierda */}
         <View className="justify-center items-center mr-4 ml-4">
           {imageUrl ? (

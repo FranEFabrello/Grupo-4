@@ -15,7 +15,6 @@ export default function ProfessionalsScreen({ navigation }) {
   const { professionals, status } = useSelector((state) => state.professionals);
   const [searchQuery, setSearchQuery] = useState("");
   const [showFilterModal, setShowFilterModal] = useState(false);
-  const [selectedStars, setSelectedStars] = useState(null);
   const [selectedEspecialidades, setSelectedEspecialidades] = useState([]);
   const { t } = useTranslation();
   const especialidades = useSelector((state) => state.medicalSpecialities.specialities);
@@ -33,8 +32,7 @@ export default function ProfessionalsScreen({ navigation }) {
   const selectedButtonBg = colorScheme === 'light' ? 'bg-blue-500' : 'bg-blue-700';
   const buttonText = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
   const selectedButtonText = 'text-white';
-  const starColor = colorScheme === 'light' ? 'text-yellow-500' : 'text-yellow-400';
-  const starInactiveColor = colorScheme === 'light' ? 'text-gray-400' : 'text-gray-300';
+
 
   useEffect(() => {
     if (!professionals.length) {
@@ -59,11 +57,6 @@ export default function ProfessionalsScreen({ navigation }) {
       }
       return true;
     })
-    .filter((prof) =>
-      selectedStars
-        ? Math.round(prof.calificacion || 0) === selectedStars
-        : true,
-    );
 
   return (
     <AppContainer navigation={navigation} screenTitle={t('professionals.title')}>
@@ -96,19 +89,13 @@ export default function ProfessionalsScreen({ navigation }) {
             />
           </View>
           {/* Filtros seleccionados */}
-          {(selectedEspecialidades.length > 0 || selectedStars) && (
+          {selectedEspecialidades.length > 0 && (
             <View className="flex-row flex-wrap mb-2.5">
               {selectedEspecialidades.map((esp) => (
                 <View key={esp.id} className={`${selectedButtonBg} rounded-xl px-2.5 py-1 mr-1.5 mb-1.5`}>
                   <Text className={`${selectedButtonText} text-xs`}>{esp.descripcion}</Text>
                 </View>
               ))}
-              {selectedStars && (
-                <View className={`${selectedButtonBg} rounded-xl px-2.5 py-1 mr-1.5 mb-1.5 flex-row items-center`}>
-                  <Text className={`${selectedButtonText} text-xs mr-1`}>{selectedStars}</Text>
-                  <Text className={`${starColor} text-xs`}>★</Text>
-                </View>
-              )}
             </View>
           )}
           {status === "loading" ? (
@@ -124,8 +111,6 @@ export default function ProfessionalsScreen({ navigation }) {
                       (esp) => esp.id === prof.idEspecialidad
                     )?.descripcion || t('professionals.alerts.no_specialty')
                   }
-                  stars={prof.calificacionPromedio > 0 ? prof.calificacionPromedio : null}
-                  noRating={prof.calificacionPromedio === 0}
                   imageUrl={prof.urlImagenDoctor}
                   onBook={() =>
                     navigation.navigate("BookAppointment", {
@@ -200,24 +185,6 @@ export default function ProfessionalsScreen({ navigation }) {
                 ))}
             </ScrollView>
             <View className={`${modalDivider} h-0.5 mb-5`} />
-
-            <Text className={`font-bold text-lg mb-2.5 ${primaryText}`}>
-              {t('professionals.filter_star')}
-            </Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {[1, 2, 3, 4, 5].map((star) => (
-                <TouchableOpacity
-                  key={star}
-                  className={`flex-row items-center px-2.5 py-1.5 ${selectedStars === star ? selectedButtonBg : buttonBg} rounded-xl mr-2.5`}
-                  onPress={() => setSelectedStars(selectedStars === star ? null : star)}
-                >
-                  <Text className={`${selectedStars === star ? selectedButtonText : buttonText} mr-1`}>{star}</Text>
-                  <Text className={`${selectedStars === star ? starColor : starInactiveColor}`}>★</Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-            <View className={`${modalDivider} h-0.5 my-5`} />
-
             <TouchableOpacity
               className={`${selectedButtonBg} py-3 rounded-lg items-center`}
               onPress={() => setShowFilterModal(false)}
@@ -228,7 +195,6 @@ export default function ProfessionalsScreen({ navigation }) {
               className="mt-2.5 items-center"
               onPress={() => {
                 setSelectedEspecialidades([]);
-                setSelectedStars(null);
                 setShowFilterModal(false);
               }}
             >

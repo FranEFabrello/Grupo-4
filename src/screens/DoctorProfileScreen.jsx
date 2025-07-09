@@ -85,16 +85,6 @@ export default function DoctorProfileScreen({ navigation, route }) {
             <View className="flex-1">
               <Text className={`text-xl font-semibold ${textPrimary}`}>{`${doctorData.nombre} ${doctorData.apellido}`}</Text>
               <Text className={`text-sm ${textSecondary}`}>{specialty}</Text>
-              <View className="flex-row items-center mt-1">
-                {doctorData.calificacionPromedio > 0 ? (
-                  <>
-                    <Text className="text-sm text-yellow-500 mr-1">{doctorData.calificacionPromedio}</Text>
-                    <Text className="text-sm text-yellow-500">★</Text>
-                  </>
-                ) : (
-                  <Text className={`text-sm ${textSecondary}`}>{t('doctor_profile.no_rating')}</Text>
-                )}
-              </View>
               <Text className={`text-xs ${textSecondary} mt-2`}>📞 {doctorData.telefono}</Text>
               <Text className={`text-xs ${textSecondary}`}>✉️ {doctorData.correo}</Text>
             </View>
