@@ -1,0 +1,124 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`MedicalNote renders all fields correctly and matches snapshot 1`] = `
+<View
+  className="bg-white rounded-lg p-4 shadow-md"
+>
+  <View
+    className="flex-row items-center mb-4"
+  >
+    <View
+      className="w-16 h-16 bg-gray-200 rounded-full justify-center items-center mr-3"
+    >
+      <Icon
+        color="#4a6fa5"
+        name="user-md"
+        size={24}
+      />
+    </View>
+    <View>
+      <Text
+        className="text-lg font-semibold text-gray-800"
+      >
+        Dr. Smith
+      </Text>
+      <Text
+        className="text-sm text-gray-600"
+      >
+        2025-07-10
+      </Text>
+    </View>
+  </View>
+  <View>
+    <Text>
+      Motivo de consulta
+    </Text>
+    <Text>
+      Checkup
+    </Text>
+  </View>
+  <View>
+    <Text>
+      Diagnóstico
+    </Text>
+    <Text>
+      Healthy
+    </Text>
+  </View>
+  <View>
+    <Text>
+      Notas médicas
+    </Text>
+    <Text>
+      All good
+    </Text>
+  </View>
+  <View
+    className="mb-4"
+  >
+    <Text
+      className="text-sm font-semibold text-gray-800 mb-1"
+    >
+      medical_notes.prescription
+    </Text>
+    <View
+      className="flex-row justify-between items-center bg-gray-100 rounded-lg p-3"
+    >
+      <View
+        className="flex-row items-center"
+      >
+        <Icon
+          color="#6c757d"
+          name="file-prescription"
+          size={14}
+        />
+        <Text
+          className="text-sm text-gray-600 ml-2"
+        >
+          Vitamin C
+        </Text>
+      </View>
+      <View
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          {
+            "opacity": 1,
+          }
+        }
+      >
+        <Icon
+          color="#4a6fa5"
+          name="download"
+          size={14}
+        />
+      </View>
+    </View>
+  </View>
+</View>
+`;

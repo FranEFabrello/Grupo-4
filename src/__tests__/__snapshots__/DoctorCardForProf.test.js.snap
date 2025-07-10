@@ -1,0 +1,135 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`DoctorCardForProf renders and matches snapshot 1`] = `
+<View
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
+  accessible={true}
+  collapsable={false}
+  focusable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    {
+      "opacity": 1,
+    }
+  }
+>
+  <View
+    className="bg-white shadow-lg shadow-gray-300 rounded-lg p-2 shadow-md flex-row items-center justify-center m-0 relative"
+    style={
+      {
+        "elevation": 5,
+        "height": 140,
+      }
+    }
+  >
+    <View
+      className="absolute top-2 right-3 flex-row items-center"
+    >
+      <Text
+        className="text-xs text-yellow-500 mr-1"
+      >
+        5
+      </Text>
+      <Text
+        className="text-xs text-yellow-500"
+      >
+        ★
+      </Text>
+    </View>
+    <View
+      className="justify-center items-center mr-4 ml-4"
+    >
+      <View
+        className="w-20 h-20 bg-blue-100 rounded-full justify-center items-center"
+      >
+        <Icon
+          color="#4a6fa5"
+          name="user-md"
+          size={32}
+        />
+      </View>
+    </View>
+    <View
+      className="flex-1 justify-center items-center mt-2"
+    >
+      <Text
+        className="text-sm font-medium text-gray-800 text-center"
+      >
+        Dr. Pro
+      </Text>
+      <Text
+        className="text-xs text-gray-600 text-center mt-0.5"
+      >
+        Neurology
+      </Text>
+      <View
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          {
+            "opacity": 1,
+          }
+        }
+      >
+        <Icon
+          color="#ffffff"
+          name="calendar-alt"
+          size={12}
+        />
+        <Text
+          className="text-white text-xs ml-1"
+        >
+          doctor_card.book
+        </Text>
+      </View>
+    </View>
+  </View>
+</View>
+`;
