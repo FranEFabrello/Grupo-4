@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useAppTheme } from '~/providers/ThemeProvider';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AppContainer from '../components/AppContainer';
-import { rescheduleAppointment, cancelAppointment } from "~/store/slices/appointmentsSlice";
+import { rescheduleAppointment, cancelAppointment, fetchAppointments } from "~/store/slices/appointmentsSlice";
 import { fetchNotificaciones } from '~/store/slices/notificationSlice';
 import { useTranslation } from "react-i18next";
 import LoadingOverlay from '~/components/LoadingOverlay'; // Import your LoadingOverlay component
@@ -33,8 +33,14 @@ export default function AppointmentDetailScreen({ route, navigation }) {
 
   const notificacion = route.params?.notificacion;
   const appointmentParam = notificacion?.turno || route.params?.appointment;
+
   // Buscar el turno actualizado en el store por id
-  const appointment = appointmentsByUser.find(a => a.id === appointmentParam?.id) || appointmentParam;
+  //const appointmentFromStore = useSelector((state) => state.appointments.appointment);
+  const appointment = appointmentsByUser.find(a => a.id === appointmentParam?.id);
+  if (!appointment) {
+    return <LoadingOverlay />; // o algún mensaje
+  }
+
 
   const handleReschedule = () => {
     navigation.navigate('BookAppointment', {
@@ -80,21 +86,21 @@ export default function AppointmentDetailScreen({ route, navigation }) {
   const statusConfig = getStatusConfig(appointment.estado);
 
   const handleCancel = () => {
-    setIsCancelLoading(true); // Show LoadingOverlay
+    setIsCancelLoading(true); // Mostrar overlay
+
     dispatch(cancelAppointment(appointment.id))
       .unwrap()
-      .then(() => {
-        if (usuarioId) {
-          dispatch(fetchNotificaciones(usuarioId));
-        }
-        setIsCancelLoading(false); // Hide LoadingOverlay
+      .then(async () => {
+        await dispatch(fetchAppointmentById(appointment.id));
+        setIsCancelLoading(false);
         navigation.navigate('AppointmentsScreen', { cancelled: true });
       })
       .catch((err) => {
-        setIsCancelLoading(false); // Hide LoadingOverlay on error
+        setIsCancelLoading(false);
         Alert.alert('Error', err || t('appointments.alerts.cancel_error'));
       });
   };
+
 
   return (
     <AppContainer navigation={navigation} screenTitle={t('appointments.details')}>

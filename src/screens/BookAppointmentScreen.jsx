@@ -29,6 +29,8 @@ export default function BookAppointmentScreen({ navigation, route }) {
   const { colorScheme } = useAppTheme();
   const { t, i18n } = useTranslation();
 
+  const [confirmedAppointment, setConfirmedAppointment] = useState(null);
+
   const professionals = useSelector((state) => state.professionals.professionals || []);
   const { availableDays = [], availableTimeSlots = [], status = 'idle' } = useSelector((state) => state.appointments || {});
   const usuario = useSelector((state) => state.user.usuario);
@@ -157,7 +159,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
                 setModalVisible(true);
                 setTimeout(() => {
                   setModalVisible(false);
-                  navigation.navigate('Appointments');
+                  navigation.navigate('HomeScreen', { refreshAppointments: true });
                 }, 2000);
               });
           })
@@ -183,15 +185,19 @@ export default function BookAppointmentScreen({ navigation, route }) {
 
         console.log('Dispatching bookAppointment', payload);
         dispatch(bookAppointment(payload))
-          .unwrap()
-          .then((appointment) => {
+          .then((result) => {
+            const appointment = result?.payload || result;
             if (usuarioId) {
               dispatch(fetchNotificaciones(usuarioId));
             }
             dispatch(fetchAppointments())
               .then(() => {
                 setLoading(false);
-                navigation.navigate('Appointments', { newAppointmentId: appointment.id });
+                setModalMessage(t('appointments.alerts.confirmation'));
+                setModalSuccess(true);
+                setModalVisible(true);
+                // Guardar el appointment en un estado para usarlo al cerrar el modal
+                setConfirmedAppointment(appointment);
               });
           })
           .catch((err) => {
@@ -345,7 +351,11 @@ export default function BookAppointmentScreen({ navigation, route }) {
                     setModalVisible(false);
                     if (modalSuccess) {
                       console.log('Navigating to Appointments (modal OK)');
-                      navigation.navigate('Appointments');
+                      if (confirmedAppointment?.id) {
+                        navigation.navigate('Appointments', { newAppointmentId: confirmedAppointment.id });
+                      } else {
+                        navigation.navigate('Appointments');
+                      }
                     }
                   }}
                 >

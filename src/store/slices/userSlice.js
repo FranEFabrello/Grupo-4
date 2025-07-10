@@ -108,7 +108,7 @@ export const enviarMensajeAyuda = createAsyncThunk(
   'user/enviarMensajeAyuda',
   async ({ correoUsuario, mensaje }, { rejectWithValue }) => {
     try {
-      const response = await api.post(`/ayuda`, { correoUsuario, mensaje });
+      const response = await api.post(`/Usuario/ayuda`, { correoUsuario, mensaje });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al enviar el mensaje de ayuda');

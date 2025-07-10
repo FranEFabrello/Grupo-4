@@ -79,10 +79,22 @@ export const cancelAppointment = createAsyncThunk(
   }
 );
 
+export const fetchAppointmentById = createAsyncThunk(
+  'appointments/fetchAppointmentById',
+  async (appointmentId) => {
+    const token = await AsyncStorage.getItem('userToken');
+    const response = await api.get(`/turnos/${appointmentId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  }
+);
+
 
 const appointmentsSlice = createSlice({
   name: 'appointments',
   initialState: {
+    appointment: null,
     availableDays: [],
     availableTimeSlots: [],
     appointmentsByUser: [],
@@ -92,6 +104,9 @@ const appointmentsSlice = createSlice({
   reducers: {
     clearAvailableTimeSlots: (state) => {
       state.availableTimeSlots = [];
+    },
+    setCurrentAppointment: (state, action) => {
+      state.appointment = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -131,12 +146,20 @@ const appointmentsSlice = createSlice({
           const hours = String(Math.floor(absOffset / 60)).padStart(2, '0');
           const minutes = String(absOffset % 60).padStart(2, '0');
           return `${sign}${hours}:${minutes}`;
+
         };
         const localOffset = getLocalOffset();
         state.appointmentsByUser = action.payload.map(appt => ({
           ...appt,
           fecha: appt.fecha ? `${appt.fecha}T00:00:00${localOffset}` : appt.fecha
         }));
+        // Dentro de .addCase(fetchAppointments.fulfilled, ...)
+        console.log("entrndo a fetchAppointments.fulfilled a este if");
+        if (state.appointment) {
+          console.log("Entró :)");
+          const updated = state.appointmentsByUser.find(a => a.id === state.appointment.id);
+          if (updated) state.appointment = updated;
+        }
         //console.log('Turnos por usuario TURNOSSLICE:', state.appointmentsByUser);
       })
       // casos ya existentes
@@ -148,24 +171,35 @@ const appointmentsSlice = createSlice({
       })
 
       /* --------------- NUEVO CASO PARA CANCELAR --------------- */
+      // En el extraReducers del appointmentsSlice
       .addCase(cancelAppointment.fulfilled, (state, action) => {
-        /** 
-         * action.payload  -> "cancelado con exito"
-         * action.meta.arg -> appointmentId que enviamos al thunk
-         */
         const cancelledId = action.meta.arg;
+        // Si la API devuelve el turno actualizado en action.payload, úsalo
+        const updatedAppointment = typeof action.payload === 'object'
+          ? action.payload
+          : { ...state.appointmentsByUser.find(a => a.id === cancelledId), estado: 'CANCELADO' };
 
+        // Actualiza el array
         state.appointmentsByUser = state.appointmentsByUser.map((appointment) =>
           appointment.id === cancelledId
-            ? { ...appointment, estado: 'CANCELADO' } // o la propiedad que uses
+            ? updatedAppointment
             : appointment
         );
-        // Opcional: podrías guardar un mensaje flash en el estado
+        // Actualiza el objeto appointment
+        state.appointment = updatedAppointment;
         state.status = 'succeeded';
-        console.log(`Turno ${cancelledId} cancelado localmente`);
-      });
+        console.log(`Turno ${cancelledId} cancelado y actualizado en el store`);
+      })
+      .addCase(fetchAppointmentById.fulfilled, (state, action) => {
+        // Actualizá el array y el objeto individual
+        const updated = action.payload;
+        state.appointmentsByUser = state.appointmentsByUser.map(a =>
+          a.id === updated.id ? updated : a
+        );
+        state.appointment = updated;
+      })
   },
 });
 
-export const { clearAvailableTimeSlots } = appointmentsSlice.actions;
+export const { clearAvailableTimeSlots, setCurrentAppointment } = appointmentsSlice.actions;
 export default appointmentsSlice.reducer;

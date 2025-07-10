@@ -11,6 +11,8 @@ import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } fr
 import { BlurView } from 'expo-blur';
 import { useTranslation } from 'react-i18next';
 import AppointmentCardFullWidth from '~/components/ApptCardForApptScreen';
+import LoadingOverlay from "~/components/LoadingOverlay";
+import { setCurrentAppointment } from '~/store/slices/appointmentsSlice';
 
 // Utilidad para obtener un Date con la hora deseada
 function getDateWithTime(fecha, hora) {
@@ -35,6 +37,9 @@ export default function AppointmentsScreen({ navigation }) {
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [isRefetching, setIsRefetching] = useState(false);
+
+
 
   useEffect(() => {
     if (usuarioId) {
@@ -49,29 +54,20 @@ export default function AppointmentsScreen({ navigation }) {
     if (navigation && navigation.getState) {
       const state = navigation.getState();
       const lastRoute = state.routes[state.routes.length - 1];
-      if (lastRoute?.params?.cancelled) {
-        Alert.alert(
-          t('global.alert.success'),
-          t('appointments.alerts.cancel'),
-          [
-            {
-              text: 'OK',
-              onPress: () => {
-                navigation.setParams({ cancelled: undefined });
-              },
-            },
-          ]
-        );
-      }
-      // Si viene de agendar un turno, selecciona upcoming y (opcional) scroll
-      if (lastRoute?.params?.newAppointmentId) {
-        setActiveTab('upcoming');
-        // Opcional: podrías hacer scroll hasta el turno aquí si usas ref
-        // Limpia el parámetro para evitar repeticiones
-        navigation.setParams({ newAppointmentId: undefined });
+
+      if (lastRoute?.params?.cancelled || lastRoute?.params?.rescheduled) {
+        setIsRefetching(true);
+        dispatch(fetchAppointments())
+          .then(() => {
+            setIsRefetching(false);
+            navigation.setParams({ cancelled: undefined, rescheduled: undefined });
+          })
+          .catch(() => {
+            setIsRefetching(false);
+          });
       }
     }
-  }, [navigation, t]);
+  }, [navigation, dispatch]);
 
   const handleSelectDate = (date) => {
     if (!startDate || (startDate && endDate)) {
@@ -144,6 +140,7 @@ export default function AppointmentsScreen({ navigation }) {
 
   return (
     <AppContainer navigation={navigation} screenTitle={t('appointments.Mytitle')} className={screenContainerClass}>
+      {isRefetching && <LoadingOverlay />}
       <ScrollView className={scrollContainerClass}>
         <View className={`rounded-lg p-4 mb-4 ${contentContainerClass}`}>
           <View className="flex-row justify-between items-center mb-4">
@@ -201,6 +198,7 @@ export default function AppointmentsScreen({ navigation }) {
                     status={appt.estado}
                     onPress={() => {
                       console.log('Navigating to AppointmentDetail with ID:', appt.id);
+                      dispatch(setCurrentAppointment(appt));
                       navigation.navigate('AppointmentDetail', { appointment: appt });
                     }}
                     colorScheme={colorScheme}
@@ -306,7 +304,7 @@ export default function AppointmentsScreen({ navigation }) {
                       setShowFilterModal(false);
                     }}
                   >
-                    <Text className={`text-sm font-semibold ${textAccentClass}}`}>{t('Text filter.filter_dates.clear')}</Text>
+                    <Text className={`text-sm font-semibold ${textAccentClass}}`}>{t('filter.filter_dates.clear')}</Text>
                   </TouchableOpacity>
                 </View>
               </KeyboardAvoidingView>

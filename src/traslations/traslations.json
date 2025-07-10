@@ -1377,6 +1377,10 @@
   },
 
   "notification": {
+    "delete_button": {
+      "es": "Eliminar",
+      "en": "Delete"
+    },
     "title": {
       "es": "Notificaciones",
       "en": "Notifications"

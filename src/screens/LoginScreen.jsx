@@ -57,8 +57,7 @@ export default function LoginScreen({ navigation }) {
       // 3. Obtenemos los datos del usuario
       const usuario = await dispatch(fetchUserByToken()).unwrap();
       if (!usuario || !usuario.id) {
-        setShowErrorModal(true);
-        return;
+        throw new Error('Usuario inválido');
       }
 
       // 4. Actualizamos el token FCM solo si se obtuvo un token
@@ -81,7 +80,9 @@ export default function LoginScreen({ navigation }) {
       navigation.navigate('Home');
 
     } catch (error) {
-      setShowErrorModal(true);
+      if (error?.status === 404 || error?.status === 403) {
+        setShowErrorModal(true);
+      }
     } finally {
       setIsLoading(false);
     }

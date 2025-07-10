@@ -53,22 +53,33 @@ export default function HomeScreen({ navigation }) {
   ];
 
   const now = new Date();
-  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
   const endOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 6, 23, 59, 59, 999);
 
-  // Ajuste: considerar la zona horaria y formato de fecha
+
+// Ajuste: considerar la fecha y hora de inicio del turno
   const upcomingAppointments = (appointments || [])
     .filter((appt) => {
-      const apptDate = new Date(appt.fecha);
+      console.log('appt.fecha:', appt.fecha, 'appt.horaInicio:', appt.horaInicio);
+      const apptDateOnly = appt.fecha.split('T')[0];
+      const apptDateTime = new Date(`${apptDateOnly}T${appt.horaInicio.length === 5 ? appt.horaInicio + ':00' : appt.horaInicio}`);
+      console.log('--- FILTRO UPCOMING ---');
+      console.log('Turno:', appt);
+      console.log('apptDateTime:', apptDateTime, 'now:', now, 'endOfWeek:', endOfWeek);
+      const isConfirmed = appt.estado === 'CONFIRMADO';
+      const isFuture = apptDateTime >= now;
+      const isInWeek = apptDateTime <= endOfWeek;
+      const isActive = appt.cuentaActiva;
+      console.log('isConfirmed:', isConfirmed, 'isFuture:', isFuture, 'isInWeek:', isInWeek, 'isActive:', isActive);
       return (
-        (appt.estado === 'CONFIRMADO') &&
-        apptDate >= startOfToday &&
-        apptDate < endOfWeek &&
-        appt.cuentaActiva
+        isConfirmed &&
+        isFuture &&
+        isInWeek &&
+        isActive
       );
     })
     .sort((a, b) => new Date(a.fecha + 'T' + a.horaInicio) - new Date(b.fecha + 'T' + b.horaInicio))
-    .slice(0,3);
+    .slice(0, 3);
 
   const containerClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-800';
   const cardClass = colorScheme === 'light' ? 'bg-blue-50' : 'bg-gray-700';

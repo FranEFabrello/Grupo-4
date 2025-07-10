@@ -26,11 +26,11 @@ const NotificationItem = ({ item, fadeAnims, marcarNotificacionLeidaHandler, col
     >
       <TouchableOpacity
         onPress={() => marcarNotificacionLeidaHandler(item.id)}
-        className="bg-green-500 justify-center items-center px-4 rounded-r-xl"
+        className="bg-red-500 justify-center items-center px-4 rounded-r-xl"
         style={{ height: itemLayout.height > 0 ? itemLayout.height : undefined, minHeight: 0 }}
       >
-        <MaterialCommunityIcons name="check" size={32} color="#fff" />
-        <Text className="text-white text-xs mt-1">{t('notification.read_button')}</Text>
+        <MaterialCommunityIcons name="trash-can-outline" size={32} color="#fff" />
+        <Text className="text-white text-xs mt-1">{t('notification.delete_button')}</Text>
       </TouchableOpacity>
     </Animated.View>
   );
@@ -105,6 +105,9 @@ const NotificationItem = ({ item, fadeAnims, marcarNotificacionLeidaHandler, col
                 <Text className={`text-xs ${item.estado?.toLowerCase() === "no_leída" ? (colorScheme === 'light' ? 'text-blue-600' : 'text-blue-400') : (colorScheme === 'light' ? 'text-gray-700' : 'text-gray-400')}`}>
                   {item.estado?.toLowerCase() === "no_leída" ? t('notification.type.unread') : t('notification.type.read')}
                 </Text>
+                <Text className="text-xs text-right text-gray-400">
+                  {/*item.fechaEmision ? new Date(item.fechaEmision).toLocaleString() : ''*/}
+                </Text>
               </View>
             </View>
           </View>
@@ -144,7 +147,12 @@ const NotificationsScreen = ({ navigation }) => {
     if (usuarioId) {
       dispatch(fetchNotificaciones(usuarioId)).then((action) => {
         if (action.payload) {
-          setNotificacion(action.payload);
+          setNotificacion(
+            action.payload.map(n => ({
+              ...n,
+              fechaEmision: n.fechaEmision || new Date().toISOString(),
+            }))
+          );
           // Inicializar animaciones para cada notificación
           action.payload.forEach(item => {
             fadeAnims[item.id] = new Animated.Value(1);
@@ -171,14 +179,20 @@ const NotificationsScreen = ({ navigation }) => {
         });
         dispatch(markAsRead(id));
       } else {
-        setNotificacion(prev => [...prev, notificacionToRemove].sort((a, b) => a.id - b.id));
+        setNotificacion(prev => [
+          ...prev,
+          { ...notificacionToRemove, fechaEmision: notificacionToRemove?.fechaEmision || new Date().toISOString() }
+        ].sort((a, b) => a.id - b.id));
         fadeAnims[id] = new Animated.Value(1);
       }
       setLoadingIds(prev => prev.filter(lid => lid !== id));
     } catch (error) {
       console.error('Error al marcar notificación como leída:', error);
       const notificacionToRemove = notificacion.find(n => n.id === id);
-      setNotificacion(prev => [...prev, notificacionToRemove].sort((a, b) => a.id - b.id));
+      setNotificacion(prev => [
+        ...prev,
+        { ...notificacionToRemove, fechaEmision: notificacionToRemove?.fechaEmision || new Date().toISOString() }
+      ].sort((a, b) => a.id - b.id));
       fadeAnims[id] = new Animated.Value(1);
       setLoadingIds(prev => prev.filter(lid => lid !== id));
     }

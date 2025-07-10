@@ -141,11 +141,6 @@ export default function UserProfileScreen({ navigation }) {
       await AsyncStorage.clear();
       console.log('AsyncStorage limpiado correctamente');
 
-      // Limpiar estado de Redux
-      dispatch(logout());
-      dispatch({ type: 'user/setUsuario', payload: null }); // Asegurar que usuario sea null
-      dispatch({ type: 'user/setIsAuthenticated', payload: false });
-
       // Cerrar sesión en backend si corresponde
       if (usuario && usuario.id) {
         await dispatch(cerrarSesion(usuario.id)).unwrap();
@@ -153,11 +148,16 @@ export default function UserProfileScreen({ navigation }) {
         await dispatch(cerrarSesion()).unwrap();
       }
 
-      // Reiniciar el stack de navegación
+      // Reiniciar el stack de navegación antes de limpiar el estado
       navigation.reset({
         index: 0,
         routes: [{ name: 'Welcome' }],
       });
+
+      // Limpiar estado de Redux después de navegar
+      dispatch(logout());
+      dispatch({ type: 'user/setUsuario', payload: null });
+      dispatch({ type: 'user/setIsAuthenticated', payload: false });
     } catch (error) {
       console.error('Error durante el logout:', error);
       // Aquí se puede manejar el error si es necesario
