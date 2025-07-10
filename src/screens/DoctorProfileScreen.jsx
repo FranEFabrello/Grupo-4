@@ -16,42 +16,25 @@ export default function DoctorProfileScreen({ navigation, route }) {
   const especialidades = useSelector((state) => state.medicalSpecialities.specialities);
   const { colorScheme } = useAppTheme();
 
-  // Clases según modo oscuro/claro
-  const bgClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-800';
-  const cardClass = colorScheme === 'light' ? 'bg-white' : 'bg-gray-700';
-  const textPrimary = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
-  const textSecondary = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-400';
-  const borderClass = colorScheme === 'light' ? 'border-red-600' : 'border-red-900';
-  const nonWorkingBg = colorScheme === 'light' ? 'bg-red-100 border-red-300' : 'bg-red-900 border-red-700';
-  const nonWorkingText = colorScheme === 'light' ? 'text-red-700 font-bold' : 'text-red-200 font-bold';
-  // Cambia el color del label de días no laborables en modo oscuro
-  const nonWorkingLabel = colorScheme === 'light' ? 'text-red-500' : 'text-white font-bold';
+  // Paleta y estilos
+  const cardClass = colorScheme === 'light' ? 'bg-blue-50' : 'bg-gray-700';
+  const textClass = colorScheme === 'light' ? 'text-gray-900' : 'text-gray-50';
+  const secondaryTextClass = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-400';
+  const primaryButtonClass = colorScheme === 'light' ? 'bg-blue-600' : 'bg-blue-700';
+  // Píldoras (todas iguales, sólo cambia icono y color del texto)
+  const pillClass = colorScheme === 'light'
+    ? 'bg-white border border-blue-200'
+    : 'bg-gray-800 border border-blue-700';
+  const pillTextClass = colorScheme === 'light'
+    ? 'font-semibold text-base'
+    : 'font-semibold text-base text-blue-200';
 
-  // Si viene el objeto doctor por params, úsalo directamente, si no, búscalo por id
   const doctorData = doctor || professionals.find((prof) => prof.id === (doctorId || (doctor && doctor.id)));
-
-  // Utilidades para mostrar días en español
-  const daysMap = {
-    MONDAY: 'Lunes',
-    TUESDAY: 'Martes',
-    WEDNESDAY: 'Miércoles',
-    THURSDAY: 'Jueves',
-    FRIDAY: 'Viernes',
-    SATURDAY: 'Sábado',
-    SUNDAY: 'Domingo',
-  };
-
-  // Obtener días no laborables
-  const nonWorkingDays = (doctorData.schedules || []).filter(sch => sch.nonWorkingDay && (sch.dayOfWeek || sch.specificDate));
-  const workingDays = (doctorData.schedules || []).filter(sch => !sch.nonWorkingDay);
+  const specialty = especialidades.find((esp) => esp.id === doctorData?.idEspecialidad)?.descripcion || t('doctor_profile.no_specialty');
 
   useEffect(() => {
-    if (!professionals || professionals.length === 0) {
-      dispatch(fetchProfessionals());
-    }
-    if (!especialidades || especialidades.length === 0) {
-      dispatch(fetchSpecialities());
-    }
+    if (!professionals?.length) dispatch(fetchProfessionals());
+    if (!especialidades?.length) dispatch(fetchSpecialities());
   }, [dispatch, professionals, especialidades]);
 
   if (professionalsStatus === 'loading' || !doctorData) {
@@ -63,77 +46,138 @@ export default function DoctorProfileScreen({ navigation, route }) {
       </AppContainer>
     );
   }
-  //Acá iría la traducción de la especialidad
-  const specialty = especialidades.find((esp) => esp.id === doctorData.idEspecialidad)?.descripcion || t('doctor_profile.no_specialty');
+
+  // Días
+  const daysMap = {
+    MONDAY: 'Lunes', TUESDAY: 'Martes', WEDNESDAY: 'Miércoles', THURSDAY: 'Jueves',
+    FRIDAY: 'Viernes', SATURDAY: 'Sábado', SUNDAY: 'Domingo',
+  };
+  const weekDaysOrder = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
+  const allDays = weekDaysOrder.map((d) => {
+    const w = (doctorData.schedules || []).find(sch => sch.dayOfWeek === d);
+    if (!w) return { dayOfWeek: d, works: false };
+    return w.nonWorkingDay
+      ? { dayOfWeek: d, works: false }
+      : { dayOfWeek: d, works: true, startTime: w.startTime, endTime: w.endTime };
+  });
+
+  // Rating: sólo si hay puntaje
+  const renderRating = (rating) => {
+    if (!rating || rating <= 0) return null;
+    const stars = [];
+    for (let i = 0; i < 5; i++) {
+      stars.push(
+        <Icon
+          key={i}
+          name={i < rating ? "star" : "star-o"}
+          size={20}
+          color={colorScheme === 'light' ? "#2563eb" : "#60a5fa"}
+          style={{
+            marginRight: 2
+          }}
+        />
+      );
+    }
+    return <View className="flex-row items-center mt-1 mb-2">{stars}</View>;
+  };
 
   return (
     <AppContainer navigation={navigation} screenTitle={t('doctor_profile.title')}>
-      <ScrollView className={`p-5 ${bgClass}`}>
-        <View className={`${cardClass} rounded-lg p-4 shadow-md`}>
-          <View className="flex-row items-center mb-4">
-            {doctorData.urlImagenDoctor ? (
-              <Image
-                source={{ uri: doctorData.urlImagenDoctor }}
-                className="w-24 h-24 rounded-full mr-4"
-                resizeMode="cover"
-              />
-            ) : (
-              <View className="w-24 h-24 bg-gray-200 rounded-full justify-center items-center mr-4">
-                <Icon name="user-md" size={36} color="#4a6fa5" />
-              </View>
-            )}
-            <View className="flex-1">
-              <Text className={`text-xl font-semibold ${textPrimary}`}>{`${doctorData.nombre} ${doctorData.apellido}`}</Text>
-              <Text className={`text-sm ${textSecondary}`}>{specialty}</Text>
-              <Text className={`text-xs ${textSecondary} mt-2`}>📞 {doctorData.telefono}</Text>
-              <Text className={`text-xs ${textSecondary}`}>✉️ {doctorData.correo}</Text>
+      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 64 }}>
+        <View className={`rounded-3xl p-6 mb-6 ${cardClass} shadow-2xl`}>
+          {/* FOTO Y DATOS */}
+          <View className="items-center mb-6">
+            <View className="relative mb-2">
+              <View className="absolute w-32 h-32 rounded-full bg-blue-200/40 dark:bg-blue-900/40 blur-xl" style={{ top: -10, left: -10 }} />
+              {doctorData.urlImagenDoctor ? (
+                <Image
+                  source={{ uri: doctorData.urlImagenDoctor }}
+                  className="w-28 h-28 rounded-full border-4 border-blue-400 dark:border-blue-600 shadow-lg"
+                  resizeMode="cover"
+                />
+              ) : (
+                <View className="w-28 h-28 bg-gray-300 dark:bg-gray-700 rounded-full justify-center items-center border-4 border-blue-200 dark:border-blue-500 shadow-lg">
+                  <Icon name="user-md" size={48} color="#4a6fa5" />
+                </View>
+              )}
+            </View>
+            <Text className={`text-2xl font-extrabold mt-2 ${textClass}`}>{`${doctorData.nombre} ${doctorData.apellido}`}</Text>
+            <Text
+              className={`text-lg mt-1 mb-1 font-semibold`}
+              style={{
+                color: colorScheme === 'light' ? '#3b82f6' : '#93c5fd'
+              }}
+            >
+              {specialty}
+            </Text>
+            <View className="flex-row mt-1 gap-x-4">
+              <Text className={`text-sm font-semibold ${secondaryTextClass} flex-row items-center`}>
+                <Icon name="phone-alt" size={12} /> {doctorData.telefono}
+              </Text>
+              <Text className={`text-sm font-semibold ${secondaryTextClass} flex-row items-center`}>
+                <Icon name="envelope" size={12} /> {doctorData.correo}
+              </Text>
+            </View>
+            {renderRating(doctorData.calificacionPromedio)}
+          </View>
+
+          {/* INFO ADICIONAL */}
+          <View className="mb-8">
+            <Text className={`text-lg font-bold mb-2 ${textClass}`}>{t('doctor_profile.additional_info')}</Text>
+            <Text className={`text-base font-medium ${secondaryTextClass}`}>
+              {doctorData.informacionAdicional || t('doctor_profile.no_additional_info')}
+            </Text>
+          </View>
+
+          {/* HORARIOS: PILLS TODOS IGUALES */}
+          <View className="mb-6">
+            <Text className={`text-lg font-bold mb-3 ${textClass}`}>{t('doctor_profile.consultation')}</Text>
+            <View className="flex-row flex-wrap gap-2">
+              {allDays.map((sch, idx) => (
+                <View
+                  key={sch.dayOfWeek}
+                  className={`flex-row items-center px-4 py-2 rounded-xl min-w-[140px] justify-center ${pillClass} shadow-sm`}
+                  style={{ minHeight: 44 }}
+                >
+                  <Icon
+                    name={sch.works ? 'clock' : 'ban'}
+                    size={16}
+                    color={sch.works
+                      ? (colorScheme === 'light' ? '#2563eb' : '#60a5fa')
+                      : (colorScheme === 'light' ? '#ef4444' : '#fca5a5')
+                    }
+                    style={{ marginRight: 8 }}
+                  />
+                  <Text
+                    className={pillTextClass}
+                    style={{
+                      color: sch.works
+                        ? (colorScheme === 'light' ? '#2563eb' : '#60a5fa')
+                        : (colorScheme === 'light' ? '#ef4444' : '#fca5a5'),
+                    }}
+                  >
+                    {daysMap[sch.dayOfWeek]}
+                    {sch.works && sch.startTime && sch.endTime
+                      ? ` ${sch.startTime.slice(0, 5)}-${sch.endTime.slice(0, 5)}`
+                      : ''
+                    }
+                  </Text>
+                </View>
+              ))}
             </View>
           </View>
-          <View className={`border-t pt-4 ${borderClass}`}>
-            <Text className={`text-lg font-semibold ${textPrimary} mb-2`}>{t('doctor_profile.additional_info')}</Text>
-            <Text className={`text-sm ${textSecondary} mb-4`}>{doctorData.informacionAdicional || t('doctor_profile.no_additional_info')}</Text>
-            <Text className={`text-lg font-semibold ${textPrimary} mb-2`}>{t('doctor_profile.consultation')}</Text>
-            {/* Días laborables */}
-            {workingDays.length > 0 ? (
-              workingDays.map((sch, idx) => (
-                <View key={idx} className="mb-2 flex-row items-center">
-                  {sch.dayOfWeek ? (
-                    <Text className={`text-sm ${textPrimary} w-28`}>{daysMap[sch.dayOfWeek]}</Text>
-                  ) : (
-                    <Text className={`text-sm ${textPrimary} w-28`}>{sch.specificDate}</Text>
-                  )}
-                  <Text className={`text-sm ${textSecondary} ml-2`}>{sch.startTime && sch.endTime ? `${sch.startTime.slice(0,5)} - ${sch.endTime.slice(0,5)}` : '-'}</Text>
-                </View>
-              ))
-            ) : (
-              <Text className={`text-sm ${textSecondary}`}>{t('doctor_profile.no_times')}</Text>
-            )}
-            {/* Días no laborables */}
-            {nonWorkingDays.length > 0 && (
-              <View className="mb-2 mt-2">
-                <Text className={`text-sm font-semibold mb-1 ${nonWorkingLabel}`}>{t('doctor_profile.non_working')}</Text>
-                <View className="flex-row flex-wrap">
-                  {nonWorkingDays.map((sch, idx) => (
-                    <View key={idx} className={`${nonWorkingBg} border rounded-lg px-2 py-1 mr-2 mb-2`}>
-                      <Text className={`text-xs ${nonWorkingText}`}>
-                        {sch.dayOfWeek ? daysMap[sch.dayOfWeek] : sch.specificDate}
-                      </Text>
-                    </View>
-                  ))}
-                </View>
-              </View>
-            )}
-          </View>
+
+          {/* BOTÓN PRINCIPAL */}
           <TouchableOpacity
-            className="bg-blue-600 rounded-lg py-3 px-4 mt-4 flex-row justify-center items-center shadow-md"
+            className={`mt-2 rounded-xl py-3 px-4 flex-row justify-center items-center shadow-lg ${primaryButtonClass}`}
             onPress={() => navigation.navigate('BookAppointment', { professionalId: doctorData.id })}
+            activeOpacity={0.93}
           >
-            <Icon name="calendar-alt" size={18} color="#ffffff" className="mr-2" />
-            <Text className="text-white text-sm font-semibold">{t('doctor_profile.book_button')}</Text>
+            <Icon name="calendar-alt" size={18} color="#fff" className="mr-2" />
+            <Text className="text-white text-base font-extrabold">{t('doctor_profile.book_button')}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
     </AppContainer>
   );
 }
-
