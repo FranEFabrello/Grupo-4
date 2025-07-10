@@ -47,14 +47,14 @@ export default function UserProfileScreen({ navigation }) {
 
   useEffect(() => {
     if (!usuario) {
-      console.log('No se encontró usuario en el store');
+      //console.log('No se encontró usuario en el store');
       return;
     }
-    console.log('Usuario desde el store:', usuario);
+    //console.log('Usuario desde el store:', usuario);
   }, [usuario]);
 
   useEffect(() => {
-    console.log('Usuario desde el store en PERFILUSUARIO:', usuario);
+    //console.log('Usuario desde el store en PERFILUSUARIO:', usuario);
     if (usuario) {
       setNombre(usuario.nombre || '');
       setApellido(usuario.apellido || '');
@@ -139,7 +139,7 @@ export default function UserProfileScreen({ navigation }) {
       // Limpiar AsyncStorage
       const AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
       await AsyncStorage.clear();
-      console.log('AsyncStorage limpiado correctamente');
+      //console.log('AsyncStorage limpiado correctamente');
 
       // Cerrar sesión en backend si corresponde
       if (usuario && usuario.id) {
@@ -193,7 +193,7 @@ export default function UserProfileScreen({ navigation }) {
         setUrlImagenPerfil(url);
 
         if (usuario && usuario.correo) {
-          console.log("entrado a updateProfile para la imagen: ", url, imageUri);
+          //console.log("entrado a updateProfile para la imagen: ", url, imageUri);
           dispatch(updateProfile({ urlimagenperfil: url }))
             .unwrap()
             .then(() => {

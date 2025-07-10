@@ -72,9 +72,9 @@ export const rescheduleAppointment = createAsyncThunk(
 export const cancelAppointment = createAsyncThunk(
   'appointments/cancelAppointment',
   async (appointmentId) => {
-    console.log('Cancelando turno con ID:', appointmentId);
+    //console.log('Cancelando turno con ID:', appointmentId);
     const response = await api.patch(`/turnos/cancelar/${appointmentId}`);
-    console.log('Respuesta de cancelar turno:', response.data);
+    //console.log('Respuesta de cancelar turno:', response.data);
     return response.data;
   }
 );
@@ -154,9 +154,9 @@ const appointmentsSlice = createSlice({
           fecha: appt.fecha ? `${appt.fecha}T00:00:00${localOffset}` : appt.fecha
         }));
         // Dentro de .addCase(fetchAppointments.fulfilled, ...)
-        console.log("entrndo a fetchAppointments.fulfilled a este if");
+        //console.log("entrndo a fetchAppointments.fulfilled a este if");
         if (state.appointment) {
-          console.log("Entró :)");
+          //console.log("Entró :)");
           const updated = state.appointmentsByUser.find(a => a.id === state.appointment.id);
           if (updated) state.appointment = updated;
         }
@@ -167,7 +167,7 @@ const appointmentsSlice = createSlice({
         state.appointmentsByUser = state.appointmentsByUser.map((appointment) =>
           appointment.id === action.payload.id ? action.payload : appointment
         );
-        console.log('Turno confirmado:', action.payload);
+        //console.log('Turno confirmado:', action.payload);
       })
 
       /* --------------- NUEVO CASO PARA CANCELAR --------------- */
@@ -188,7 +188,7 @@ const appointmentsSlice = createSlice({
         // Actualiza el objeto appointment
         state.appointment = updatedAppointment;
         state.status = 'succeeded';
-        console.log(`Turno ${cancelledId} cancelado y actualizado en el store`);
+        //console.log(`Turno ${cancelledId} cancelado y actualizado en el store`);
       })
       .addCase(fetchAppointmentById.fulfilled, (state, action) => {
         // Actualizá el array y el objeto individual

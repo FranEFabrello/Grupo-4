@@ -226,7 +226,7 @@ export default function ProfileScreen({ navigation }) {
                     dispatch(actualizarConfiguraciones({ id: user.id, configuraciones: { modoOscuro: false } }));
                     dispatch({ type: 'user/setModoOscuro', payload: false });
                   }
-                  console.log('Tema cambiado a: light');
+                  //console.log('Tema cambiado a: light');
                 }}
               >
                 <Text
@@ -249,7 +249,7 @@ export default function ProfileScreen({ navigation }) {
                     dispatch(actualizarConfiguraciones({ id: user.id, configuraciones: { modoOscuro: true } }));
                     dispatch({ type: 'user/setModoOscuro', payload: true });
                   }
-                  console.log('Tema cambiado a: dark');
+                  //console.log('Tema cambiado a: dark');
                 }}
               >
                 <Text

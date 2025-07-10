@@ -197,7 +197,7 @@ export default function AppointmentsScreen({ navigation }) {
                     specialty={appt.especialidadInfo.descripcion}
                     status={appt.estado}
                     onPress={() => {
-                      console.log('Navigating to AppointmentDetail with ID:', appt.id);
+                      //console.log('Navigating to AppointmentDetail with ID:', appt.id);
                       dispatch(setCurrentAppointment(appt));
                       navigation.navigate('AppointmentDetail', { appointment: appt });
                     }}
@@ -243,7 +243,7 @@ export default function AppointmentsScreen({ navigation }) {
                   specialty={appt.especialidadInfo.descripcion}
                   status={appt.estado}
                   onPress={() => {
-                    console.log('Navigating to AppointmentDetail with ID:', appt.id);
+                    //console.log('Navigating to AppointmentDetail with ID:', appt.id);
                     navigation.navigate('AppointmentDetail', { appointment: appt });
                   }}
                   colorScheme={colorScheme}

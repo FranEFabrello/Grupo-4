@@ -21,13 +21,13 @@ export const fetchUserByToken = createAsyncThunk(
     try {
       // Cambia la clave a 'userToken' para que coincida con el resto de la app
       const token = await AsyncStorage.getItem('userToken');
-      console.log('Token obtenido de AsyncStorage:', token);
+      //console.log('Token obtenido de AsyncStorage:', token);
       const response = await api.get('Usuario/usuario/info', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log('Respuesta de /usuario/info:', response.data);
+      //console.log('Respuesta de /usuario/info:', response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al obtener el usuario por token');
@@ -56,7 +56,7 @@ export const solicitarCambioContrasenia = createAsyncThunk(
   async (correo, { rejectWithValue }) => {
     try {
       const response = await api.post('Usuario/solicitarCambioContrasenia', correo );
-      console.log('Respuesta de solicitar cambio contraseña: ', response.data);
+      //console.log('Respuesta de solicitar cambio contraseña: ', response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al solicitar el cambio de contraseña');
@@ -69,7 +69,7 @@ export const cambiarContrasenia = createAsyncThunk(
   async ({ correo, nuevaContrasenia }, { rejectWithValue }) => {
     try {
       const response = await api.post(`/Usuario/cambiarContrasenia`, { correo, nuevaContrasenia });
-      console.log('Respuesta de cambiar contraseña: ', response.data);
+      //console.log('Respuesta de cambiar contraseña: ', response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al cambiar la contraseña');
@@ -81,9 +81,9 @@ export const actualizarFcmToken = createAsyncThunk(
   'user/actualizarFcmToken',
   async ({ id, token }, { rejectWithValue }) => {
     try {
-      console.log('ID del usuario, entrando a actualizarFcmToken:', id);
+      //console.log('ID del usuario, entrando a actualizarFcmToken:', id);
       const response = await api.put(`/Usuario/usuario/${id}/fcm-token`, { token });
-      console.log('Respuesta de actualizar FCM token: ', response.data);
+      //console.log('Respuesta de actualizar FCM token: ', response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al actualizar el token FCM');
@@ -120,9 +120,9 @@ export const cerrarSesion = createAsyncThunk(
   'user/cerrarSesion',
   async (usuarioId, { rejectWithValue }) => {
     try {
-      console.log('Payload enviado al backend:',  usuarioId);
+      //console.log('Payload enviado al backend:',  usuarioId);
       const response = await api.patch(`/Usuario/cerrarSesion`, { usuarioId });
-      console.log("Respuesta de cerrar sesión:", response.data);
+      //console.log("Respuesta de cerrar sesión:", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al cerrar la sesión');

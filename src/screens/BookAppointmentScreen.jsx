@@ -109,12 +109,12 @@ export default function BookAppointmentScreen({ navigation, route }) {
     const now = new Date();
     const currentDate = now.toISOString().split('T')[0]; // Fecha actual en formato YYYY-MM-DD
 
-    console.log('isTimeSlotPast - Current Date:', currentDate, 'Selected Date:', selectedDate);
-    console.log('Slot Time:', slot.horaInicio);
+    //console.log('isTimeSlotPast - Current Date:', currentDate, 'Selected Date:', selectedDate);
+    //console.log('Slot Time:', slot.horaInicio);
 
     // Si selectedDate está vacío o no es la fecha actual, no filtramos
     if (!selectedDate || selectedDate !== currentDate) {
-      console.log('Selected date is not today or is empty, allowing slot');
+      //console.log('Selected date is not today or is empty, allowing slot');
       return false;
     }
 
@@ -133,7 +133,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
   };
 
   const handleConfirm = () => {
-    console.log('handleConfirm called', { specialty, professional, selectedDate, selectedTime, reprogramming, appointmentId });
+    //console.log('handleConfirm called', { specialty, professional, selectedDate, selectedTime, reprogramming, appointmentId });
     if (specialty && professional && selectedDate && selectedTime) {
       setLoading(true);
 
@@ -164,7 +164,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
               });
           })
           .catch((err) => {
-            console.log('Error en rescheduleAppointment:', err);
+            //console.log('Error en rescheduleAppointment:', err);
             setModalMessage(t('book_appointment.alerts.error'));
             setModalSuccess(false);
             setModalVisible(true);
@@ -183,7 +183,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
           estado: 'PENDIENTE',
         };
 
-        console.log('Dispatching bookAppointment', payload);
+        //console.log('Dispatching bookAppointment', payload);
         dispatch(bookAppointment(payload))
           .then((result) => {
             const appointment = result?.payload || result;
@@ -201,7 +201,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
               });
           })
           .catch((err) => {
-            console.log('Error en bookAppointment:', err);
+            //console.log('Error en bookAppointment:', err);
             setModalMessage(t('book_appointment.alerts.error'));
             setModalSuccess(false);
             setModalVisible(true);
@@ -210,7 +210,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
         dispatch(incrementUnreadCount());
       }
     } else {
-      console.log('Campos faltantes en handleConfirm');
+      //console.log('Campos faltantes en handleConfirm');
       setModalMessage(t('book_appointment.alerts.missing_fields'));
       setModalSuccess(false);
       setModalVisible(true);
@@ -350,7 +350,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
                   onPress={() => {
                     setModalVisible(false);
                     if (modalSuccess) {
-                      console.log('Navigating to Appointments (modal OK)');
+                      //console.log('Navigating to Appointments (modal OK)');
                       if (confirmedAppointment?.id) {
                         navigation.navigate('Appointments', { newAppointmentId: confirmedAppointment.id });
                       } else {

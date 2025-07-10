@@ -6,7 +6,7 @@ export const fetchNotificaciones = createAsyncThunk(
   'notificaciones/fetchNotificaciones',
   async (userId, thunkAPI) => {
     const response = await api.get(`/notificaciones/usuarios/${userId}`);
-    console.log("Notificaicones: ", response.data)
+    //console.log("Notificaicones: ", response.data)
     return response.data;
   }
 );
