@@ -34,6 +34,9 @@ export default function UserProfileScreen({ navigation }) {
   const { status, error } = useSelector((state) => state.user);
   const usuario = useSelector((state) => state.user.usuario);
 
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+
   // Theme variables
   const containerBg = colorScheme === 'light' ? 'bg-white' : 'bg-gray-700';
   const inputBg = colorScheme === 'light' ? 'bg-gray-100' : 'bg-gray-700';
@@ -136,10 +139,10 @@ export default function UserProfileScreen({ navigation }) {
 
   const handleLogout = async () => {
     try {
+      setIsLoggingOut(true);
       // Limpiar AsyncStorage
       const AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
       await AsyncStorage.clear();
-      //console.log('AsyncStorage limpiado correctamente');
 
       // Cerrar sesión en backend si corresponde
       if (usuario && usuario.id) {
@@ -161,6 +164,8 @@ export default function UserProfileScreen({ navigation }) {
     } catch (error) {
       console.error('Error durante el logout:', error);
       // Aquí se puede manejar el error si es necesario
+    } finally {
+      setIsLoggingOut(false);
     }
   };
 
@@ -254,191 +259,217 @@ export default function UserProfileScreen({ navigation }) {
   );
 
   return (
-    <AppContainer navigation={navigation} screenTitle={t('user_profile.screen_title')}>
-      {renderModal()}
-      <ScrollView
-        className="p-5"
-        contentContainerStyle={{ paddingBottom: insets.bottom + 20 }}
-      >
-        {status === 'loading' ? (
-          <Text className={`text-sm ${secondaryText}`}>{t('global.alert.loading')}</Text>
-        ) : status === 'failed' ? (
-          <View>
-            <Text className={`text-sm text-red-600`}>{t('global.alert.load_error')} {error || 'Network error'}</Text>
+    <>
+      {isLoggingOut && (
+        <View style={{
+          position: 'absolute',
+          top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.4)',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 9999,
+        }}>
+          <View style={{
+            backgroundColor: '#fff',
+            padding: 24,
+            borderRadius: 16,
+            alignItems: 'center',
+            flexDirection: 'row',
+            gap: 12,
+          }}>
+            <Icon name="spinner" size={28} color="#2563EB" style={{ marginRight: 12 }} solid spin />
+            <Text style={{ fontSize: 16, color: '#2563EB', fontWeight: 'bold' }}>
+              {t('global.alert.loading')}
+            </Text>
           </View>
-        ) : usuario ? (
-          <>
-            <View className="items-center mb-4">
-              <TouchableOpacity
-                activeOpacity={0.8}
-                style={{ position: 'relative' }}
-                onPress={pickImage}
-                accessibilityLabel={t('user_profile.buttons.edit_avatar')}
-              >
-                <View className={`w-24 h-24 ${avatarBg} rounded-full justify-center items-center overflow-hidden mb-2`}>
-                  {urlImagenPerfil || (usuario.urlimagenperfil && usuario.urlimagenperfil !== '') ? (
-                    <Image
-                      source={{ uri: urlImagenPerfil || usuario.urlimagenperfil }}
-                      className="w-full h-full"
-                      resizeMode="cover"
-                      onError={() => console.log(t('user_profile.alerts.no_img'))}
-                    />
-                  ) : (
-                    <Icon
-                      name="user-circle"
-                      size={96}
-                      color={colorScheme === 'light' ? '#2563EB' : '#1E40AF'}
-                      style={{ backgroundColor: '#000' }}
-                    />
-                  )}
-                </View>
-                <View style={{
-                  position: 'absolute',
-                  right: 0,
-                  bottom: 0,
-                  zIndex: 2,
-                }}>
-                  <View
-                    style={{
-                      backgroundColor: colorScheme === 'light' ? '#2563EB' : '#1E40AF',
-                      borderRadius: 20,
-                      padding: 6,
-                      elevation: 2,
-                    }}
-                  >
-                    <Icon name="pencil-alt" size={18} color="#fff" />
-                  </View>
-                </View>
-              </TouchableOpacity>
-              <Text className={`text-lg font-semibold ${primaryText}`}>{`${nombre} ${apellido}`}</Text>
-              <Text className={`text-sm ${secondaryText}`}>{usuario.correo}</Text>
+        </View>
+      )}
+      <AppContainer navigation={navigation} screenTitle={t('user_profile.screen_title')}>
+        {renderModal()}
+        <ScrollView
+          className="p-5"
+          contentContainerStyle={{ paddingBottom: insets.bottom + 20 }}
+        >
+          {status === 'loading' ? (
+            <Text className={`text-sm ${secondaryText}`}>{t('global.alert.loading')}</Text>
+          ) : status === 'failed' ? (
+            <View>
+              <Text className={`text-sm text-red-600`}>{t('global.alert.load_error')} {error || 'Network error'}</Text>
             </View>
-
-            <View className={`${containerBg} rounded-xl p-4 mb-4 shadow-md`}>
-              <Text className={`text-base font-semibold ${primaryText} mb-4`}>{t('user_profile.edit_section_title')}</Text>
-
-              <Text className={`text-sm ${primaryText} mb-1`}>{t('user_profile.fields.name')}</Text>
-              <TextInput
-                className={`rounded-xl ${inputBg} ${borderColor} border p-3 mb-2 text-sm ${editable ? primaryText : secondaryText}`}
-                value={nombre}
-                onChangeText={setNombre}
-                editable={editable}
-              />
-
-              <Text className={`text-sm ${primaryText} mb-1`}>{t('user_profile.fields.lastName')}</Text>
-              <TextInput
-                className={`rounded-xl ${inputBg} ${borderColor} border p-3 mb-2 text-sm ${editable ? primaryText : secondaryText}`}
-                value={apellido}
-                onChangeText={setApellido}
-                editable={editable}
-              />
-
-              <Text className={`text-sm ${primaryText} mb-1`}>{t('user_profile.fields.dni')}</Text>
-              <TextInput
-                className={`rounded-xl ${inputBg} ${borderColor} border p-3 mb-2 text-sm ${editable ? primaryText : secondaryText}`}
-                value={dni}
-                onChangeText={(text) => setDni(text.replace(/\D/g, '').slice(0, 9))}
-                editable={editable}
-              />
-
-              <Text className={`text-sm ${primaryText} mb-1`}>{t('user_profile.fields.phone')}</Text>
-              <TextInput
-                className={`rounded-xl ${inputBg} ${borderColor} border p-3 mb-2 text-sm ${editable ? primaryText : secondaryText}`}
-                value={celular}
-                onChangeText={setCelular}
-                editable={editable}
-              />
-
-              <Text className={`text-sm ${primaryText} mb-1`}>{t('user_profile.fields.gender.title')}</Text>
-              <View
-                className={`rounded-xl ${inputBg} ${borderColor} border mb-2 mt-0`}
-                style={{ padding: 0, minHeight: 48, justifyContent: 'center', marginTop: 0 }}
-              >
-                <Picker
-                  selectedValue={genero}
-                  onValueChange={setGenero}
-                  enabled={editable}
-                  style={{
-                    minHeight: 48,
-                    color: colorScheme === 'light' ? '#1f2937' : '#e5e7eb',
-                    backgroundColor: 'transparent',
-                    fontSize: 14,
-                    paddingHorizontal: 12,
-                    width: '100%',
-                  }}
-                  itemStyle={{
-                    fontSize: 14,
-                    minHeight: 48,
-                  }}
+          ) : usuario ? (
+            <>
+              <View className="items-center mb-4">
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  style={{ position: 'relative' }}
+                  onPress={pickImage}
+                  accessibilityLabel={t('user_profile.buttons.edit_avatar')}
                 >
-                  <Picker.Item
-                    label={t('user_profile.fields.gender.M')}
-                    value="masculino"
-                    color={colorScheme === 'light' ? '#1f2937' : '#000'}
-                  />
-                  <Picker.Item
-                    label={t('user_profile.fields.gender.F')}
-                    value="femenino"
-                    color={colorScheme === 'light' ? '#1f2937' : '#000'}
-                  />
-                  <Picker.Item
-                    label={t('user_profile.fields.gender.O')}
-                    value="otros"
-                    color={colorScheme === 'light' ? '#1f2937' : '#000'}
-                  />
-                </Picker>
+                  <View className={`w-24 h-24 ${avatarBg} rounded-full justify-center items-center overflow-hidden mb-2`}>
+                    {urlImagenPerfil || (usuario.urlimagenperfil && usuario.urlimagenperfil !== '') ? (
+                      <Image
+                        source={{ uri: urlImagenPerfil || usuario.urlimagenperfil }}
+                        className="w-full h-full"
+                        resizeMode="cover"
+                        onError={() => console.log(t('user_profile.alerts.no_img'))}
+                      />
+                    ) : (
+                      <Icon
+                        name="user-circle"
+                        size={96}
+                        color={colorScheme === 'light' ? '#2563EB' : '#1E40AF'}
+                        style={{ backgroundColor: '#000' }}
+                      />
+                    )}
+                  </View>
+                  <View style={{
+                    position: 'absolute',
+                    right: 0,
+                    bottom: 0,
+                    zIndex: 2,
+                  }}>
+                    <View
+                      style={{
+                        backgroundColor: colorScheme === 'light' ? '#2563EB' : '#1E40AF',
+                        borderRadius: 20,
+                        padding: 6,
+                        elevation: 2,
+                      }}
+                    >
+                      <Icon name="pencil-alt" size={18} color="#fff" />
+                    </View>
+                  </View>
+                </TouchableOpacity>
+                <Text className={`text-lg font-semibold ${primaryText}`}>{`${nombre} ${apellido}`}</Text>
+                <Text className={`text-sm ${secondaryText}`}>{usuario.correo}</Text>
               </View>
 
-              {editable ? (
-                (nombre !== usuario.nombre ||
-                  apellido !== usuario.apellido ||
-                  dni !== usuario.dni ||
-                  celular !== usuario.celular ||
-                  genero !== usuario.genero ||
-                  urlImagenPerfil !== usuario.urlimagenperfil) ? (
+              <View className={`${containerBg} rounded-xl p-4 mb-4 shadow-md`}>
+                <Text className={`text-base font-semibold ${primaryText} mb-4`}>{t('user_profile.edit_section_title')}</Text>
+
+                <Text className={`text-sm ${primaryText} mb-1`}>{t('user_profile.fields.name')}</Text>
+                <TextInput
+                  className={`rounded-xl ${inputBg} ${borderColor} border p-3 mb-2 text-sm ${editable ? primaryText : secondaryText}`}
+                  value={nombre}
+                  onChangeText={setNombre}
+                  editable={editable}
+                />
+
+                <Text className={`text-sm ${primaryText} mb-1`}>{t('user_profile.fields.lastName')}</Text>
+                <TextInput
+                  className={`rounded-xl ${inputBg} ${borderColor} border p-3 mb-2 text-sm ${editable ? primaryText : secondaryText}`}
+                  value={apellido}
+                  onChangeText={setApellido}
+                  editable={editable}
+                />
+
+                <Text className={`text-sm ${primaryText} mb-1`}>{t('user_profile.fields.dni')}</Text>
+                <TextInput
+                  className={`rounded-xl ${inputBg} ${borderColor} border p-3 mb-2 text-sm ${editable ? primaryText : secondaryText}`}
+                  value={dni}
+                  onChangeText={(text) => setDni(text.replace(/\D/g, '').slice(0, 9))}
+                  editable={editable}
+                />
+
+                <Text className={`text-sm ${primaryText} mb-1`}>{t('user_profile.fields.phone')}</Text>
+                <TextInput
+                  className={`rounded-xl ${inputBg} ${borderColor} border p-3 mb-2 text-sm ${editable ? primaryText : secondaryText}`}
+                  value={celular}
+                  onChangeText={setCelular}
+                  editable={editable}
+                />
+
+                <Text className={`text-sm ${primaryText} mb-1`}>{t('user_profile.fields.gender.title')}</Text>
+                <View
+                  className={`rounded-xl ${inputBg} ${borderColor} border mb-2 mt-0`}
+                  style={{ padding: 0, minHeight: 48, justifyContent: 'center', marginTop: 0 }}
+                >
+                  <Picker
+                    selectedValue={genero}
+                    onValueChange={setGenero}
+                    enabled={editable}
+                    style={{
+                      minHeight: 48,
+                      color: colorScheme === 'light' ? '#1f2937' : '#e5e7eb',
+                      backgroundColor: 'transparent',
+                      fontSize: 14,
+                      paddingHorizontal: 12,
+                      width: '100%',
+                    }}
+                    itemStyle={{
+                      fontSize: 14,
+                      minHeight: 48,
+                    }}
+                  >
+                    <Picker.Item
+                      label={t('user_profile.fields.gender.M')}
+                      value="masculino"
+                      color={colorScheme === 'light' ? '#1f2937' : '#000'}
+                    />
+                    <Picker.Item
+                      label={t('user_profile.fields.gender.F')}
+                      value="femenino"
+                      color={colorScheme === 'light' ? '#1f2937' : '#000'}
+                    />
+                    <Picker.Item
+                      label={t('user_profile.fields.gender.O')}
+                      value="otros"
+                      color={colorScheme === 'light' ? '#1f2937' : '#000'}
+                    />
+                  </Picker>
+                </View>
+
+                {editable ? (
+                  (nombre !== usuario.nombre ||
+                    apellido !== usuario.apellido ||
+                    dni !== usuario.dni ||
+                    celular !== usuario.celular ||
+                    genero !== usuario.genero ||
+                    urlImagenPerfil !== usuario.urlimagenperfil) ? (
+                    <TouchableOpacity
+                      className={`${selectedButtonBg} rounded-xl p-3 flex-row justify-center mt-4`}
+                      onPress={handleEdit}
+                    >
+                      <Text className={`${selectedButtonText} text-sm font-semibold`}>
+                        {t('user_profile.buttons.save')}
+                      </Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity
+                      className={`${selectedButtonBg} rounded-xl p-3 flex-row justify-center mt-4`}
+                      onPress={handleCancelEdit}
+                    >
+                      <Text className={`${selectedButtonText} text-sm font-semibold`}>
+                        Cancelar
+                      </Text>
+                    </TouchableOpacity>
+                  )
+                ) : (
                   <TouchableOpacity
                     className={`${selectedButtonBg} rounded-xl p-3 flex-row justify-center mt-4`}
                     onPress={handleEdit}
                   >
                     <Text className={`${selectedButtonText} text-sm font-semibold`}>
-                      {t('user_profile.buttons.save')}
+                      {t('user_profile.buttons.edit')}
                     </Text>
                   </TouchableOpacity>
-                ) : (
-                  <TouchableOpacity
-                    className={`${selectedButtonBg} rounded-xl p-3 flex-row justify-center mt-4`}
-                    onPress={handleCancelEdit}
-                  >
-                    <Text className={`${selectedButtonText} text-sm font-semibold`}>
-                      Cancelar
-                    </Text>
-                  </TouchableOpacity>
-                )
-              ) : (
-                <TouchableOpacity
-                  className={`${selectedButtonBg} rounded-xl p-3 flex-row justify-center mt-4`}
-                  onPress={handleEdit}
-                >
-                  <Text className={`${selectedButtonText} text-sm font-semibold`}>
-                    {t('user_profile.buttons.edit')}
-                  </Text>
-                </TouchableOpacity>
-              )}
-            </View>
+                )}
+              </View>
 
-            <View className={`${containerBg} rounded-xl p-4 shadow-md`}>
-              <TouchableOpacity
-                className={`${dangerButtonBg} rounded-xl p-3 flex-row justify-center`}
-                onPress={handleLogout}
-              >
-                <Text className={`${selectedButtonText} text-sm font-semibold`}>{t('user_profile.buttons.logout')}</Text>
-              </TouchableOpacity>
-            </View>
-          </>
-        ) : (
-          <Text className={`text-sm ${secondaryText}`}>{t('user_profile.alerts.no_user')}</Text>
-        )}
-      </ScrollView>
-    </AppContainer>
+              <View className={`${containerBg} rounded-xl p-4 shadow-md`}>
+                <TouchableOpacity
+                  className={`${dangerButtonBg} rounded-xl p-3 flex-row justify-center`}
+                  onPress={handleLogout}
+                >
+                  <Text className={`${selectedButtonText} text-sm font-semibold`}>{t('user_profile.buttons.logout')}</Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          ) : (
+            <Text className={`text-sm ${secondaryText}`}>{t('user_profile.alerts.no_user')}</Text>
+          )}
+        </ScrollView>
+      </AppContainer>
+    </>
   );
 }

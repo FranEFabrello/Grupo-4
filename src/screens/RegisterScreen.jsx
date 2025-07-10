@@ -20,6 +20,7 @@ import LoadingOverlay from "~/components/LoadingOverlay";   // ⬅️ overlay
 import { useTranslation } from 'react-i18next';
 import { Picker } from '@react-native-picker/picker';
 import { useAppTheme } from '~/providers/ThemeProvider';
+import { MaterialIcons } from '@expo/vector-icons';
 
 export default function RegisterScreen({ navigation }) {
   const { colorScheme } = useAppTheme();
@@ -40,6 +41,7 @@ export default function RegisterScreen({ navigation }) {
   const [errores, setErrores] = useState({});
   const [isLoading, setIsLoading] = useState(false);        // ⬅️ estado carga
   const { t } = useTranslation();
+  const [showPassword, setShowPassword] = useState(false);
 
   const obrasSociales = useSelector((state) => state.socialWork.obrasSociales);
   const dispatch = useDispatch();
@@ -202,7 +204,35 @@ export default function RegisterScreen({ navigation }) {
                 {errores.apellido && <Text className="text-red-500 text-xs mb-1">{errores.apellido}</Text>}
                 <TextInput className={`w-full h-12 border ${colorScheme === 'dark' ? 'border-gray-700 bg-gray-800 text-gray-100' : 'border-gray-300 bg-white text-gray-900'} rounded-lg px-3 mb-2`} placeholder={t('register.placeholders.email')} placeholderTextColor={colorScheme === 'dark' ? '#9ca3af' : '#6b7280'} value={correo} onChangeText={setCorreo} keyboardType="email-address" autoCapitalize="none" />
                 {errores.correo && <Text className="text-red-500 text-xs mb-1">{errores.correo}</Text>}
-                <TextInput className={`w-full h-12 border ${colorScheme === 'dark' ? 'border-gray-700 bg-gray-800 text-gray-100' : 'border-gray-300 bg-white text-gray-900'} rounded-lg px-3 mb-2`} placeholder={t('register.placeholders.password')} placeholderTextColor={colorScheme === 'dark' ? '#9ca3af' : '#6b7280'} value={contrasenia} onChangeText={setContrasenia} secureTextEntry />
+                <View className="w-full h-12 rounded-lg mb-2 border flex-row items-center relative">
+                  <TextInput
+                    className={`flex-1 h-full px-3 ${colorScheme === 'dark' ? 'border-gray-700 bg-gray-800 text-gray-100' : 'border-gray-300 bg-white text-gray-900'}`}
+                    placeholder={t('register.placeholders.password')}
+                    placeholderTextColor={colorScheme === 'dark' ? '#9ca3af' : '#6b7280'}
+                    value={contrasenia}
+                    onChangeText={setContrasenia}
+                    secureTextEntry={!showPassword}
+                    style={{ paddingRight: 40 }}
+                  />
+                  <TouchableOpacity
+                    onPress={() => setShowPassword((prev) => !prev)}
+                    style={{
+                      position: 'absolute',
+                      right: 10,
+                      height: '100%',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      padding: 4,
+                    }}
+                    activeOpacity={0.7}
+                  >
+                    <MaterialIcons
+                      name={showPassword ? 'visibility-off' : 'visibility'}
+                      size={24}
+                      color={colorScheme === 'dark' ? '#fff' : '#374151'}
+                    />
+                  </TouchableOpacity>
+                </View>
                 {errores.contrasenia && <Text className="text-red-500 text-xs mb-1">{errores.contrasenia}</Text>}
                 <TextInput className={`w-full h-12 border ${colorScheme === 'dark' ? 'border-gray-700 bg-gray-800 text-gray-100' : 'border-gray-300 bg-white text-gray-900'} rounded-lg px-3 mb-2`} placeholder={t('register.placeholders.repeat_password')} placeholderTextColor={colorScheme === 'dark' ? '#9ca3af' : '#6b7280'} value={repetirContrasenia} onChangeText={setRepetirContrasenia} secureTextEntry />
                 {errores.repetirContrasenia && <Text className="text-red-500 text-xs mb-1">{errores.repetirContrasenia}</Text>}

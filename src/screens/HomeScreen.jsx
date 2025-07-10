@@ -174,7 +174,7 @@ export default function HomeScreen({ navigation }) {
           </Text>
         </View>
         <View className={`rounded-lg p-4 pb-1 mb-4 shadow-md ${cardClass}`}>
-          <ScrollView horizontal className="mb-4 h-48" showsHorizontalScrollIndicator={false}>
+          <ScrollView horizontal className="mb-4" showsHorizontalScrollIndicator={false}>
             <View className="flex-row px-2" style={{overflow: 'visible'}}>
               {professionalsStatus === 'loading' ? (
                 <Text className={`text-sm ${secondaryTextClass}`}>{t('global.alert.loading')}</Text>
@@ -182,17 +182,14 @@ export default function HomeScreen({ navigation }) {
                 <View key={doctor.id} className="mr-3">
                   <DoctorCard
                     name={`${doctor.nombre} ${doctor.apellido}`}
-                    specialty={
-                      translateSpecialty(specialities.find((s) => s.id === doctor.idEspecialidad)?.descripcion || '')
-                    }
-                    stars={doctor.calificacionPromedio > 0 ? doctor.calificacionPromedio : null}
-                    noRating={doctor.calificacionPromedio === 0}
+                    specialty={specialities.find((s) => s.id === doctor.idEspecialidad)?.descripcion || ''}
                     onBook={() =>
                       navigation.navigate('BookAppointment', { professionalId: doctor.id })
                     }
                     onPress={() => navigation.navigate('DoctorProfileScreen', { doctor })}
                     containerClassName="w-64"
                     colorScheme={colorScheme}
+                    imageUrl={doctor.urlImagenDoctor}
                   />
                 </View>
               ))}
@@ -211,8 +208,6 @@ export default function HomeScreen({ navigation }) {
             <Icon name="heart" size={20} color="#ffffff" className="mr-2" />
             <Text className="text-white text-sm font-semibold">{t('home.medical_news.title')}</Text>
           </TouchableOpacity>
-
-          {/*<TestToastButton />*/}
 
         </View>
       </ScrollView>

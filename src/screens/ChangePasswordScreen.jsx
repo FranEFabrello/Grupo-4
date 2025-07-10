@@ -32,7 +32,7 @@ const ChangePasswordScreen = ({navigation}) => {
       setSolicitudEnviada(true);
       setTokenValidado(false);
       Alert.alert(
-        t('global.success'),
+        t('global.alert.success'),
         t('send_email.alerts.email_sent'),
         [
           {
@@ -56,7 +56,7 @@ const ChangePasswordScreen = ({navigation}) => {
       const resValidacion = await dispatch(
         validarTokenCambioContrasenia({ correo, tokenIngresado })
       ).unwrap();
-      Alert.alert(t('global.success'), resValidacion.mensaje);
+      Alert.alert(t('global.alert.success'), resValidacion.mensaje);
       setTokenValidado(true);
     } catch (err) {
       Alert.alert('Error', err.mensaje || t('token.alerts.default_error'));
