@@ -1522,5 +1522,226 @@
         "es": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo más tarde.",
         "en": "An unexpected error occurred. Please try again later."
         }
+    },
+
+  "especialitys": {
+    "Cardiología": {
+      "es": "Cardiología",
+      "en": "Cardiology"
+    },
+    "Clinico": {
+      "es": "Clínico",
+      "en": "Practitioner"
+    },
+    "Pediatría": {
+      "es": "Pediatría",
+      "en": "Pediatrics"
+    },
+    "Dermatología": {
+      "es": "Dermatología",
+      "en": "Dermatology"
+    },
+    "Neurología": {
+      "es": "Neurología",
+      "en": "Neurology"
+    },
+    "Oncología": {
+      "es": "Oncología",
+      "en": "Oncology"
+    },
+    "Ginecología": {
+      "es": "Ginecología",
+      "en": "Gynecology"
+    },
+    "Urología": {
+      "es": "Urología",
+      "en": "Urology"
+    },
+    "Oftalmología": {
+      "es": "Oftalmología",
+      "en": "Ophthalmology"
+    },
+    "Otorrinolaringología": {
+      "es": "Otorrinolaringología",
+      "en": "Otolaryngology"
+    },
+    "Traumatología": {
+      "es": "Traumatología",
+      "en": "Traumatology"
+    },
+    "Endocrinología": {
+      "es": "Endocrinología",
+      "en": "Endocrinology"
+    },
+    "Gastroenterología": {
+      "es": "Gastroenterología",
+      "en": "Gastroenterology"
+    },
+    "Hematología": {
+      "es": "Hematología",
+      "en": "Hematology"
+    },
+    "Inmunología": {
+      "es": "Inmunología",
+      "en": "Immunology"
+    },
+    "Nefrología": {
+      "es": "Nefrología",
+      "en": "Nephrology"
+    },
+    "Neumología": {
+      "es": "Neumología",
+      "en": "Pulmonology"
+    },
+    "Reumatología": {
+      "es": "Reumatología",
+      "en": "Rheumatology"
+    },
+    "Psiquiatría": {
+      "es": "Psiquiatría",
+      "en": "Psychiatry"
+    },
+    "Psicología": {
+      "es": "Psicología",
+      "en": "Psychology"
+    },
+    "Alergología": {
+      "es": "Alergología",
+      "en": "Allergology"
+    },
+    "Anestesiología": {
+      "es": "Anestesiología",
+      "en": "Anesthesiology"
+    },
+    "Angiología": {
+      "es": "Angiología",
+      "en": "Angiology"
+    },
+    "Cirugía General": {
+      "es": "Cirugía General",
+      "en": "General Surgery"
+    },
+    "Cirugía Plástica": {
+      "es": "Cirugía Plástica",
+      "en": "Plastic Surgery"
+    },
+    "Cirugía Pediátrica": {
+      "es": "Cirugía Pediátrica",
+      "en": "Pediatric Surgery"
+    },
+    "Cirugía Cardiovascular": {
+      "es": "Cirugía Cardiovascular",
+      "en": "Cardiovascular Surgery"
+    },
+    "Cirugía Torácica": {
+      "es": "Cirugía Torácica",
+      "en": "Thoracic Surgery"
+    },
+    "Cirugía Maxilofacial": {
+      "es": "Cirugía Maxilofacial",
+      "en": "Maxillofacial Surgery"
+    },
+    "Cirugía Vascular": {
+      "es": "Cirugía Vascular",
+      "en": "Vascular Surgery"
+    },
+    "Cirugía Digestiva": {
+      "es": "Cirugía Digestiva",
+      "en": "Digestive Surgery"
+    },
+    "Cirugía Oncológica": {
+      "es": "Cirugía Oncológica",
+      "en": "Oncological Surgery"
+    },
+    "Cirugía Neurológica": {
+      "es": "Cirugía Neurológica",
+      "en": "Neurosurgery"
+    },
+    "Cirugía Traumatológica": {
+      "es": "Cirugía Traumatológica",
+      "en": "Orthopedic Surgery"
+    },
+    "Cirugía Urológica": {
+      "es": "Cirugía Urológica",
+      "en": "Urological Surgery"
+    },
+    "Cirugía Estética": {
+      "es": "Cirugía Estética",
+      "en": "Cosmetic Surgery"
+    },
+    "Medicina Interna": {
+      "es": "Medicina Interna",
+      "en": "Internal Medicine"
+    },
+    "Medicina Familiar": {
+      "es": "Medicina Familiar",
+      "en": "Family Medicine"
+    },
+    "Medicina General": {
+      "es": "Medicina General",
+      "en": "General Medicine"
+    },
+    "Medicina Nuclear": {
+      "es": "Medicina Nuclear",
+      "en": "Nuclear Medicine"
+    },
+    "Medicina del Deporte": {
+      "es": "Medicina del Deporte",
+      "en": "Sports Medicine"
+    },
+    "Medicina Forense": {
+      "es": "Medicina Forense",
+      "en": "Forensic Medicine"
+    },
+    "Medicina Preventiva": {
+      "es": "Medicina Preventiva",
+      "en": "Preventive Medicine"
+    },
+    "Medicina Intensiva": {
+      "es": "Medicina Intensiva",
+      "en": "Intensive Care Medicine"
+    },
+    "Geriatría": {
+      "es": "Geriatría",
+      "en": "Geriatrics"
+    },
+    "Genética": {
+      "es": "Genética",
+      "en": "Genetics"
+    },
+    "Fisioterapia": {
+      "es": "Fisioterapia",
+      "en": "Physiotherapy"
+    },
+    "Nutriología": {
+      "es": "Nutriología",
+      "en": "Nutrition"
+    },
+    "Obstetricia": {
+      "es": "Obstetricia",
+      "en": "Obstetrics"
+    },
+    "Patología": {
+      "es": "Patología",
+      "en": "Pathology"
+    },
+    "Radiología": {
+      "es": "Radiología",
+      "en": "Radiology"
+    },
+    "Toxicología": {
+      "es": "Toxicología",
+      "en": "Toxicology"
     }
+  },
+
+  "days": {
+    "MONDAY": { "es": "Lunes", "en": "Monday" },
+    "TUESDAY": { "es": "Martes", "en": "Tuesday" },
+    "WEDNESDAY": { "es": "Miércoles", "en": "Wednesday" },
+    "THURSDAY": { "es": "Jueves", "en": "Thursday" },
+    "FRIDAY": { "es": "Viernes", "en": "Friday" },
+    "SATURDAY": { "es": "Sábado", "en": "Saturday" },
+    "SUNDAY": { "es": "Domingo", "en": "Sunday" }
+  }
 }

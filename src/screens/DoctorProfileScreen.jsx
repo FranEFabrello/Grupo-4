@@ -31,17 +31,6 @@ export default function DoctorProfileScreen({ navigation, route }) {
   const doctorData = doctor || professionals.find((prof) => prof.id === (doctorId || (doctor && doctor.id)));
 
   // Utilidades para mostrar días en español
-  const daysMap = {
-    MONDAY: 'Lunes',
-    TUESDAY: 'Martes',
-    WEDNESDAY: 'Miércoles',
-    THURSDAY: 'Jueves',
-    FRIDAY: 'Viernes',
-    SATURDAY: 'Sábado',
-    SUNDAY: 'Domingo',
-  };
-
-  // Obtener días no laborables
   const nonWorkingDays = (doctorData.schedules || []).filter(sch => sch.nonWorkingDay && (sch.dayOfWeek || sch.specificDate));
   const workingDays = (doctorData.schedules || []).filter(sch => !sch.nonWorkingDay);
 
@@ -64,7 +53,8 @@ export default function DoctorProfileScreen({ navigation, route }) {
     );
   }
   //Acá iría la traducción de la especialidad
-  const specialty = especialidades.find((esp) => esp.id === doctorData.idEspecialidad)?.descripcion || t('doctor_profile.no_specialty');
+  const rawDesc = especialidades.find((esp) => esp.id === doctorData.idEspecialidad)?.descripcion;
+  const specialty = rawDesc ? t(`especialitys.${rawDesc}`, rawDesc) : t('doctor_profile.no_specialty');
 
   return (
     <AppContainer navigation={navigation} screenTitle={t('doctor_profile.title')}>
@@ -98,11 +88,13 @@ export default function DoctorProfileScreen({ navigation, route }) {
               workingDays.map((sch, idx) => (
                 <View key={idx} className="mb-2 flex-row items-center">
                   {sch.dayOfWeek ? (
-                    <Text className={`text-sm ${textPrimary} w-28`}>{daysMap[sch.dayOfWeek]}</Text>
+                    <Text className={`text-sm ${textPrimary} w-28`}>{t(`days.${sch.dayOfWeek}`, sch.dayOfWeek)}</Text>
                   ) : (
                     <Text className={`text-sm ${textPrimary} w-28`}>{sch.specificDate}</Text>
                   )}
-                  <Text className={`text-sm ${textSecondary} ml-2`}>{sch.startTime && sch.endTime ? `${sch.startTime.slice(0,5)} - ${sch.endTime.slice(0,5)}` : '-'}</Text>
+                  <Text className={`text-sm ${textSecondary} ml-2`}>
+                    {sch.startTime && sch.endTime ? `${sch.startTime.slice(0,5)} - ${sch.endTime.slice(0,5)}` : '-'}
+                  </Text>
                 </View>
               ))
             ) : (
@@ -116,7 +108,7 @@ export default function DoctorProfileScreen({ navigation, route }) {
                   {nonWorkingDays.map((sch, idx) => (
                     <View key={idx} className={`${nonWorkingBg} border rounded-lg px-2 py-1 mr-2 mb-2`}>
                       <Text className={`text-xs ${nonWorkingText}`}>
-                        {sch.dayOfWeek ? daysMap[sch.dayOfWeek] : sch.specificDate}
+                        {sch.dayOfWeek ? t(`days.${sch.dayOfWeek}`, sch.dayOfWeek) : sch.specificDate}
                       </Text>
                     </View>
                   ))}
