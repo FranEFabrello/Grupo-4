@@ -12,7 +12,7 @@ import {setIsAuthenticated } from '~/store/slices/autheticationSlice';
 import AppNavigator from '~/navigation/AppNavigator';
 import store from '~/store';
 import { setToken } from '~/store/slices/authSlice';
-import ToastProvider from '~/components/ToastProvider'; // Importa el nuevo componente
+import ToastProvider from '~/components/ToastProvider';
 import * as Notifications from 'expo-notifications';
 import { loadStoredToken } from '~/store/slices/autheticationSlice';
 

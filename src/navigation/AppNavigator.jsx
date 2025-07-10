@@ -39,11 +39,11 @@ export default function AppNavigator() {
                 <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Appointments" component={AppointmentsScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Professionals" component={ProfessionalsScreen} options={{ headerShown: false }} />
-                <Stack.Screen
-                  name="BookAppointment"
-                  component={BookAppointmentScreen}
-                  options={{ headerShown: false, unmountOnBlur: true }}
-                />
+              <Stack.Screen
+                name="BookAppointment"
+                component={BookAppointmentScreen}
+                options={{ headerShown: false, unmountOnBlur: true }}
+              />
                 <Stack.Screen name="Results" component={ResultsScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Insurance" component={InsuranceScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="MedicalNotes" component={MedicalNotesScreen} options={{ headerShown: false }} />
