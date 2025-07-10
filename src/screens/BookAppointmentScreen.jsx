@@ -339,7 +339,7 @@ export default function BookAppointmentScreen({ navigation, route }) {
             animationType="fade"
             onRequestClose={() => {
               setModalVisible(false);
-              if (modalSuccess) navigation.navigate('Appointments');
+              if (modalSuccess) navigation.replace('Appointments');
             }}
           >
             <View className="flex-1 justify-center items-center bg-black/50">
@@ -350,11 +350,10 @@ export default function BookAppointmentScreen({ navigation, route }) {
                   onPress={() => {
                     setModalVisible(false);
                     if (modalSuccess) {
-                      //console.log('Navigating to Appointments (modal OK)');
                       if (confirmedAppointment?.id) {
-                        navigation.navigate('Appointments', { newAppointmentId: confirmedAppointment.id });
+                        navigation.replace('Appointments', { newAppointmentId: confirmedAppointment.id });
                       } else {
-                        navigation.navigate('Appointments');
+                        navigation.replace('Appointments');
                       }
                     }
                   }}

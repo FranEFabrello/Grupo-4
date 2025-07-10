@@ -7,7 +7,7 @@ export default function DoctorCard({
                                      name,
                                      specialty,
                                      onBook,
-                                     onPress, // NUEVA PROP
+                                     onPress,
                                      containerClassName = 'w-full',
                                      colorScheme,
                                      imageUrl,
@@ -28,33 +28,51 @@ export default function DoctorCard({
       onPress={onPress}
     >
       <View
-        className={`${cardBgClass} rounded-lg p-4 shadow-md items-center justify-center`}
-        style={{ elevation: 5, minHeight: 180 }}
+        className={`${cardBgClass} rounded-lg p-4 shadow-md flex-row items-start justify-start m-0 relative`}
+        style={{ elevation: 5 }}
       >
-        {/* Solo la foto del doctor, centrada arriba */}
-        {imageUrl ? (
-          <Image
-            source={{ uri: imageUrl }}
-            className="w-20 h-20 rounded-full mb-2"
-            resizeMode="cover"
-          />
-        ) : (
-          <View className={`w-20 h-20 ${iconBgClass} rounded-full justify-center items-center mb-2`}>
-            <Icon name="user-md" size={32} color={iconColor} />
+        {/* Foto con borde y brillo */}
+        <View className="justify-center items-center mr-4">
+          <View
+            className={
+              colorScheme === 'light'
+                ? "rounded-full border-4 border-blue-300 shadow-lg"
+                : "rounded-full border-4 border-blue-500 shadow-lg"
+            }
+            style={{
+              shadowColor: colorScheme === 'light' ? '#60a5fa' : '#3b82f6',
+              shadowOffset: { width: 0, height: 0 },
+              shadowOpacity: 0.7,
+              shadowRadius: 8,
+              elevation: 8,
+            }}
+          >
+            {imageUrl ? (
+              <Image
+                source={{ uri: imageUrl }}
+                className="w-20 h-20 rounded-full"
+                resizeMode="cover"
+              />
+            ) : (
+              <View className={`w-20 h-20 ${iconBgClass} rounded-full justify-center items-center`}>
+                <Icon name="user-md" size={32} color={iconColor} />
+              </View>
+            )}
           </View>
-        )}
-        <Text className={`text-sm font-medium ${nameTextClass}`}>{name}</Text>
-        <Text className={`text-xs ${specialtyTextClass}`}>{specialty}</Text>
-
-        <TouchableOpacity
-          className={`${buttonBgClass} rounded-lg p-2 mt-2 w-full flex-row justify-center items-center ${borderClass}`}
-          onPress={onBook}
-        >
-          <Icon name="calendar-alt" size={14} color="#ffffff" />
-          <Text className="text-white text-xs ml-1">{t('doctor_card.book')}</Text>
-        </TouchableOpacity>
+        </View>
+        {/* Contenido */}
+        <View className="flex-1 justify-center">
+          <Text className={`text-base font-semibold ${nameTextClass}`}>{name}</Text>
+          <Text className={`text-sm ${specialtyTextClass} mt-1`}>{specialty}</Text>
+          <TouchableOpacity
+            className={`${buttonBgClass} rounded-lg py-2 px-2 w-28 flex-row justify-center items-center ${borderClass} mt-3`}
+            onPress={onBook}
+          >
+            <Icon name="calendar-alt" size={14} color="#ffffff" />
+            <Text className="text-white text-xs ml-1">{t('doctor_card.book')}</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </TouchableOpacity>
   );
 }
-

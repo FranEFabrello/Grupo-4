@@ -34,17 +34,32 @@ export default function DoctorCardForProf({
       >
         {/* Foto a la izquierda */}
         <View className="justify-center items-center mr-4 ml-4">
-          {imageUrl ? (
-            <Image
-              source={{ uri: imageUrl }}
-              className="w-20 h-20 rounded-full"
-              resizeMode="cover"
-            />
-          ) : (
-            <View className={`w-20 h-20 ${iconBgClass} rounded-full justify-center items-center`}>
-              <Icon name="user-md" size={32} color={iconColor} />
-            </View>
-          )}
+          <View
+            className={
+              colorScheme === 'light'
+                ? "rounded-full border-4 border-blue-300 shadow-lg"
+                : "rounded-full border-4 border-blue-500 shadow-lg"
+            }
+            style={{
+              shadowColor: colorScheme === 'light' ? '#60a5fa' : '#3b82f6',
+              shadowOffset: { width: 0, height: 0 },
+              shadowOpacity: 0.7,
+              shadowRadius: 8,
+              elevation: 8,
+            }}
+          >
+            {imageUrl ? (
+              <Image
+                source={{ uri: imageUrl }}
+                className="w-20 h-20 rounded-full"
+                resizeMode="cover"
+              />
+            ) : (
+              <View className={`w-20 h-20 ${iconBgClass} rounded-full justify-center items-center`}>
+                <Icon name="user-md" size={32} color={iconColor} />
+              </View>
+            )}
+          </View>
         </View>
         {/* Contenido centrado */}
         <View className="flex-1 justify-center items-center mt-2">
