@@ -97,7 +97,7 @@ export default function AppointmentDetailScreen({ route, navigation }) {
       })
       .catch((err) => {
         setIsCancelLoading(false);
-        Alert.alert('Error', err || t('appointments.alerts.cancel_error'));
+        //Alert.alert('Error', typeof err === 'string' ? err : (err?.message || t('appointments.alerts.cancel_error')));
       });
   };
 

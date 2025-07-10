@@ -20,6 +20,7 @@ import { fetchProfessionals } from "~/store/slices/professionalsSlice";
 import { fetchAppointments } from "~/store/slices/appointmentsSlice";
 import { fetchNotificaciones } from "~/store/slices/notificationSlice";
 import { fetchSpecialities } from "~/store/slices/medicalSpecialitiesSlice";
+import { MaterialIcons } from '@expo/vector-icons';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -30,6 +31,7 @@ export default function LoginScreen({ navigation }) {
   const { t } = useTranslation();
   const { colorScheme } = useAppTheme();
   const isDark = colorScheme === 'dark';
+  const [showPassword, setShowPassword] = useState(false);
 
   const containerClass = isDark ? 'bg-gray-900' : 'bg-gray-100';
   const inputClass = isDark
@@ -172,15 +174,37 @@ export default function LoginScreen({ navigation }) {
           editable={!isLoading}
         />
 
-        <TextInput
-          className={`w-full h-12 rounded-xl px-4 mb-4 border ${inputClass}`}
-          placeholder={t('login.password_placeholder')}
-          placeholderTextColor={isDark ? '#9CA3AF' : '#6B7280'}
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          editable={!isLoading}
-        />
+        <View className={`w-full h-12 rounded-xl px-4 mb-4 border ${inputClass} flex-row items-center relative`}>
+          <TextInput
+            className={`flex-1 h-full bg-transparent ${isDark ? 'text-white placeholder-gray-400' : 'text-black placeholder-gray-500'}`}
+            placeholder={t('login.password_placeholder')}
+            placeholderTextColor={isDark ? '#9CA3AF' : '#6B7280'}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={!showPassword}
+            editable={!isLoading}
+            style={{ paddingRight: 40 }}
+          />
+          <TouchableOpacity
+            onPress={() => setShowPassword((prev) => !prev)}
+            style={{
+              position: 'absolute',
+              right: 10,
+              height: '100%',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: 4,
+            }}
+            disabled={isLoading}
+            activeOpacity={0.7}
+          >
+            <MaterialIcons
+              name={showPassword ? 'visibility-off' : 'visibility'}
+              size={24}
+              color={isDark ? '#fff' : '#374151'}
+            />
+          </TouchableOpacity>
+        </View>
 
         <TouchableOpacity
           className={`w-full h-12 rounded-xl justify-center items-center mb-4 shadow-md ${

@@ -31,15 +31,16 @@ export default function DoctorCard({
         className={`${cardBgClass} rounded-lg p-4 shadow-md items-center justify-center`}
         style={{ elevation: 5, minHeight: 180 }}
       >
+        {/* Solo la foto del doctor, centrada arriba */}
         {imageUrl ? (
           <Image
             source={{ uri: imageUrl }}
-            className="w-10 h-10 rounded-full mb-2"
+            className="w-20 h-20 rounded-full mb-2"
             resizeMode="cover"
           />
         ) : (
-          <View className={`w-10 h-10 ${iconBgClass} rounded-full justify-center items-center mb-2`}>
-            <Icon name="user-md" size={18} color={iconColor} />
+          <View className={`w-20 h-20 ${iconBgClass} rounded-full justify-center items-center mb-2`}>
+            <Icon name="user-md" size={32} color={iconColor} />
           </View>
         )}
         <Text className={`text-sm font-medium ${nameTextClass}`}>{name}</Text>

@@ -34,7 +34,7 @@ const ConfirmTokenRegisterScreen = ({ route }) => {
     dispatch(validarTokenRegistro({ correo: email, tokenIngresado: token }))
       .unwrap()
       .then((res) => {
-        Alert.alert(t('global.success'), res.mensaje || t('token.alerts.default_success'));
+        Alert.alert(t('global.alert.success'), res.mensaje || t('token.alerts.default_success'));
         dispatch(resetRegistroState());
         navigation.replace('Login');
       })
