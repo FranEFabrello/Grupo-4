@@ -3,7 +3,7 @@ import api from '../../api/api';
 
 export const fetchInsurance = createAsyncThunk('insurance/fetchInsurance', async (id)  => {
   const response = await api.get(`/obrasSociales/${id}`);
-  console.log('fetchInsurance: Obteniendo información de obra social', response.data);
+  //console.log('fetchInsurance: Obteniendo información de obra social', response.data);
   return response.data;
 });
 

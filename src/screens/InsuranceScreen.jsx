@@ -25,10 +25,10 @@ export default function InsuranceScreen({ navigation }) {
   const selectedButtonText = 'text-white';
 
   useEffect(() => {
-    console.log("Id de la obra social: ", usuario.idObraSocial);
+    //console.log("Id de la obra social: ", usuario.idObraSocial);
     if (usuario?.obraSocialId) {
       dispatch(fetchInsurance(usuario.obraSocialId));
-      console.log('InsuranceScreen: ' + t('insurance.info_loading'), usuario.obraSocialId);
+      //console.log('InsuranceScreen: ' + t('insurance.info_loading'), usuario.obraSocialId);
     }
   }, [dispatch, usuario?.obraSocialId]);
 

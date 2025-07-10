@@ -72,7 +72,7 @@ export default function ResultsScreen({ navigation }) {
     if (userId) {
       dispatch(fetchResults(userId));
     } else {
-      console.log('No user ID available, skipping fetchResults');
+      //console.log('No user ID available, skipping fetchResults');
     }
   }, [dispatch, userId]);
 

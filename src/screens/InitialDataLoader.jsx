@@ -42,24 +42,24 @@ export default function InitialDataLoader({ navigation }) {
 
         // Fetch de profesionales si no están cargados
         if (!professionals || professionals.length === 0) {
-          console.log('Fetching professionals');
+          //console.log('Fetching professionals');
           promises.push(dispatch(fetchProfessionals()));
         }
 
         // Fetch de usuario si no está cargado
         if (!usuario) {
-          console.log('Fetching user by token');
+          //console.log('Fetching user by token');
           promises.push(
             dispatch(fetchUserByToken()).then((action) => {
               const usuarioData = action.payload;
               const usuarioId = usuarioData?.id;
               if (usuarioId) {
-                console.log('Fetching appointments for user:', usuarioId);
+                //console.log('Fetching appointments for user:', usuarioId);
                 promises.push(dispatch(fetchAppointments(usuarioId)));
                 if (typeof usuarioData?.settings?.modoOscuro === 'boolean') {
                   dispatch({ type: 'user/setModoOscuro', payload: usuarioData.settings.modoOscuro });
                 }
-                console.log('Modo oscuro establecido desde fetchUserByToken:', usuarioData?.settings?.modoOscuro);
+                //console.log('Modo oscuro establecido desde fetchUserByToken:', usuarioData?.settings?.modoOscuro);
               }
               return action;
             })
@@ -67,7 +67,7 @@ export default function InitialDataLoader({ navigation }) {
         } else if (usuario.id) {
           // Fetch de citas si ya tenemos el usuario
           if (!appointments) {
-            console.log('Fetching appointments for existing user:', usuario.id);
+            //console.log('Fetching appointments for existing user:', usuario.id);
             promises.push(dispatch(fetchAppointments(usuario.id)));
           }
           if (typeof usuario.settings?.modoOscuro === 'boolean') {
@@ -77,7 +77,7 @@ export default function InitialDataLoader({ navigation }) {
 
         // Fetch de especialidades si no están cargadas
         if (!specialities || specialities.length === 0) {
-          console.log('Fetching specialities');
+          //console.log('Fetching specialities');
           promises.push(dispatch(fetchSpecialities()));
         }
 

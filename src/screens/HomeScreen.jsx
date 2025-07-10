@@ -60,17 +60,17 @@ export default function HomeScreen({ navigation }) {
 // Ajuste: considerar la fecha y hora de inicio del turno
   const upcomingAppointments = (appointments || [])
     .filter((appt) => {
-      console.log('appt.fecha:', appt.fecha, 'appt.horaInicio:', appt.horaInicio);
+      //console.log('appt.fecha:', appt.fecha, 'appt.horaInicio:', appt.horaInicio);
       const apptDateOnly = appt.fecha.split('T')[0];
       const apptDateTime = new Date(`${apptDateOnly}T${appt.horaInicio.length === 5 ? appt.horaInicio + ':00' : appt.horaInicio}`);
-      console.log('--- FILTRO UPCOMING ---');
-      console.log('Turno:', appt);
-      console.log('apptDateTime:', apptDateTime, 'now:', now, 'endOfWeek:', endOfWeek);
+      //console.log('--- FILTRO UPCOMING ---');
+      //console.log('Turno:', appt);
+      //console.log('apptDateTime:', apptDateTime, 'now:', now, 'endOfWeek:', endOfWeek);
       const isConfirmed = appt.estado === 'CONFIRMADO';
       const isFuture = apptDateTime >= now;
       const isInWeek = apptDateTime <= endOfWeek;
       const isActive = appt.cuentaActiva;
-      console.log('isConfirmed:', isConfirmed, 'isFuture:', isFuture, 'isInWeek:', isInWeek, 'isActive:', isActive);
+      //console.log('isConfirmed:', isConfirmed, 'isFuture:', isFuture, 'isInWeek:', isInWeek, 'isActive:', isActive);
       return (
         isConfirmed &&
         isFuture &&

@@ -13,9 +13,9 @@ const saveToken = async (key, value) => {
     } else {
       await SecureStore.setItemAsync(key, value);
     }
-    console.log('Token guardado:', value);
+    //console.log('Token guardado:', value);
   } catch (error) {
-    console.error('Error al guardar el token:', error);
+    //console.error('Error al guardar el token:', error);
   }
 };
 
@@ -28,7 +28,7 @@ const removeToken = async () => {
       await SecureStore.deleteItemAsync('userToken');
     }
   } catch (error) {
-    console.error('Error al eliminar el token:', error);
+    //console.error('Error al eliminar el token:', error);
   }
 };
 
@@ -38,7 +38,7 @@ export const register = createAsyncThunk(
   async (registerData, { rejectWithValue }) => {
     try {
       const response = await api.post(`/Auth/register`, registerData);
-      console.log('Respuesta del registro: ', response.data);
+      //console.log('Respuesta del registro: ', response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Error al registrar el usuario');
@@ -53,7 +53,7 @@ export const authenticate = createAsyncThunk(
       const response = await api.post(`/Auth/authenticate`, authData);
       const token = response.data.access_token;
       if (token) {
-        console.log('Token recibido desde AUTHSLICE:', token);
+        //console.log('Token recibido desde AUTHSLICE:', token);
         await saveToken('userToken', token);
         //const storedToken = await AsyncStorage.getItem('userToken');
         //console.log('Token guardado correctamente', asyncStorage, 'Token recuperado:', storedToken);

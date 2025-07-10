@@ -51,7 +51,7 @@ const ChangePasswordScreen = ({navigation}) => {
   const validarTokenHandler = async (token) => {
     try {
       setLoading(true);
-      console.log(t('token.verification_title'), { correo, token });
+      //console.log(t('token.verification_title'), { correo, token });
       const tokenIngresado = token;
       const resValidacion = await dispatch(
         validarTokenCambioContrasenia({ correo, tokenIngresado })

@@ -28,7 +28,7 @@ export async function registerForPushNotificationsAsync() {
     }
 
     if (!Device.isDevice) {
-      console.log('Se debe usar un dispositivo físico para las notificaciones push');
+      //console.log('Se debe usar un dispositivo físico para las notificaciones push');
       return null;
     }
 
@@ -41,7 +41,7 @@ export async function registerForPushNotificationsAsync() {
     }
     
     if (finalStatus !== 'granted') {
-      console.log('¡Se requiere permiso para recibir notificaciones push!');
+      //console.log('¡Se requiere permiso para recibir notificaciones push!');
       return null;
     }
     
@@ -50,11 +50,11 @@ export async function registerForPushNotificationsAsync() {
     });
 
     if (!token) {
-      console.log('No se pudo obtener el token de notificaciones');
+      //console.log('No se pudo obtener el token de notificaciones');
       return null;
     }
 
-    console.log('Token de notificaciones obtenido exitosamente:', token);
+    //console.log('Token de notificaciones obtenido exitosamente:', token);
     return token;
   } catch (error) {
     console.error('Error al registrar para notificaciones push:', error);
@@ -66,7 +66,7 @@ export async function registerForPushNotificationsAsync() {
 export async function sendPushTokenToBackend(token) {
   try {
     if (!token) {
-      console.log('No hay token para enviar al backend');
+      //console.log('No hay token para enviar al backend');
       return null;
     }
 
@@ -75,7 +75,7 @@ export async function sendPushTokenToBackend(token) {
       deviceType: Platform.OS,
     });
     
-    console.log('Token enviado al backend exitosamente:', response.data);
+    //console.log('Token enviado al backend exitosamente:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error al enviar el token al backend:', error);
@@ -85,12 +85,11 @@ export async function sendPushTokenToBackend(token) {
 
 // Función para manejar las notificaciones recibidas
 export function handleNotification(notification) {
-  console.log('Notificación recibida:', notification);
-  // Aquí puedes manejar la notificación como necesites
+  //console.log('Notificación recibida:', notification);
 }
 
 // Función para manejar las respuestas a las notificaciones
 export function handleNotificationResponse(response) {
-  console.log('Respuesta a la notificación:', response);
+  //console.log('Respuesta a la notificación:', response);
   // Aquí puedes manejar la respuesta como necesites
 } 

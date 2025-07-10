@@ -54,7 +54,7 @@ export default function RegisterScreen({ navigation }) {
         // Subir la imagen a Firebase y obtener la URL
         const url = await uploadImageToFirebase(imageUri);
         SetUrlImagenPerfil(url);
-        console.log('URL de la imagen subida:', url);
+        //console.log('URL de la imagen subida:', url);
       }
     } catch (error) {
       console.error('Error al procesar la imagen:', error);
@@ -65,7 +65,7 @@ export default function RegisterScreen({ navigation }) {
   useEffect(() => {
     if (!obrasSociales || obrasSociales.length === 0) {
       dispatch(fetchObrasSociales());
-      console.log('No hay obras sociales en el estado');
+      //console.log('No hay obras sociales en el estado');
     }
   }, []);
 
@@ -89,11 +89,11 @@ export default function RegisterScreen({ navigation }) {
     let err = {};
     if (!celular) {
       err.celular = t('register.errors.phone');
-      console.log('Error en celular:', err);
+      //console.log('Error en celular:', err);
     }
     if (!idObraSocial) {
       err.obraSocial = t('register.errors.insurance');
-      console.log('Error en obraSocial:', err, 'idObraSocial:', idObraSocial, 'obraSocial:', obraSocial);
+      //console.log('Error en obraSocial:', err, 'idObraSocial:', idObraSocial, 'obraSocial:', obraSocial);
     }
     setErrores(err);
     return Object.keys(err).length === 0;
@@ -106,9 +106,9 @@ export default function RegisterScreen({ navigation }) {
 
 
   const handleRegister = async () => {
-    console.log("handleRegister fue ejecutado");
+    //console.log("handleRegister fue ejecutado");
     if (!validarPaso2()) {
-      console.log("validarPaso2 falló");
+      //console.log("validarPaso2 falló");
       return;
     }
 
@@ -126,12 +126,12 @@ export default function RegisterScreen({ navigation }) {
       urlImagenPerfil
     };
 
-    console.log("Datos del usuario:", userData);
+    //console.log("Datos del usuario:", userData);
 
     try {
       setIsLoading(true);
       const result = await dispatch(register(userData)).unwrap();
-      console.log("Respuesta del registro:", result); // Log para depurar la respuesta
+      //console.log("Respuesta del registro:", result); // Log para depurar la respuesta
       navigation.navigate("ConfirmarToken", { email: correo });
     } catch (error) {
       console.error("Error en el registro:", error);
@@ -312,7 +312,7 @@ export default function RegisterScreen({ navigation }) {
                     const selectedOS = obrasSociales.find((o) => o.id === value);
                     const nombreOS = selectedOS ? `${selectedOS.tipoObraSocial} - ${selectedOS.plan}` : '';
                     setObraSocial(nombreOS); // Guardar el nombre completo, ej: "OSDE - Plan A"
-                    console.log('Obra social seleccionada:', { idObraSocial: value, nombreOS }); // Depuración
+                    //console.log('Obra social seleccionada:', { idObraSocial: value, nombreOS }); // Depuración
                   }}
                   style={{
                     color: colorScheme === 'dark' ? '#ffffff' : '#000000',
