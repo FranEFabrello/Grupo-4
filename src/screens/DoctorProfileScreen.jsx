@@ -87,8 +87,11 @@ export default function DoctorProfileScreen({ navigation, route }) {
         <View className={`rounded-3xl p-6 mb-6 ${cardClass} shadow-2xl`}>
           {/* FOTO Y DATOS */}
           <View className="items-center mb-6">
-            <View className="relative mb-2">
-              <View className="absolute w-32 h-32 rounded-full bg-blue-200/40 dark:bg-blue-900/40 blur-xl" style={{ top: -10, left: -10 }} />
+            <View className="relative mb-2 items-center justify-center w-full">
+              {/*<View
+                className="absolute w-32 h-32 rounded-full bg-blue-200/40 dark:bg-blue-900/40 blur-xl"
+                style={{ top: -10, left: '50%', marginLeft: -64 }}
+              />*/}
               {doctorData.urlImagenDoctor ? (
                 <Image
                   source={{ uri: doctorData.urlImagenDoctor }}
