@@ -21,6 +21,9 @@ export default function DoctorCardForProf({
   const buttonBgClass = colorScheme === 'light' ? 'bg-blue-600' : 'bg-blue-700';
   const borderClass = colorScheme === 'light' ? 'border border-blue-400 shadow-md' : 'border border-blue-500 shadow-md';
   const { t } = useTranslation();
+  const translateSpecialty = (desc) => {
+    return t(`especialitys.${desc}`, desc);
+  };
 
   return (
     <TouchableOpacity
@@ -64,7 +67,7 @@ export default function DoctorCardForProf({
         {/* Contenido centrado */}
         <View className="flex-1 justify-center items-center mt-2">
           <Text className={`text-sm font-medium ${nameTextClass} text-center`}>{name}</Text>
-          <Text className={`text-xs ${specialtyTextClass} text-center mt-0.5`}>{specialty}</Text>
+          <Text className={`text-xs ${specialtyTextClass} text-center mt-0.5`}>{translateSpecialty(specialty)}</Text>
           <TouchableOpacity
             className={`${buttonBgClass} rounded-lg py-1.5 px-2 w-28 flex-row justify-center items-center ${borderClass} mt-2`}
             onPress={onBook}

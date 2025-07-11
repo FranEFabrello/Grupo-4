@@ -24,6 +24,9 @@ export default function HomeScreen({ navigation }) {
   const specialities = useSelector((state) => state.medicalSpecialities.specialities);
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
+  const translateSpecialty = (desc) => {
+    return t(`especialitys.${desc}`, desc);
+  };
 
   // Refresca turnos si viene el parámetro refreshAppointments
   useFocusEffect(
@@ -143,7 +146,7 @@ export default function HomeScreen({ navigation }) {
                       })}
                       time={`${appt.horaInicio} - ${appt.horaFin}`}
                       doctor={`${appt.doctorInfo.nombre} ${appt.doctorInfo.apellido}`}
-                      specialty={appt.especialidadInfo.descripcion}
+                      specialty={translateSpecialty(appt.especialidadInfo.descripcion)}
                       status={appt.estado}
                       onPress={() => navigation.navigate('AppointmentDetail', { appointment: appt })}
                       colorScheme={colorScheme}

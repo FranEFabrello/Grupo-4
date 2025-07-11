@@ -19,6 +19,9 @@ export default function AppointmentCard({
   const dateTextClass = colorScheme === 'light' ? 'text-blue-600' : 'text-blue-300';
   const doctorTextClass = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
   const specialtyTextClass = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-400';
+  const translateSpecialty = (desc) => {
+    return t(`especialitys.${desc}`, desc);
+  };
 
   return (
     <TouchableOpacity onPress={onPress} className="self-start">
@@ -34,7 +37,9 @@ export default function AppointmentCard({
           <Text className={`text-base font-semibold ${doctorTextClass}`} numberOfLines={1}>
             {doctor}
           </Text>
-          <Text className={`text-sm ${specialtyTextClass}`}>{specialty}</Text>
+          <Text className={`text-sm ${specialtyTextClass}`}>
+            {translateSpecialty(specialty)}
+          </Text>
         </View>
 
       </View>

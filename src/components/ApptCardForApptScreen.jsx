@@ -19,6 +19,9 @@ export default function AppointmentCardFullWidth({
   const specialtyTextClass = colorScheme === 'light' ? 'text-gray-600' : 'text-gray-400';
   const textAccentClass = colorScheme === 'light' ? 'text-blue-600' : 'text-blue-400';
   const { t } = useTranslation();
+  const translateSpecialty = (desc) => {
+    return t(`especialitys.${desc}`, desc);
+  };
 
   return (
     <TouchableOpacity onPress={onPress} className="w-full">
@@ -30,7 +33,7 @@ export default function AppointmentCardFullWidth({
           </View>
           <View className="ml-3 flex-1 justify-center">
             <Text className={`text-base font-semibold ${doctorTextClass}`}>{doctor}</Text>
-            <Text className={`text-sm ${specialtyTextClass}`}>{specialty}</Text>
+            <Text className={`text-sm ${specialtyTextClass}`}>{translateSpecialty(specialty)}</Text>
             <Text className={`text-sm ${textAccentClass}`}>
               {t('appointments.view_medical_notes')}
             </Text>

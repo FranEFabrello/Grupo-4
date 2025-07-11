@@ -29,8 +29,12 @@ export default function DoctorProfileScreen({ navigation, route }) {
     ? 'font-semibold text-base'
     : 'font-semibold text-base text-blue-200';
 
+  // Si viene el objeto doctor por params, úsalo directamente, si no, búscalo por id
   const doctorData = doctor || professionals.find((prof) => prof.id === (doctorId || (doctor && doctor.id)));
-  const specialty = especialidades.find((esp) => esp.id === doctorData?.idEspecialidad)?.descripcion || t('doctor_profile.no_specialty');
+
+  // Utilidades para mostrar días en español
+  const nonWorkingDays = (doctorData.schedules || []).filter(sch => sch.nonWorkingDay && (sch.dayOfWeek || sch.specificDate));
+  const workingDays = (doctorData.schedules || []).filter(sch => !sch.nonWorkingDay);
 
   useEffect(() => {
     if (!professionals?.length) dispatch(fetchProfessionals());
@@ -46,63 +50,31 @@ export default function DoctorProfileScreen({ navigation, route }) {
       </AppContainer>
     );
   }
-
-  // Días
-  const daysMap = {
-    MONDAY: 'Lunes', TUESDAY: 'Martes', WEDNESDAY: 'Miércoles', THURSDAY: 'Jueves',
-    FRIDAY: 'Viernes', SATURDAY: 'Sábado', SUNDAY: 'Domingo',
-  };
-  const weekDaysOrder = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
-  const allDays = weekDaysOrder.map((d) => {
-    const w = (doctorData.schedules || []).find(sch => sch.dayOfWeek === d);
-    if (!w) return { dayOfWeek: d, works: false };
-    return w.nonWorkingDay
-      ? { dayOfWeek: d, works: false }
-      : { dayOfWeek: d, works: true, startTime: w.startTime, endTime: w.endTime };
-  });
-
-  // Rating: sólo si hay puntaje
-  const renderRating = (rating) => {
-    if (!rating || rating <= 0) return null;
-    const stars = [];
-    for (let i = 0; i < 5; i++) {
-      stars.push(
-        <Icon
-          key={i}
-          name={i < rating ? "star" : "star-o"}
-          size={20}
-          color={colorScheme === 'light' ? "#2563eb" : "#60a5fa"}
-          style={{
-            marginRight: 2
-          }}
-        />
-      );
-    }
-    return <View className="flex-row items-center mt-1 mb-2">{stars}</View>;
-  };
+  //Acá iría la traducción de la especialidad
+  const rawDesc = especialidades.find((esp) => esp.id === doctorData.idEspecialidad)?.descripcion;
+  const specialty = rawDesc ? t(`especialitys.${rawDesc}`, rawDesc) : t('doctor_profile.no_specialty');
 
   return (
     <AppContainer navigation={navigation} screenTitle={t('doctor_profile.title')}>
-      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 64 }}>
-        <View className={`rounded-3xl p-6 mb-6 ${cardClass} shadow-2xl`}>
-          {/* FOTO Y DATOS */}
-          <View className="items-center mb-6">
-            <View className="relative mb-2 items-center justify-center w-full">
-              {/*<View
-                className="absolute w-32 h-32 rounded-full bg-blue-200/40 dark:bg-blue-900/40 blur-xl"
-                style={{ top: -10, left: '50%', marginLeft: -64 }}
-              />*/}
-              {doctorData.urlImagenDoctor ? (
-                <Image
-                  source={{ uri: doctorData.urlImagenDoctor }}
-                  className="w-28 h-28 rounded-full border-4 border-blue-400 dark:border-blue-600 shadow-lg"
-                  resizeMode="cover"
-                />
-              ) : (
-                <View className="w-28 h-28 bg-gray-300 dark:bg-gray-700 rounded-full justify-center items-center border-4 border-blue-200 dark:border-blue-500 shadow-lg">
-                  <Icon name="user-md" size={48} color="#4a6fa5" />
-                </View>
-              )}
+      <ScrollView className={`p-5 ${bgClass}`}>
+        <View className={`${cardClass} rounded-lg p-4 shadow-md`}>
+          <View className="flex-row items-center mb-4">
+            {doctorData.urlImagenDoctor ? (
+              <Image
+                source={{ uri: doctorData.urlImagenDoctor }}
+                className="w-24 h-24 rounded-full mr-4"
+                resizeMode="cover"
+              />
+            ) : (
+              <View className="w-24 h-24 bg-gray-200 rounded-full justify-center items-center mr-4">
+                <Icon name="user-md" size={36} color="#4a6fa5" />
+              </View>
+            )}
+            <View className="flex-1">
+              <Text className={`text-xl font-semibold ${textPrimary}`}>{`${doctorData.nombre} ${doctorData.apellido}`}</Text>
+              <Text className={`text-sm ${textSecondary}`}>{specialty}</Text>
+              <Text className={`text-xs ${textSecondary} mt-2`}>📞 {doctorData.telefono}</Text>
+              <Text className={`text-xs ${textSecondary}`}>✉️ {doctorData.correo}</Text>
             </View>
             <Text className={`text-2xl font-extrabold mt-2 ${textClass}`}>{`${doctorData.nombre} ${doctorData.apellido}`}</Text>
             <Text
@@ -184,3 +156,4 @@ export default function DoctorProfileScreen({ navigation, route }) {
     </AppContainer>
   );
 }
+

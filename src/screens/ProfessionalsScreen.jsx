@@ -16,7 +16,7 @@ export default function ProfessionalsScreen({ navigation }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [selectedEspecialidades, setSelectedEspecialidades] = useState([]);
-  const { t } = useTranslation();
+  const { t,i18n } = useTranslation();
   const especialidades = useSelector((state) => state.medicalSpecialities.specialities);
   const { colorScheme } = useAppTheme();
 
@@ -32,7 +32,11 @@ export default function ProfessionalsScreen({ navigation }) {
   const selectedButtonBg = colorScheme === 'light' ? 'bg-blue-500' : 'bg-blue-700';
   const buttonText = colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200';
   const selectedButtonText = 'text-white';
-
+  const translateSpecialty = (desc) => {
+    const lang = i18n.language || 'es'; // 'en', 'es', etc.
+    const specialties = t('especialitys', { returnObjects: true });
+    return specialties?.[desc]?.[lang] || desc;
+  };
 
   useEffect(() => {
     if (!professionals.length) {
@@ -93,7 +97,9 @@ export default function ProfessionalsScreen({ navigation }) {
             <View className="flex-row flex-wrap mb-2.5">
               {selectedEspecialidades.map((esp) => (
                 <View key={esp.id} className={`${selectedButtonBg} rounded-xl px-2.5 py-1 mr-1.5 mb-1.5`}>
-                  <Text className={`${selectedButtonText} text-xs`}>{esp.descripcion}</Text>
+                  <Text className={`${selectedButtonText} text-xs`}>
+                    {t(`especialitys.${esp.descripcion}`, esp.descripcion)}
+                  </Text>
                 </View>
               ))}
             </View>
@@ -107,9 +113,9 @@ export default function ProfessionalsScreen({ navigation }) {
                   key={prof.id}
                   name={`${prof.nombre} ${prof.apellido}`}
                   specialty={
-                    especialidades.find(
-                      (esp) => esp.id === prof.idEspecialidad
-                    )?.descripcion || t('professionals.alerts.no_specialty')
+                    translateSpecialty(
+                      especialidades.find((esp) => esp.id === prof.idEspecialidad)?.descripcion || ''
+                    ) || t('professionals.alerts.no_specialty')
                   }
                   imageUrl={prof.urlImagenDoctor}
                   onBook={() =>
@@ -179,7 +185,7 @@ export default function ProfessionalsScreen({ navigation }) {
                     }}
                   >
                     <Text className={`${selectedEspecialidades.some(e => e.id === esp.id) ? selectedButtonText : buttonText}`}>
-                      {esp.descripcion}
+                      {t(`especialitys.${esp.descripcion}`, esp.descripcion)}
                     </Text>
                   </TouchableOpacity>
                 ))}
