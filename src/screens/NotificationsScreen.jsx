@@ -84,6 +84,7 @@ const NotificationItem = ({ item, fadeAnims, marcarNotificacionLeidaHandler, col
                 <MaterialCommunityIcons name="bell" size={32} color={colorScheme === 'light' ? '#6B7280' : '#9CA3AF'} />
               )}
             </View>
+
             <View className="flex-1">
               <Text className={`font-semibold text-base ${colorScheme === 'light' ? 'text-gray-800' : 'text-gray-200'} mb-2`}>
                 {item.tipoNotificacion === "CONFIRMACION_TURNO"

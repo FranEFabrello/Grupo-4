@@ -1,0 +1,342 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`AppointmentDetailScreen renders all appointment details correctly and matches snapshot 1`] = `
+<RCTSafeAreaView
+  className="flex-1 bg-lightBackground"
+>
+  <View
+    style={
+      {
+        "backgroundColor": "#fff",
+        "flex": 1,
+      }
+    }
+  >
+    <View
+      className="flex-row justify-between items-center p-4 bg-lightBackground border-b-2 rounded-b-lg border-double border-blue-600 "
+      style={
+        {
+          "paddingTop": 10,
+        }
+      }
+    >
+      <View
+        className="flex-row items-center"
+      >
+        <View
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": undefined,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onClick={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            {
+              "opacity": 1,
+            }
+          }
+        >
+          <Icon
+            color="#6c757d"
+            name="arrow-left"
+            size={20}
+          />
+        </View>
+        <View
+          className="w-6 h-6 bg-blue-600 rounded-md justify-center items-center"
+        >
+          <Text
+            className="text-white text-xs font-bold"
+          >
+            MB
+          </Text>
+        </View>
+        <Text
+          className="ml-2 text-lg font-semibold text-lightText"
+        >
+          appointments.details
+        </Text>
+      </View>
+      <View
+        className="flex-row"
+      >
+        <View
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": undefined,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onClick={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            {
+              "opacity": 1,
+            }
+          }
+        >
+          <Icon
+            color="#6c757d"
+            name="bell"
+            size={22}
+          />
+        </View>
+      </View>
+    </View>
+    <View
+      className="flex-1"
+    >
+      <RCTScrollView
+        className="flex-1 bg-white"
+      >
+        <View>
+          <View
+            className="p-5"
+          >
+            <View
+              className="mb-6 bg-gray-50 rounded-xl p-4"
+            >
+              <View
+                className="flex-row justify-between items-center"
+              >
+                <Text
+                  className="text-2xl font-bold text-gray-800"
+                >
+                  appointments.medic_book
+                </Text>
+                <View
+                  className="flex-row items-center bg-green-100 border border-green-200 px-3 py-2 rounded-full"
+                >
+                  <Icon
+                    color="#065f46"
+                    name="check-circle"
+                    size={16}
+                  />
+                  <Text
+                    className="ml-2 font-medium text-green-800"
+                  >
+                    appointments.type.approved
+                  </Text>
+                </View>
+              </View>
+            </View>
+            <View
+              className="mb-4 rounded-xl p-4 bg-gray-50"
+            >
+              <View
+                className="flex-row items-center mb-3"
+              >
+                <Icon
+                  color="#2563EB"
+                  name="calendar-alt"
+                  size={18}
+                />
+                <Text
+                  className="ml-2 text-blue-600"
+                >
+                  appointments.info.date_time
+                </Text>
+              </View>
+              <Text
+                className="text-lg font-medium text-gray-800"
+              >
+                Thursday, July 10, 2025
+              </Text>
+              <Text
+                className="text-lg font-medium text-gray-800"
+              >
+                09:00 - 10:00
+              </Text>
+            </View>
+            <View
+              className="mb-4 rounded-xl p-4 bg-gray-50"
+            >
+              <View
+                className="flex-row items-center mb-3"
+              >
+                <Icon
+                  color="#2563EB"
+                  name="user-md"
+                  size={18}
+                />
+                <Text
+                  className="ml-2 text-blue-600"
+                >
+                  appointments.info.professional
+                </Text>
+              </View>
+              <Text
+                className="text-lg font-medium text-gray-800"
+              >
+                Dr. John Doe
+              </Text>
+              <Text
+                className="text-base text-gray-800"
+              >
+                Cardio
+              </Text>
+            </View>
+            <View
+              className="mb-6 rounded-xl p-4 bg-gray-50"
+            >
+              <View
+                className="flex-row items-center mb-3"
+              >
+                <Icon
+                  color="#2563EB"
+                  name="comment-medical"
+                  size={18}
+                />
+                <Text
+                  className="ml-2 text-blue-600"
+                >
+                  medical_note.reason
+                </Text>
+              </View>
+              <Text
+                className="text-base text-gray-800"
+              >
+                Consultation reason
+              </Text>
+            </View>
+            <View
+              className="flex-row"
+            >
+              <View
+                accessibilityState={
+                  {
+                    "busy": undefined,
+                    "checked": undefined,
+                    "disabled": undefined,
+                    "expanded": undefined,
+                    "selected": undefined,
+                  }
+                }
+                accessibilityValue={
+                  {
+                    "max": undefined,
+                    "min": undefined,
+                    "now": undefined,
+                    "text": undefined,
+                  }
+                }
+                accessible={true}
+                collapsable={false}
+                focusable={true}
+                onClick={[Function]}
+                onResponderGrant={[Function]}
+                onResponderMove={[Function]}
+                onResponderRelease={[Function]}
+                onResponderTerminate={[Function]}
+                onResponderTerminationRequest={[Function]}
+                onStartShouldSetResponder={[Function]}
+                style={
+                  {
+                    "opacity": 1,
+                  }
+                }
+              >
+                <Icon
+                  color="white"
+                  name="times-circle"
+                  size={20}
+                />
+                <Text
+                  className="text-white text-base font-medium ml-2"
+                >
+                  global.button.cancel
+                </Text>
+              </View>
+              <View
+                accessibilityState={
+                  {
+                    "busy": undefined,
+                    "checked": undefined,
+                    "disabled": undefined,
+                    "expanded": undefined,
+                    "selected": undefined,
+                  }
+                }
+                accessibilityValue={
+                  {
+                    "max": undefined,
+                    "min": undefined,
+                    "now": undefined,
+                    "text": undefined,
+                  }
+                }
+                accessible={true}
+                collapsable={false}
+                focusable={true}
+                onClick={[Function]}
+                onResponderGrant={[Function]}
+                onResponderMove={[Function]}
+                onResponderRelease={[Function]}
+                onResponderTerminate={[Function]}
+                onResponderTerminationRequest={[Function]}
+                onStartShouldSetResponder={[Function]}
+                style={
+                  {
+                    "opacity": 1,
+                  }
+                }
+              >
+                <Icon
+                  color="white"
+                  name="calendar-plus"
+                  size={20}
+                />
+                <Text
+                  className="text-white text-base font-medium ml-2"
+                >
+                  appointments.reschedule
+                </Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      </RCTScrollView>
+    </View>
+  </View>
+</RCTSafeAreaView>
+`;

@@ -1,0 +1,78 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`AppointmentCard renders correctly and matches snapshot 1`] = `
+<View
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
+  accessible={true}
+  collapsable={false}
+  focusable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    {
+      "opacity": 1,
+    }
+  }
+>
+  <View
+    className="rounded-lg p-4 shadow-md bg-white flex-row items-center"
+  >
+    <View
+      className="bg-blue-100 rounded-lg items-center justify-center px-3 py-2"
+      style={
+        {
+          "alignSelf": "flex-start",
+          "minHeight": 70,
+        }
+      }
+    >
+      <Text
+        className="text-xs text-blue-600"
+      >
+        10
+      </Text>
+      <Text
+        className="text-sm font-semibold mt-1 text-blue-600"
+      >
+        15:00
+      </Text>
+    </View>
+    <View
+      className="ml-3 justify-center"
+    >
+      <Text
+        className="text-base font-semibold text-gray-800"
+        numberOfLines={1}
+      >
+        Dr. House
+      </Text>
+      <Text
+        className="text-sm text-gray-600"
+      >
+        Diagnostics
+      </Text>
+    </View>
+  </View>
+</View>
+`;
