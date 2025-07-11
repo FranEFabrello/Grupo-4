@@ -876,6 +876,22 @@
       }
     }
   },
+  "helpScreen": {
+    "title": {
+      "es": "Ayuda",
+      "en": "Help"
+    },
+    "help_message_success": {
+      "es": "Mensaje de ayuda enviado exitosamente, se te contactará pronto por correo con personal de soporte.",
+      "en": "Help message sent successfully, you will be contacted soon by email with support staff."
+    },
+    "button": {
+      "ok": {
+        "es": "Enviar",
+        "en": "Send"
+      }
+    }
+  },
 
   "appointments": {
     "available_time": {

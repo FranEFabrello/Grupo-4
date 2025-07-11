@@ -10,6 +10,7 @@ import { useAppTheme } from '~/providers/ThemeProvider';
 export default function HelpNeeded() {
   const navigation = useNavigation();
   const [mensaje, setMensaje] = useState('');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const dispatch = useDispatch();
   const usuario = useSelector(state => state.user.usuario);
   const { t } = useTranslation();
@@ -34,6 +35,7 @@ export default function HelpNeeded() {
       mensaje
     }));
     setMensaje('');
+    setShowSuccessModal(true);
   };
 
   return (
@@ -56,6 +58,20 @@ export default function HelpNeeded() {
           <Text className={`${selectedButtonText} text-base font-semibold`}>{t('global.button.send')}</Text>
         </TouchableOpacity>
       </View>
+      {showSuccessModal && (
+        <View className="absolute inset-0 bg-black bg-opacity-40 justify-center items-center z-50">
+          <View className={`bg-white dark:bg-gray-800 rounded-xl p-8 w-80 items-center`}>
+            <Text className="text-lg font-semibold mb-2">{t('helpScreen.title')}</Text>
+            <Text className="text-base mb-6 text-center">{t('helpScreen.help_message_success')}</Text>
+            <TouchableOpacity
+              className={`${selectedButtonBg} py-2 px-6 rounded-xl`}
+              onPress={() => setShowSuccessModal(false)}
+            >
+              <Text className={`${selectedButtonText} text-base font-semibold`}>{t('helpScreen.button.ok')}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
     </AppContainer>
   );
 }
